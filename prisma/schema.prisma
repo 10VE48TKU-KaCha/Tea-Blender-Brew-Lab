@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TeaCategory {
+  BLACK
+  GREEN
+  OOLONG
+  HERBAL
+  WHITE
+}
+
+model TeaIngredient {
+  id          String      @id @default(cuid())
+  name        String
+  category    TeaCategory
+  baseColor   String
+  bodyScore   Int
+  tanninScore Int
+  aromaScore  Int
+  blendItems  BlendItem[]
+
+  @@map("tea_ingredients")
+}
+
+model Recipe {
+  id              String      @id @default(cuid())
+  title           String
+  description     String?
+  waterTempC      Float
+  waterAmountMl   Float
+  steepingTimeSec Int
+  bitternessScore Float
+  aromaScore      Float
+  sweetnessScore  Float
+  bodyScore       Float
+  renderedHex     String
+  createdAt       DateTime    @default(now())
+  blendItems      BlendItem[]
+
+  @@map("recipes")
+}
+
+model BlendItem {
+  id           String        @id @default(cuid())
+  recipeId     String
+  ingredientId String
+  ratioPercent Float
+  recipe       Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient   TeaIngredient @relation(fields: [ingredientId], references: [id])
+
+  @@map("blend_items")
+}
