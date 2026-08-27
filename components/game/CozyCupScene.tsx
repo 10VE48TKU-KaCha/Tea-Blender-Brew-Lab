@@ -5,26 +5,85 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export type ServingStyle = "hot" | "iced" | "latte";
+export type CupGlaze = "celadon" | "tenmoku" | "hakuji" | "earthenware";
+export type Turbidity = "clear" | "cloudy" | "velvet";
 
 export interface CozyCupSceneProps {
   liquidColor: string;
   opacity: number;
   steamIntensity?: number;
   servingStyle?: ServingStyle;
+  cupGlaze?: CupGlaze;
+  turbidity?: Turbidity;
   garnishes?: string[];
   className?: string;
 }
+
+const GLAZE_THEMES: Record<
+  CupGlaze,
+  {
+    body: string;
+    stroke: string;
+    rim: string;
+    saucer1: string;
+    saucer2: string;
+    handle: string;
+    handleShadow: string;
+  }
+> = {
+  celadon: {
+    body: "#C2D7C7",
+    stroke: "#9CB8A2",
+    rim: "#E2ECE4",
+    saucer1: "#6B7F62",
+    saucer2: "#57694F",
+    handle: "#C2D7C7",
+    handleShadow: "#9CB8A2",
+  },
+  tenmoku: {
+    body: "#3A2F2C",
+    stroke: "#261E1C",
+    rim: "#594843",
+    saucer1: "#382319",
+    saucer2: "#291811",
+    handle: "#3A2F2C",
+    handleShadow: "#261E1C",
+  },
+  hakuji: {
+    body: "#FBF9F6",
+    stroke: "#E3DDD5",
+    rim: "#FFFFFF",
+    saucer1: "#9C6D53",
+    saucer2: "#855840",
+    handle: "#FBF9F6",
+    handleShadow: "#E3DDD5",
+  },
+  earthenware: {
+    body: "#F5E6D3",
+    stroke: "#D4C4B0",
+    rim: "#FAF1E6",
+    saucer1: "#A47556",
+    saucer2: "#8C5E45",
+    handle: "#F5E6D3",
+    handleShadow: "#D4C4B0",
+  },
+};
 
 export function CozyCupScene({
   liquidColor,
   opacity,
   steamIntensity = 0.5,
   servingStyle = "hot",
+  cupGlaze = "earthenware",
+  turbidity = "velvet",
   garnishes = [],
   className,
 }: CozyCupSceneProps) {
   // Suppress steam if cold brew
   const effectiveSteam = servingStyle === "iced" ? 0 : steamIntensity;
+  const glaze = GLAZE_THEMES[cupGlaze] || GLAZE_THEMES.earthenware;
+  const isCloudy = turbidity === "cloudy";
+  const isClear = turbidity === "clear";
 
   return (
     <motion.div
@@ -104,7 +163,7 @@ export function CozyCupScene({
           </clipPath>
         </defs>
 
-        {/* STEAM (Hot and Latte only) */}
+        {/* STEAM */}
         {effectiveSteam > 0 && (
           <g stroke="#E8C9A0" strokeWidth="3" fill="none" opacity={effectiveSteam}>
             <path d="M130,110 Q120,80 140,50 T130,10" className="steam-path" />
@@ -114,25 +173,74 @@ export function CozyCupScene({
         )}
 
         {/* ======================================================== */}
-        {/* STYLE 1: HOT CERAMIC CUP (Classic)                       */}
+        {/* STYLE 1: HOT CERAMIC CUP (Dynamic Glaze & Turbidity)     */}
         {/* ======================================================== */}
         {servingStyle === "hot" && (
           <g>
             {/* Saucer */}
-            <ellipse cx="150" cy="330" rx="100" ry="25" fill="#A47556" />
-            <ellipse cx="150" cy="325" rx="80" ry="18" fill="#8C5E45" />
+            <ellipse cx="150" cy="330" rx="100" ry="25" fill={glaze.saucer1} />
+            <ellipse cx="150" cy="325" rx="80" ry="18" fill={glaze.saucer2} />
 
             {/* Handle */}
-            <path d="M220,180 C260,180 270,240 220,260" fill="none" stroke="#F5E6D3" strokeWidth="15" strokeLinecap="round" />
-            <path d="M220,180 C260,180 270,240 220,260" fill="none" stroke="#D4C4B0" strokeWidth="15" strokeLinecap="round" opacity="0.3" transform="translate(0, 2)" />
+            <path
+              d="M220,180 C260,180 270,240 220,260"
+              fill="none"
+              stroke={glaze.handle}
+              strokeWidth="15"
+              strokeLinecap="round"
+            />
+            <path
+              d="M220,180 C260,180 270,240 220,260"
+              fill="none"
+              stroke={glaze.handleShadow}
+              strokeWidth="15"
+              strokeLinecap="round"
+              opacity="0.4"
+              transform="translate(0, 2)"
+            />
 
-            {/* Cup Body */}
-            <path d="M80,140 L220,140 L200,310 Q150,330 100,310 Z" fill="#F5E6D3" stroke="#D4C4B0" strokeWidth="2" />
+            {/* Cup Body with Authentic Glaze */}
+            <path
+              d="M80,140 L220,140 L200,310 Q150,330 100,310 Z"
+              fill={glaze.body}
+              stroke={glaze.stroke}
+              strokeWidth="2"
+            />
 
             {/* Liquid */}
             <g clipPath="url(#cup-interior-hot)">
-              <rect x="70" y="150" width="160" height="180" fill={liquidColor} opacity={opacity} />
-              <ellipse cx="150" cy="150" rx="68" ry="13" fill={liquidColor} opacity={Math.min(1, opacity + 0.2)} />
+              <rect
+                x="70"
+                y="150"
+                width="160"
+                height="180"
+                fill={liquidColor}
+                opacity={isCloudy ? Math.min(1, opacity + 0.15) : opacity}
+              />
+              <ellipse
+                cx="150"
+                cy="150"
+                rx="68"
+                ry="13"
+                fill={liquidColor}
+                opacity={Math.min(1, opacity + (isClear ? 0.3 : 0.2))}
+              />
+
+              {/* Cloudy Matcha / Froth texture */}
+              {isCloudy && (
+                <g fill="#FFFFFF" opacity="0.3">
+                  <circle cx="130" cy="150" r="3" />
+                  <circle cx="138" cy="153" r="2.5" />
+                  <circle cx="162" cy="148" r="3.5" />
+                  <circle cx="170" cy="151" r="2" />
+                  <circle cx="150" cy="154" r="2" />
+                </g>
+              )}
+
+              {/* Crystal Shimmer reflection if clear */}
+              {isClear && (
+                <ellipse cx="140" cy="148" rx="25" ry="4" fill="#FFFFFF" opacity="0.35" />
+              )}
 
               {/* Bubbles */}
               <circle cx="120" cy="150" r="2" fill="#fff" opacity="0.5" className="bubble" />
@@ -145,9 +253,9 @@ export function CozyCupScene({
             </g>
 
             {/* Cup Rim inner shadow */}
-            <ellipse cx="150" cy="140" rx="70" ry="15" fill="none" stroke="#D4C4B0" strokeWidth="4" opacity="0.5" />
+            <ellipse cx="150" cy="140" rx="70" ry="15" fill="none" stroke={glaze.stroke} strokeWidth="4" opacity="0.4" />
             {/* Cup Rim */}
-            <ellipse cx="150" cy="140" rx="70" ry="15" fill="none" stroke="#F5E6D3" strokeWidth="6" />
+            <ellipse cx="150" cy="140" rx="70" ry="15" fill="none" stroke={glaze.rim} strokeWidth="6" />
           </g>
         )}
 
@@ -156,45 +264,36 @@ export function CozyCupScene({
         {/* ======================================================== */}
         {servingStyle === "iced" && (
           <g>
-            {/* Coaster Wooden Ring */}
             <ellipse cx="150" cy="335" rx="85" ry="18" fill="#8C5E45" opacity="0.8" />
             <ellipse cx="150" cy="332" rx="75" ry="15" fill="#A47556" />
 
-            {/* Glass Shadow & Liquid Inside */}
             <g clipPath="url(#glass-interior-iced)">
-              {/* Cold Brew Liquid */}
               <rect x="85" y="125" width="130" height="210" fill={liquidColor} opacity={Math.min(0.92, opacity + 0.1)} />
               <ellipse cx="150" cy="125" rx="58" ry="12" fill={liquidColor} opacity={Math.min(1, opacity + 0.25)} />
 
               {/* Floating Ice Cubes */}
               <g className="ice-floating">
-                {/* Cube 1 */}
                 <rect x="115" y="130" width="34" height="34" rx="6" fill="#FFFFFF" opacity="0.45" stroke="#E2F1F8" strokeWidth="1.5" />
                 <path d="M120,135 L144,135" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
               </g>
 
               <g className="ice-floating-alt">
-                {/* Cube 2 */}
                 <rect x="148" y="145" width="30" height="30" rx="5" fill="#FFFFFF" opacity="0.4" stroke="#E2F1F8" strokeWidth="1.5" />
                 <path d="M152,150 L172,150" stroke="#FFF" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
               </g>
 
               <g className="ice-floating">
-                {/* Cube 3 deeper */}
                 <rect x="130" y="185" width="28" height="28" rx="5" fill="#FFFFFF" opacity="0.3" stroke="#FFF" strokeWidth="1" />
               </g>
 
-              {/* Cold condensation bubbles */}
               <circle cx="112" cy="170" r="1.5" fill="#FFFFFF" opacity="0.5" />
               <circle cx="178" cy="195" r="2" fill="#FFFFFF" opacity="0.6" />
               <circle cx="125" cy="225" r="1.5" fill="#FFFFFF" opacity="0.4" />
               <circle cx="165" cy="250" r="2" fill="#FFFFFF" opacity="0.5" />
 
-              {/* Garnishes inside cold glass */}
               {renderGarnishes(garnishes, 150, 130)}
             </g>
 
-            {/* Glass Container Outer Body (Translucent) */}
             <path
               d="M90,110 L210,110 L195,320 Q150,335 105,320 Z"
               fill="url(#glassReflect)"
@@ -202,15 +301,10 @@ export function CozyCupScene({
               strokeWidth="2.5"
               opacity="0.85"
             />
-
-            {/* Glass Bottom Thickness */}
             <path d="M107,310 L193,310 L195,320 Q150,335 105,320 Z" fill="#DCEAF2" opacity="0.4" />
-
-            {/* Glass Rim */}
             <ellipse cx="150" cy="110" rx="60" ry="14" fill="none" stroke="#DCEAF2" strokeWidth="3" />
             <ellipse cx="150" cy="110" rx="57" ry="13" fill="none" stroke="#FFF" strokeWidth="1" opacity="0.7" />
 
-            {/* Glass condensation droplets outside */}
             <circle cx="100" cy="190" r="1.8" fill="#FFF" opacity="0.7" />
             <circle cx="101" cy="196" r="1.2" fill="#FFF" opacity="0.5" />
             <circle cx="198" cy="230" r="2" fill="#FFF" opacity="0.6" />
@@ -223,22 +317,15 @@ export function CozyCupScene({
         {/* ======================================================== */}
         {servingStyle === "latte" && (
           <g>
-            {/* Wooden Saucer */}
             <ellipse cx="150" cy="330" rx="95" ry="22" fill="#8C5E45" opacity="0.9" />
             <ellipse cx="150" cy="326" rx="80" ry="16" fill="#A47556" />
 
-            {/* Latte Glass Body */}
             <path d="M85,130 L215,130 L198,315 Q150,330 102,315 Z" fill="#F8F3EC" stroke="#E3D7C7" strokeWidth="2" />
 
-            {/* Layered Liquid */}
             <g clipPath="url(#latte-interior)">
-              {/* Ombre layer: fresh milk into steeped tea */}
               <rect x="80" y="130" width="140" height="200" fill="url(#latteGradient)" />
-
-              {/* Rich Foamy Microfoam Top Cap */}
               <ellipse cx="150" cy="138" rx="63" ry="13" fill="#FFFFFF" opacity="0.95" />
 
-              {/* Latte Art Heart / Rosette Swirl */}
               <path
                 d="M150,135 C145,130 137,131 137,136 C137,141 150,146 150,146 C150,146 163,141 163,136 C163,131 155,130 150,135 Z"
                 fill={liquidColor}
@@ -247,11 +334,9 @@ export function CozyCupScene({
               <circle cx="150" cy="132" r="1.8" fill={liquidColor} opacity="0.5" />
               <circle cx="150" cy="129" r="1.2" fill={liquidColor} opacity="0.4" />
 
-              {/* Garnishes on foam */}
               {renderGarnishes(garnishes, 150, 138)}
             </g>
 
-            {/* Latte Rim */}
             <ellipse cx="150" cy="130" rx="65" ry="15" fill="none" stroke="#FFFFFF" strokeWidth="4" />
             <ellipse cx="150" cy="130" rx="65" ry="15" fill="none" stroke="#E3D7C7" strokeWidth="1.5" />
           </g>
@@ -261,16 +346,13 @@ export function CozyCupScene({
   );
 }
 
-// Helper to render botanical garnishes on the drink's surface
 function renderGarnishes(garnishes: string[], cx: number, cy: number) {
   return (
     <g className="petal-floating">
-      {/* 1. Honey Swirl */}
       {garnishes.includes("honey") && (
         <circle cx={cx} cy={cy} r="28" fill="url(#honeySheen)" />
       )}
 
-      {/* 2. Cinnamon Stick */}
       {garnishes.includes("cinnamon") && (
         <g transform={`translate(${cx - 10}, ${cy - 25}) rotate(-25)`}>
           <rect x="0" y="0" width="8" height="60" rx="3" fill="#783F27" stroke="#5C2E1B" strokeWidth="1" />
@@ -279,30 +361,25 @@ function renderGarnishes(garnishes: string[], cx: number, cy: number) {
         </g>
       )}
 
-      {/* 3. Osmanthus Flowers (Tiny golden blooms) */}
       {garnishes.includes("osmanthus") && (
         <g fill="#FFAA00" opacity="0.9">
-          {/* Flower 1 */}
           <circle cx={cx - 20} cy={cy - 2} r="2" />
           <circle cx={cx - 17} cy={cy - 2} r="2" />
           <circle cx={cx - 18.5} cy={cy - 4} r="2" />
           <circle cx={cx - 18.5} cy={cy} r="2" />
           <circle cx={cx - 18.5} cy={cy - 2} r="1.5" fill="#FFF275" />
 
-          {/* Flower 2 */}
           <circle cx={cx + 15} cy={cy + 3} r="1.8" />
           <circle cx={cx + 18} cy={cy + 3} r="1.8" />
           <circle cx={cx + 16.5} cy={cy + 1.2} r="1.8" />
           <circle cx={cx + 16.5} cy={cy + 4.8} r="1.8" />
           <circle cx={cx + 16.5} cy={cy + 3} r="1.2" fill="#FFF275" />
 
-          {/* Loose Petals */}
           <ellipse cx={cx + 2} cy={cy - 5} rx="2" ry="1.2" fill="#FFB703" transform={`rotate(15 ${cx + 2} ${cy - 5})`} />
           <ellipse cx={cx - 8} cy={cy + 5} rx="1.8" ry="1" fill="#FFB703" transform={`rotate(-20 ${cx - 8} ${cy + 5})`} />
         </g>
       )}
 
-      {/* 4. Rose Petals (Crimson velvet petals) */}
       {garnishes.includes("rose") && (
         <g fill="#B82E48" opacity="0.85">
           <path

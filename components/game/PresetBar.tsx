@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ServingStyle } from "./CozyCupScene";
-import { Sparkles, BookOpen } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface TeaPreset {
@@ -11,7 +11,7 @@ export interface TeaPreset {
   badge: string;
   icon: string;
   desc: string;
-  ingredientRatios: Record<string, number>; // Maps ingredient names to percent
+  ingredientRatios: Record<string, number>;
   waterTempC: number;
   steepingTimeSec: number;
   waterAmountMl: number;
@@ -25,10 +25,10 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
     name: "Kyoto Spring Mist",
     badge: "Light & Floral",
     icon: "🌸",
-    desc: "Delicate Sencha green with soothing chamomile blooms",
+    desc: "Japanese Shizuoka Sencha softened with Bavarian chamomile blossoms",
     ingredientRatios: {
-      "Sencha Green": 75,
-      "Chamomile Herbal": 25,
+      "Shizuoka Sencha 🇯🇵": 75,
+      "Bavarian Chamomile 🇩🇪": 25,
     },
     waterTempC: 75,
     steepingTimeSec: 90,
@@ -41,10 +41,10 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
     name: "Royal Afternoon Velvet",
     badge: "Malty & Bold",
     icon: "👑",
-    desc: "Robust Assam base tempered with fragrant high mountain oolong",
+    desc: "Malty Indian Assam tips harmonized with creamy Alishan oolong",
     ingredientRatios: {
-      "Assam Black": 70,
-      "High Mountain Oolong": 30,
+      "Assam Golden Tips 🇮🇳": 70,
+      "Alishan High Mountain Oolong 🇹🇼": 30,
     },
     waterTempC: 92,
     steepingTimeSec: 180,
@@ -53,16 +53,32 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
     garnishes: ["cinnamon", "honey"],
   },
   {
+    id: "tokyo-zen",
+    name: "Tokyo Emerald Zen",
+    badge: "Rich Umami",
+    icon: "🍵",
+    desc: "Kyoto ceremonial Uji matcha and toasty roasted Hojicha",
+    ingredientRatios: {
+      "Kyoto Uji Ceremonial Matcha 🇯🇵": 65,
+      "Kyoto Roasted Hojicha 🇯🇵": 35,
+    },
+    waterTempC: 80,
+    steepingTimeSec: 60,
+    waterAmountMl: 160,
+    servingStyle: "latte",
+    garnishes: [],
+  },
+  {
     id: "mountain-fog",
-    name: "High Mountain Fog",
+    name: "Alishan High Mountain Fog",
     badge: "Orchid Floral",
     icon: "🏔️",
-    desc: "Pure Taiwanese high mountain oolong with crystal clarity",
+    desc: "High altitude Taiwanese oolong with crystalline Chinese Silver Needle",
     ingredientRatios: {
-      "High Mountain Oolong": 90,
-      "Sencha Green": 10,
+      "Alishan High Mountain Oolong 🇹🇼": 80,
+      "Fujian Silver Needle (Baihao) 🇨🇳": 20,
     },
-    waterTempC: 88,
+    waterTempC: 85,
     steepingTimeSec: 140,
     waterAmountMl: 160,
     servingStyle: "hot",
@@ -70,12 +86,13 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
   },
   {
     id: "midnight-lullaby",
-    name: "Midnight Serenade",
+    name: "Provence Midnight Serenade",
     badge: "Caffeine-Free",
     icon: "🌙",
-    desc: "Soothing pure chamomile infusion with wildflower honey sweetness",
+    desc: "Soothing French lavender and chamomile with honey swirl",
     ingredientRatios: {
-      "Chamomile Herbal": 100,
+      "Bavarian Chamomile 🇩🇪": 70,
+      "Provence French Lavender 🇫🇷": 30,
     },
     waterTempC: 95,
     steepingTimeSec: 240,
@@ -84,14 +101,14 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
     garnishes: ["honey", "rose"],
   },
   {
-    id: "summer-chill",
-    name: "Glacier Cold Brew",
-    badge: "Refreshing",
+    id: "nile-glacier",
+    name: "Nile Ruby Cold Brew",
+    badge: "Tangy Iced",
     icon: "🧊",
-    desc: "Crisp iced blend of Oolong and Green tea over crystal ice",
+    desc: "Tart Egyptian hibiscus with sweet South African rooibos on ice",
     ingredientRatios: {
-      "High Mountain Oolong": 50,
-      "Sencha Green": 50,
+      "Nile Valley Hibiscus 🇪🇬": 60,
+      "Cederberg Red Rooibos 🇿🇦": 40,
     },
     waterTempC: 70,
     steepingTimeSec: 120,
@@ -112,9 +129,9 @@ export function PresetBar({ onSelectPreset, activePresetId }: PresetBarProps) {
       <div className="flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-2 text-sm font-semibold text-dark-wood">
           <BookOpen className="w-4 h-4 text-amber" />
-          <span>Signature Blend Presets</span>
+          <span>Signature World Blend Presets</span>
         </div>
-        <span className="text-xs text-wood/60">1-click master blends</span>
+        <span className="text-xs text-wood/60">1-click master blends from around the globe</span>
       </div>
 
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x">
@@ -126,7 +143,7 @@ export function PresetBar({ onSelectPreset, activePresetId }: PresetBarProps) {
               type="button"
               onClick={() => onSelectPreset(preset)}
               className={cn(
-                "flex-shrink-0 snap-start w-52 sm:w-60 p-3 rounded-2xl border text-left transition-all duration-200 cursor-pointer group",
+                "flex-shrink-0 snap-start w-56 sm:w-64 p-3 rounded-2xl border text-left transition-all duration-200 cursor-pointer group",
                 isActive
                   ? "bg-amber-light/30 border-wood shadow-sm ring-1 ring-amber"
                   : "bg-white/70 backdrop-blur-sm border-wood/15 hover:bg-white hover:border-wood/30 hover:shadow-sm"
@@ -149,6 +166,7 @@ export function PresetBar({ onSelectPreset, activePresetId }: PresetBarProps) {
               <div className="flex items-center gap-2 mt-2 pt-2 border-t border-wood/10 text-[10px] text-wood/80 font-medium">
                 <span>🌡️ {preset.waterTempC}°C</span>
                 <span>⏳ {preset.steepingTimeSec}s</span>
+                <span className="capitalize">🫖 {preset.servingStyle}</span>
               </div>
             </button>
           );

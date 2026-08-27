@@ -78,6 +78,10 @@ export interface ExtractionResult {
   clarityScore: number;
   cozyTitle: string;
   tastingNotes: string;
+  blendCode?: string;
+  cupGlaze?: "celadon" | "tenmoku" | "hakuji" | "earthenware";
+  turbidity?: "clear" | "cloudy" | "velvet";
+  originCountries?: string[];
 }
 
 // === API Input Schema ===
