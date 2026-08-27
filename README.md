@@ -50,7 +50,7 @@
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/takuya4446/Tea-Blender-Brew-Lab.git
+git clone https://github.com/10VE48TKU-KaCha/Tea-Blender-Brew-Lab.git
 cd Tea-Blender-Brew-Lab
 npm install
 ```
@@ -95,10 +95,9 @@ npx tsx prisma/seed.ts
 
 ### Step 3: Deploy on Vercel
 1. Go to [Vercel](https://vercel.com) and click **"Add New Project"**.
-2. Import the Git repository: `takuya4446/Tea-Blender-Brew-Lab`.
+2. Import the Git repository: `10VE48TKU-KaCha/Tea-Blender-Brew-Lab`.
 3. In **Environment Variables**, add:
    - `DATABASE_URL` = `<Your Supabase PostgreSQL Connection String>`
-   - `DIRECT_URL` = `<Your Supabase Direct Connection String>`
 4. Click **Deploy**.
 5. Once built, Vercel will automatically run `prisma generate` via the `postinstall` script and compile the application!
 
