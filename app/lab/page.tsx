@@ -48,6 +48,7 @@ export default function LabPage() {
   // New Interactive States
   const [servingStyle, setServingStyle] = useState<ServingStyle>("hot");
   const [garnishes, setGarnishes] = useState<string[]>([]);
+  const [latteArt, setLatteArt] = useState<"bear" | "heart">("bear");
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const [isBrewModalOpen, setIsBrewModalOpen] = useState<boolean>(false);
   const [isPostcardOpen, setIsPostcardOpen] = useState<boolean>(false);
@@ -434,6 +435,7 @@ export default function LabPage() {
               cupGlaze={extraction?.cupGlaze || "earthenware"}
               turbidity={extraction?.turbidity || "velvet"}
               garnishes={garnishes}
+              latteArt={latteArt}
             />
 
             {/* Quick Live Steeping Action & Postcard Buttons */}
@@ -469,6 +471,8 @@ export default function LabPage() {
             onStyleChange={setServingStyle}
             garnishes={garnishes}
             onGarnishToggle={handleGarnishToggle}
+            latteArt={latteArt}
+            onLatteArtChange={setLatteArt}
           />
 
           {/* Extraction Analytics & Flavor Radar */}

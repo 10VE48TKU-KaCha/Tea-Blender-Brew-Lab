@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useId } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -16,56 +16,77 @@ export interface CozyCupSceneProps {
   cupGlaze?: CupGlaze;
   turbidity?: Turbidity;
   garnishes?: string[];
+  latteArt?: "bear" | "heart" | "leaf";
   className?: string;
 }
 
 const GLAZE_THEMES: Record<
   CupGlaze,
   {
-    body: string;
+    name: string;
+    bodyTop: string;
+    bodyBottom: string;
     stroke: string;
     rim: string;
-    saucer1: string;
-    saucer2: string;
-    handle: string;
-    handleShadow: string;
+    highlight: string;
+    saucerTop: string;
+    saucerBottom: string;
+    saucerStroke: string;
+    handleTop: string;
+    handleBottom: string;
   }
 > = {
   celadon: {
-    body: "#C2D7C7",
-    stroke: "#9CB8A2",
-    rim: "#E2ECE4",
-    saucer1: "#6B7F62",
-    saucer2: "#57694F",
-    handle: "#C2D7C7",
-    handleShadow: "#9CB8A2",
+    name: "Celadon Jade",
+    bodyTop: "#D6E8DC",
+    bodyBottom: "#A8C7B0",
+    stroke: "#8EAE96",
+    rim: "#EAF4EE",
+    highlight: "#FFFFFF",
+    saucerTop: "#88A58F",
+    saucerBottom: "#6E8A74",
+    saucerStroke: "#5C7561",
+    handleTop: "#D6E8DC",
+    handleBottom: "#A8C7B0",
   },
   tenmoku: {
-    body: "#3A2F2C",
-    stroke: "#261E1C",
-    rim: "#594843",
-    saucer1: "#382319",
-    saucer2: "#291811",
-    handle: "#3A2F2C",
-    handleShadow: "#261E1C",
+    name: "Tenmoku Bronze",
+    bodyTop: "#4A3B36",
+    bodyBottom: "#2A201E",
+    stroke: "#1E1614",
+    rim: "#8A6D58",
+    highlight: "#9E816A",
+    saucerTop: "#3D2B22",
+    saucerBottom: "#221712",
+    saucerStroke: "#1A100C",
+    handleTop: "#4A3B36",
+    handleBottom: "#2A201E",
   },
   hakuji: {
-    body: "#FBF9F6",
-    stroke: "#E3DDD5",
+    name: "Hakuji Porcelain",
+    bodyTop: "#FFFFFF",
+    bodyBottom: "#EDE8E1",
+    stroke: "#DED7CD",
     rim: "#FFFFFF",
-    saucer1: "#9C6D53",
-    saucer2: "#855840",
-    handle: "#FBF9F6",
-    handleShadow: "#E3DDD5",
+    highlight: "#FFFFFF",
+    saucerTop: "#B88E72",
+    saucerBottom: "#997157",
+    saucerStroke: "#825D45",
+    handleTop: "#FFFFFF",
+    handleBottom: "#EDE8E1",
   },
   earthenware: {
-    body: "#F5E6D3",
-    stroke: "#D4C4B0",
-    rim: "#FAF1E6",
-    saucer1: "#A47556",
-    saucer2: "#8C5E45",
-    handle: "#F5E6D3",
-    handleShadow: "#D4C4B0",
+    name: "Warm Stoneware",
+    bodyTop: "#F9EDE0",
+    bodyBottom: "#E3CEBA",
+    stroke: "#CBB39C",
+    rim: "#FFF7EE",
+    highlight: "#FFFFFF",
+    saucerTop: "#C48866",
+    saucerBottom: "#A76E4D",
+    saucerStroke: "#8F5A3B",
+    handleTop: "#F9EDE0",
+    handleBottom: "#E3CEBA",
   },
 };
 
@@ -77,9 +98,10 @@ export function CozyCupScene({
   cupGlaze = "earthenware",
   turbidity = "velvet",
   garnishes = [],
+  latteArt = "bear",
   className,
 }: CozyCupSceneProps) {
-  // Suppress steam if cold brew
+  const uid = useId().replace(/:/g, "_");
   const effectiveSteam = servingStyle === "iced" ? 0 : steamIntensity;
   const glaze = GLAZE_THEMES[cupGlaze] || GLAZE_THEMES.earthenware;
   const isCloudy = turbidity === "cloudy";
@@ -87,258 +109,617 @@ export function CozyCupScene({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className={cn("relative w-full max-w-sm mx-auto select-none", className)}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className={cn("relative w-full max-w-[280px] sm:max-w-[320px] mx-auto select-none", className)}
     >
       <style>{`
-        @keyframes bubble-rise {
-          0% { transform: translateY(0); opacity: 0; }
-          50% { opacity: 0.8; }
-          100% { transform: translateY(-10px); opacity: 0; }
+        @keyframes cozy-bob {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-3px) rotate(1.5deg); }
         }
-        @keyframes steam-rise {
-          0% { transform: translateY(0) translateX(0) scale(0.9); opacity: 0; }
-          50% { opacity: 0.7; }
-          100% { transform: translateY(-40px) translateX(10px) scale(1.1); opacity: 0; }
+        @keyframes cozy-bob-alt {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-4px) rotate(-2deg); }
         }
-        @keyframes ice-bob {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-3px) rotate(2deg); }
+        @keyframes steam-drift-1 {
+          0% { transform: translateY(0) translateX(0) scale(0.85); opacity: 0; }
+          30% { opacity: 0.75; }
+          70% { opacity: 0.45; transform: translateY(-30px) translateX(6px) scale(1.1); }
+          100% { transform: translateY(-55px) translateX(14px) scale(1.25); opacity: 0; }
         }
-        @keyframes petal-float {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-2px) rotate(4deg); }
+        @keyframes steam-drift-2 {
+          0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+          35% { opacity: 0.65; }
+          75% { opacity: 0.35; transform: translateY(-35px) translateX(-8px) scale(1.15); }
+          100% { transform: translateY(-60px) translateX(-16px) scale(1.3); opacity: 0; }
         }
-        .bubble { animation: bubble-rise 2s infinite ease-in; }
-        .bubble-delay-1 { animation-delay: 0.4s; }
-        .bubble-delay-2 { animation-delay: 0.8s; }
-        .bubble-delay-3 { animation-delay: 1.2s; }
-        .steam-path { animation: steam-rise 3s infinite ease-in-out; }
-        .steam-path-delay-1 { animation-delay: 1s; }
-        .steam-path-delay-2 { animation-delay: 2s; }
-        .ice-floating { animation: ice-bob 3.2s infinite ease-in-out; }
-        .ice-floating-alt { animation: ice-bob 3.8s infinite ease-in-out 1.2s; }
-        .petal-floating { animation: petal-float 4s infinite ease-in-out; }
+        @keyframes gentle-ripple {
+          0%, 100% { transform: scale(1); opacity: 0.4; }
+          50% { transform: scale(1.04); opacity: 0.75; }
+        }
+        @keyframes leaf-sway {
+          0%, 100% { transform: translateY(0) rotate(-3deg); }
+          50% { transform: translateY(-2.5px) rotate(3deg); }
+        }
+        @keyframes sparkle-pulse {
+          0%, 100% { transform: scale(0.8); opacity: 0.3; }
+          50% { transform: scale(1.2); opacity: 0.9; }
+        }
+        .cozy-steam-1 { animation: steam-drift-1 3.4s infinite cubic-bezier(0.4, 0, 0.2, 1); }
+        .cozy-steam-2 { animation: steam-drift-2 3.8s infinite 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .cozy-steam-3 { animation: steam-drift-1 4.2s infinite 2.1s cubic-bezier(0.4, 0, 0.2, 1); }
+        .ice-float-1 { animation: cozy-bob 3.2s infinite ease-in-out; }
+        .ice-float-2 { animation: cozy-bob-alt 3.6s infinite 0.8s ease-in-out; }
+        .ice-float-3 { animation: cozy-bob 4.0s infinite 1.6s ease-in-out; }
+        .leaf-float { animation: leaf-sway 3.5s infinite ease-in-out; }
+        .ripple-anim { animation: gentle-ripple 4s infinite ease-in-out; }
+        .sparkle-anim { animation: sparkle-pulse 2.5s infinite ease-in-out; }
       `}</style>
 
-      <svg viewBox="0 0 300 380" className="w-full h-auto drop-shadow-xl">
+      <svg
+        viewBox="0 0 320 380"
+        className="w-full h-auto drop-shadow-2xl overflow-visible"
+        aria-label="Artisan Cozy Tea Cup"
+      >
         <defs>
-          {/* Gradients */}
-          <linearGradient id="glassReflect" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.4" />
-            <stop offset="25%" stopColor="#FFFFFF" stopOpacity="0.08" />
-            <stop offset="75%" stopColor="#FFFFFF" stopOpacity="0.02" />
-            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.3" />
+          {/* Ceramic Cup Gradients */}
+          <linearGradient id={`${uid}-glazeGrad`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={glaze.bodyTop} />
+            <stop offset="60%" stopColor={glaze.bodyTop} />
+            <stop offset="100%" stopColor={glaze.bodyBottom} />
           </linearGradient>
 
-          <linearGradient id="latteGradient" x1="0%" y1="100%" x2="0%" y2="0%">
-            <stop offset="0%" stopColor="#FBF7F0" stopOpacity="0.95" />
-            <stop offset="35%" stopColor="#EAD8C0" stopOpacity="0.9" />
-            <stop offset="70%" stopColor={liquidColor} stopOpacity={opacity} />
-            <stop offset="100%" stopColor={liquidColor} stopOpacity={Math.min(1, opacity + 0.15)} />
+          <linearGradient id={`${uid}-saucerGrad`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={glaze.saucerTop} />
+            <stop offset="100%" stopColor={glaze.saucerBottom} />
           </linearGradient>
 
-          <radialGradient id="honeySheen" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#FFD700" stopOpacity="0.7" />
-            <stop offset="70%" stopColor="#E6A100" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#C47D00" stopOpacity="0" />
+          <linearGradient id={`${uid}-handleGrad`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={glaze.handleTop} />
+            <stop offset="100%" stopColor={glaze.handleBottom} />
+          </linearGradient>
+
+          {/* Liquid Shading Gradients */}
+          <radialGradient id={`${uid}-liquidSurface`} cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.28" />
+            <stop offset="40%" stopColor={liquidColor} stopOpacity={Math.min(1, opacity + 0.1)} />
+            <stop offset="100%" stopColor={liquidColor} stopOpacity={Math.min(1, opacity + 0.3)} />
+          </radialGradient>
+
+          <linearGradient id={`${uid}-liquidDeep`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={liquidColor} stopOpacity={Math.max(0.3, opacity)} />
+            <stop offset="100%" stopColor={liquidColor} stopOpacity={Math.min(1, opacity + 0.25)} />
+          </linearGradient>
+
+          {/* Glass Refraction Gradients */}
+          <linearGradient id={`${uid}-glassBody`} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.38" />
+            <stop offset="15%" stopColor="#FFFFFF" stopOpacity="0.12" />
+            <stop offset="85%" stopColor="#FFFFFF" stopOpacity="0.06" />
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.32" />
+          </linearGradient>
+
+          <linearGradient id={`${uid}-glassBase`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#E6F2F7" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#C4E0EC" stopOpacity="0.8" />
+          </linearGradient>
+
+          {/* Latte Froth Gradients */}
+          <linearGradient id={`${uid}-latteLayer`} x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor={liquidColor} stopOpacity={Math.min(1, opacity + 0.25)} />
+            <stop offset="30%" stopColor={liquidColor} stopOpacity={opacity} />
+            <stop offset="65%" stopColor="#EFE3D3" stopOpacity="0.95" />
+            <stop offset="90%" stopColor="#FAF5EE" stopOpacity="0.98" />
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="1" />
+          </linearGradient>
+
+          <radialGradient id={`${uid}-foamTop`} cx="50%" cy="40%" r="55%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+            <stop offset="70%" stopColor="#FBF7F0" stopOpacity="0.98" />
+            <stop offset="100%" stopColor="#EFE5D5" stopOpacity="0.9" />
+          </radialGradient>
+
+          {/* Honey & Sparkle Sheen */}
+          <radialGradient id={`${uid}-honeySheen`} cx="45%" cy="45%" r="55%">
+            <stop offset="0%" stopColor="#FFE066" stopOpacity="0.9" />
+            <stop offset="50%" stopColor="#F5A623" stopOpacity="0.65" />
+            <stop offset="90%" stopColor="#D47A08" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#B35E00" stopOpacity="0" />
           </radialGradient>
 
           {/* Clip Paths */}
-          <clipPath id="cup-interior-hot">
-            <ellipse cx="150" cy="140" rx="70" ry="15" />
-            <path d="M80,140 L220,140 L200,310 Q150,330 100,310 Z" />
+          {/* Chubby Hot Ceramic Interior */}
+          <clipPath id={`${uid}-hot-interior`}>
+            <ellipse cx="160" cy="148" rx="68" ry="16" />
+            <path d="M92,148 Q82,230 110,298 Q160,318 210,298 Q238,230 228,148 Z" />
           </clipPath>
 
-          <clipPath id="glass-interior-iced">
-            <ellipse cx="150" cy="110" rx="60" ry="14" />
-            <path d="M90,110 L210,110 L195,320 Q150,335 105,320 Z" />
+          {/* Elegant Iced Glass Interior */}
+          <clipPath id={`${uid}-iced-interior`}>
+            <ellipse cx="160" cy="116" rx="58" ry="13" />
+            <path d="M102,116 L218,116 L205,315 Q160,326 115,315 Z" />
           </clipPath>
 
-          <clipPath id="latte-interior">
-            <ellipse cx="150" cy="130" rx="65" ry="15" />
-            <path d="M85,130 L215,130 L198,315 Q150,330 102,315 Z" />
+          {/* Layered Latte Mug Interior */}
+          <clipPath id={`${uid}-latte-interior`}>
+            <ellipse cx="160" cy="140" rx="72" ry="17" />
+            <path d="M88,140 Q80,225 108,298 Q160,318 212,298 Q240,225 232,140 Z" />
           </clipPath>
         </defs>
 
-        {/* STEAM */}
+        {/* Ambient Ground Shadow */}
+        <ellipse cx="160" cy="350" rx="105" ry="16" fill="#4A3427" opacity="0.12" />
+        <ellipse cx="160" cy="348" rx="75" ry="10" fill="#2E1F18" opacity="0.15" />
+
+        {/* ======================================================== */}
+        {/* STEAM (Volumetric Warm Swirls)                           */}
+        {/* ======================================================== */}
         {effectiveSteam > 0 && (
-          <g stroke="#E8C9A0" strokeWidth="3" fill="none" opacity={effectiveSteam}>
-            <path d="M130,110 Q120,80 140,50 T130,10" className="steam-path" />
-            <path d="M150,120 Q160,90 140,60 T150,20" className="steam-path steam-path-delay-1" />
-            <path d="M170,110 Q180,70 160,40 T170,10" className="steam-path steam-path-delay-2" />
+          <g fill="none" strokeLinecap="round">
+            {/* Steam Wisp 1 */}
+            <path
+              d="M142,120 Q128,85 148,55 Q160,35 145,15"
+              stroke="#F4E2CD"
+              strokeWidth="4.5"
+              opacity={effectiveSteam * 0.75}
+              className="cozy-steam-1"
+            />
+            {/* Steam Wisp 2 (Cute Whimsical Curl) */}
+            <path
+              d="M164,124 Q182,90 162,60 Q146,38 166,12"
+              stroke="#FFF1DF"
+              strokeWidth="5"
+              opacity={effectiveSteam * 0.85}
+              className="cozy-steam-2"
+            />
+            {/* Steam Wisp 3 */}
+            <path
+              d="M184,122 Q196,88 178,58 Q168,40 180,18"
+              stroke="#F4E2CD"
+              strokeWidth="4"
+              opacity={effectiveSteam * 0.65}
+              className="cozy-steam-3"
+            />
+            {/* Cute Little Steam Heart Accent */}
+            <g
+              transform="translate(155, 30) scale(0.7)"
+              opacity={effectiveSteam * 0.6}
+              className="cozy-steam-2"
+            >
+              <path
+                d="M12,4 C8,0 0,2 0,9 C0,15 12,22 12,22 C12,22 24,15 24,9 C24,2 16,0 12,4 Z"
+                fill="#FFF5EB"
+              />
+            </g>
           </g>
         )}
 
         {/* ======================================================== */}
-        {/* STYLE 1: HOT CERAMIC CUP (Dynamic Glaze & Turbidity)     */}
+        {/* STYLE 1: HOT CERAMIC CUP (Cute Chubby Aesthetic)        */}
         {/* ======================================================== */}
         {servingStyle === "hot" && (
           <g>
             {/* Saucer */}
-            <ellipse cx="150" cy="330" rx="100" ry="25" fill={glaze.saucer1} />
-            <ellipse cx="150" cy="325" rx="80" ry="18" fill={glaze.saucer2} />
+            <ellipse cx="160" cy="336" rx="108" ry="24" fill={glaze.saucerStroke} opacity="0.4" />
+            <ellipse cx="160" cy="333" rx="105" ry="22" fill={`url(#${uid}-saucerGrad)`} stroke={glaze.saucerStroke} strokeWidth="2.5" />
+            <ellipse cx="160" cy="330" rx="88" ry="16" fill={glaze.saucerTop} opacity="0.75" />
+            {/* Saucer Inner Ring Well */}
+            <ellipse cx="160" cy="328" rx="66" ry="11" fill="none" stroke={glaze.saucerStroke} strokeWidth="1.5" opacity="0.5" />
 
-            {/* Handle */}
+            {/* Chubby Handle (Outer + Inner Cutout) */}
             <path
-              d="M220,180 C260,180 270,240 220,260"
+              d="M222,175 C268,175 278,255 218,272"
               fill="none"
-              stroke={glaze.handle}
-              strokeWidth="15"
-              strokeLinecap="round"
-            />
-            <path
-              d="M220,180 C260,180 270,240 220,260"
-              fill="none"
-              stroke={glaze.handleShadow}
-              strokeWidth="15"
-              strokeLinecap="round"
-              opacity="0.4"
-              transform="translate(0, 2)"
-            />
-
-            {/* Cup Body with Authentic Glaze */}
-            <path
-              d="M80,140 L220,140 L200,310 Q150,330 100,310 Z"
-              fill={glaze.body}
               stroke={glaze.stroke}
-              strokeWidth="2"
+              strokeWidth="20"
+              strokeLinecap="round"
+            />
+            <path
+              d="M222,175 C268,175 278,255 218,272"
+              fill="none"
+              stroke={`url(#${uid}-handleGrad)`}
+              strokeWidth="16"
+              strokeLinecap="round"
+            />
+            <path
+              d="M222,175 C268,175 278,255 218,272"
+              fill="none"
+              stroke={glaze.highlight}
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              opacity="0.65"
+              transform="translate(-1.5, -2)"
             />
 
-            {/* Liquid */}
-            <g clipPath="url(#cup-interior-hot)">
+            {/* Cup Outer Body (Chubby Cozy Mug Shape) */}
+            <path
+              d="M92,148 Q82,230 110,298 Q160,318 210,298 Q238,230 228,148 Z"
+              fill={`url(#${uid}-glazeGrad)`}
+              stroke={glaze.stroke}
+              strokeWidth="3"
+            />
+
+            {/* Subtle Specular Glaze Highlight along left shoulder */}
+            <path
+              d="M102,160 Q94,225 116,285"
+              fill="none"
+              stroke={glaze.highlight}
+              strokeWidth="5"
+              strokeLinecap="round"
+              opacity="0.45"
+            />
+
+            {/* Liquid Masked Section */}
+            <g clipPath={`url(#${uid}-hot-interior)`}>
+              {/* Deep liquid volume */}
               <rect
-                x="70"
-                y="150"
+                x="80"
+                y="152"
                 width="160"
-                height="180"
-                fill={liquidColor}
-                opacity={isCloudy ? Math.min(1, opacity + 0.15) : opacity}
-              />
-              <ellipse
-                cx="150"
-                cy="150"
-                rx="68"
-                ry="13"
-                fill={liquidColor}
-                opacity={Math.min(1, opacity + (isClear ? 0.3 : 0.2))}
+                height="170"
+                fill={`url(#${uid}-liquidDeep)`}
               />
 
-              {/* Cloudy Matcha / Froth texture */}
+              {/* Liquid Surface Meniscus */}
+              <ellipse
+                cx="160"
+                cy="154"
+                rx="68"
+                ry="16"
+                fill={`url(#${uid}-liquidSurface)`}
+              />
+
+              {/* Gentle Surface Ripple */}
+              <ellipse
+                cx="160"
+                cy="154"
+                rx="52"
+                ry="11"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth="1.2"
+                className="ripple-anim"
+              />
+
+              {/* Cloudy Texture / Micro-froth */}
               {isCloudy && (
-                <g fill="#FFFFFF" opacity="0.3">
-                  <circle cx="130" cy="150" r="3" />
-                  <circle cx="138" cy="153" r="2.5" />
-                  <circle cx="162" cy="148" r="3.5" />
-                  <circle cx="170" cy="151" r="2" />
-                  <circle cx="150" cy="154" r="2" />
+                <g fill="#FFFFFF" opacity="0.32">
+                  <circle cx="132" cy="154" r="3.2" />
+                  <circle cx="142" cy="157" r="2.8" />
+                  <circle cx="158" cy="152" r="3.6" />
+                  <circle cx="172" cy="155" r="2.4" />
+                  <circle cx="184" cy="153" r="2.8" />
+                  <circle cx="148" cy="159" r="2.2" />
                 </g>
               )}
 
-              {/* Crystal Shimmer reflection if clear */}
+              {/* Crystal Shimmer Reflection if Clear */}
               {isClear && (
-                <ellipse cx="140" cy="148" rx="25" ry="4" fill="#FFFFFF" opacity="0.35" />
+                <ellipse cx="142" cy="152" rx="30" ry="4.5" fill="#FFFFFF" opacity="0.45" />
               )}
 
-              {/* Bubbles */}
-              <circle cx="120" cy="150" r="2" fill="#fff" opacity="0.5" className="bubble" />
-              <circle cx="140" cy="155" r="1.5" fill="#fff" opacity="0.4" className="bubble bubble-delay-1" />
-              <circle cx="160" cy="148" r="2.5" fill="#fff" opacity="0.6" className="bubble bubble-delay-2" />
-              <circle cx="175" cy="152" r="1.5" fill="#fff" opacity="0.5" className="bubble bubble-delay-3" />
+              {/* Cute Floating Tea Leaf Bud */}
+              <g className="leaf-float" transform="translate(138, 150)">
+                <path
+                  d="M0,0 Q8,-7 18,-2 Q12,5 0,0 Z"
+                  fill="#5A7D36"
+                  stroke="#3E5723"
+                  strokeWidth="0.8"
+                />
+                <path d="M2,-1 L14,-3" stroke="#85A85C" strokeWidth="0.6" fill="none" />
+                <circle cx="18" cy="-2" r="1" fill="#7BA05B" />
+              </g>
 
-              {/* Garnishes inside cup */}
-              {renderGarnishes(garnishes, 150, 150)}
+              {/* Garnishes */}
+              {renderCuteGarnishes(garnishes, 160, 154, uid)}
             </g>
 
-            {/* Cup Rim inner shadow */}
-            <ellipse cx="150" cy="140" rx="70" ry="15" fill="none" stroke={glaze.stroke} strokeWidth="4" opacity="0.4" />
-            {/* Cup Rim */}
-            <ellipse cx="150" cy="140" rx="70" ry="15" fill="none" stroke={glaze.rim} strokeWidth="6" />
+            {/* Cup Rim Lip (3D Depth Bevel) */}
+            <ellipse
+              cx="160"
+              cy="148"
+              rx="70"
+              ry="17"
+              fill="none"
+              stroke={glaze.stroke}
+              strokeWidth="4"
+              opacity="0.35"
+            />
+            <ellipse
+              cx="160"
+              cy="147"
+              rx="70"
+              ry="17"
+              fill="none"
+              stroke={glaze.rim}
+              strokeWidth="5"
+            />
+            <ellipse
+              cx="160"
+              cy="146.5"
+              rx="68"
+              ry="16"
+              fill="none"
+              stroke={glaze.highlight}
+              strokeWidth="1.8"
+              opacity="0.65"
+            />
           </g>
         )}
 
         {/* ======================================================== */}
-        {/* STYLE 2: ICED COLD GLASS (Cold Brew)                     */}
+        {/* STYLE 2: ICED COLD GLASS (Crystal Tumbler with Ice)      */}
         {/* ======================================================== */}
         {servingStyle === "iced" && (
           <g>
-            <ellipse cx="150" cy="335" rx="85" ry="18" fill="#8C5E45" opacity="0.8" />
-            <ellipse cx="150" cy="332" rx="75" ry="15" fill="#A47556" />
+            {/* Wooden Coaster with Cute Bevel */}
+            <ellipse cx="160" cy="336" rx="92" ry="18" fill="#7A4E37" opacity="0.3" />
+            <ellipse cx="160" cy="332" rx="88" ry="16" fill="#A77253" stroke="#6E442F" strokeWidth="2" />
+            <ellipse cx="160" cy="329" rx="76" ry="12" fill="#BA8564" />
 
-            <g clipPath="url(#glass-interior-iced)">
-              <rect x="85" y="125" width="130" height="210" fill={liquidColor} opacity={Math.min(0.92, opacity + 0.1)} />
-              <ellipse cx="150" cy="125" rx="58" ry="12" fill={liquidColor} opacity={Math.min(1, opacity + 0.25)} />
+            {/* Glass Interior Content */}
+            <g clipPath={`url(#${uid}-iced-interior)`}>
+              {/* Tea Liquid Volume */}
+              <rect
+                x="95"
+                y="126"
+                width="130"
+                height="200"
+                fill={`url(#${uid}-liquidDeep)`}
+              />
 
-              {/* Floating Ice Cubes */}
-              <g className="ice-floating">
-                <rect x="115" y="130" width="34" height="34" rx="6" fill="#FFFFFF" opacity="0.45" stroke="#E2F1F8" strokeWidth="1.5" />
-                <path d="M120,135 L144,135" stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+              {/* Top Surface Meniscus */}
+              <ellipse
+                cx="160"
+                cy="126"
+                rx="58"
+                ry="13"
+                fill={`url(#${uid}-liquidSurface)`}
+              />
+
+              {/* Cute Floating Ice Cube 1 */}
+              <g className="ice-float-1" transform="translate(122, 134)">
+                <rect
+                  x="0"
+                  y="0"
+                  width="38"
+                  height="36"
+                  rx="9"
+                  fill="#FFFFFF"
+                  fillOpacity="0.48"
+                  stroke="#E8F4FA"
+                  strokeWidth="2"
+                />
+                <path d="M6,8 L28,8" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
+                <path d="M8,14 L18,14" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+                <circle cx="28" cy="26" r="2.5" fill="#FFFFFF" opacity="0.7" />
               </g>
 
-              <g className="ice-floating-alt">
-                <rect x="148" y="145" width="30" height="30" rx="5" fill="#FFFFFF" opacity="0.4" stroke="#E2F1F8" strokeWidth="1.5" />
-                <path d="M152,150 L172,150" stroke="#FFF" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+              {/* Cute Floating Ice Cube 2 */}
+              <g className="ice-float-2" transform="translate(158, 150)">
+                <rect
+                  x="0"
+                  y="0"
+                  width="34"
+                  height="32"
+                  rx="8"
+                  fill="#FFFFFF"
+                  fillOpacity="0.42"
+                  stroke="#E8F4FA"
+                  strokeWidth="1.8"
+                />
+                <path d="M6,7 L24,7" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" opacity="0.8" />
+                <circle cx="22" cy="22" r="2" fill="#FFFFFF" opacity="0.6" />
               </g>
 
-              <g className="ice-floating">
-                <rect x="130" y="185" width="28" height="28" rx="5" fill="#FFFFFF" opacity="0.3" stroke="#FFF" strokeWidth="1" />
+              {/* Cute Floating Ice Cube 3 (Submerged) */}
+              <g className="ice-float-3" transform="translate(136, 196)">
+                <rect
+                  x="0"
+                  y="0"
+                  width="32"
+                  height="30"
+                  rx="7"
+                  fill="#FFFFFF"
+                  fillOpacity="0.32"
+                  stroke="#E8F4FA"
+                  strokeWidth="1.5"
+                />
               </g>
 
-              <circle cx="112" cy="170" r="1.5" fill="#FFFFFF" opacity="0.5" />
-              <circle cx="178" cy="195" r="2" fill="#FFFFFF" opacity="0.6" />
-              <circle cx="125" cy="225" r="1.5" fill="#FFFFFF" opacity="0.4" />
-              <circle cx="165" cy="250" r="2" fill="#FFFFFF" opacity="0.5" />
-
-              {renderGarnishes(garnishes, 150, 130)}
+              {/* Floating Garnishes */}
+              {renderCuteGarnishes(garnishes, 160, 130, uid)}
             </g>
 
+            {/* Heavy Glass Base */}
             <path
-              d="M90,110 L210,110 L195,320 Q150,335 105,320 Z"
-              fill="url(#glassReflect)"
-              stroke="#DCEAF2"
-              strokeWidth="2.5"
-              opacity="0.85"
+              d="M112,305 L208,305 L205,320 Q160,332 115,320 Z"
+              fill={`url(#${uid}-glassBase)`}
+              stroke="#D6EAF2"
+              strokeWidth="2"
             />
-            <path d="M107,310 L193,310 L195,320 Q150,335 105,320 Z" fill="#DCEAF2" opacity="0.4" />
-            <ellipse cx="150" cy="110" rx="60" ry="14" fill="none" stroke="#DCEAF2" strokeWidth="3" />
-            <ellipse cx="150" cy="110" rx="57" ry="13" fill="none" stroke="#FFF" strokeWidth="1" opacity="0.7" />
 
-            <circle cx="100" cy="190" r="1.8" fill="#FFF" opacity="0.7" />
-            <circle cx="101" cy="196" r="1.2" fill="#FFF" opacity="0.5" />
-            <circle cx="198" cy="230" r="2" fill="#FFF" opacity="0.6" />
-            <circle cx="197" cy="238" r="1.4" fill="#FFF" opacity="0.7" />
+            {/* Glass Wall Outer Specular Reflection */}
+            <path
+              d="M102,116 L218,116 L205,315 Q160,326 115,315 Z"
+              fill={`url(#${uid}-glassBody)`}
+              stroke="#DCEAF2"
+              strokeWidth="3"
+            />
+
+            {/* Left Glass Specular Pillar */}
+            <path
+              d="M110,130 L118,300"
+              stroke="#FFFFFF"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              opacity="0.55"
+            />
+
+            {/* Glass Rim Ellipses */}
+            <ellipse cx="160" cy="116" rx="58" ry="13" fill="none" stroke="#E6F2F7" strokeWidth="3.5" />
+            <ellipse cx="160" cy="115.5" rx="56" ry="12" fill="none" stroke="#FFFFFF" strokeWidth="1.8" opacity="0.8" />
+
+            {/* Cute Condensation Droplets */}
+            <g fill="#FFFFFF" opacity="0.65">
+              <circle cx="112" cy="180" r="2.5" />
+              <circle cx="113" cy="192" r="1.8" />
+              <circle cx="206" cy="210" r="2.8" />
+              <circle cx="205" cy="224" r="2.0" />
+              <circle cx="132" cy="250" r="2.2" />
+              <circle cx="188" cy="265" r="2.4" />
+            </g>
+
+            {/* Cute Glass Straw */}
+            <g transform="translate(195, 80) rotate(14)">
+              <rect x="0" y="0" width="8" height="180" rx="4" fill="#FFFFFF" opacity="0.7" stroke="#C8E2ED" strokeWidth="1" />
+              <line x1="2" y1="0" x2="2" y2="180" stroke="#FF85A2" strokeWidth="2" strokeDasharray="10 8" opacity="0.6" />
+            </g>
           </g>
         )}
 
         {/* ======================================================== */}
-        {/* STYLE 3: LAYERED TEA LATTE                               */}
+        {/* STYLE 3: LAYERED TEA LATTE (Velvety Foam & Cute Art)     */}
         {/* ======================================================== */}
         {servingStyle === "latte" && (
           <g>
-            <ellipse cx="150" cy="330" rx="95" ry="22" fill="#8C5E45" opacity="0.9" />
-            <ellipse cx="150" cy="326" rx="80" ry="16" fill="#A47556" />
+            {/* Saucer */}
+            <ellipse cx="160" cy="336" rx="108" ry="24" fill="#8C5E45" opacity="0.4" />
+            <ellipse cx="160" cy="333" rx="105" ry="22" fill="#B48160" stroke="#7A4E37" strokeWidth="2.5" />
+            <ellipse cx="160" cy="330" rx="86" ry="16" fill="#C99471" opacity="0.8" />
 
-            <path d="M85,130 L215,130 L198,315 Q150,330 102,315 Z" fill="#F8F3EC" stroke="#E3D7C7" strokeWidth="2" />
+            {/* Cute Handle */}
+            <path
+              d="M226,170 C272,170 282,250 222,268"
+              fill="none"
+              stroke="#D6C4B2"
+              strokeWidth="19"
+              strokeLinecap="round"
+            />
+            <path
+              d="M226,170 C272,170 282,250 222,268"
+              fill="none"
+              stroke="#FAF5EF"
+              strokeWidth="15"
+              strokeLinecap="round"
+            />
+            <path
+              d="M226,170 C272,170 282,250 222,268"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="3"
+              strokeLinecap="round"
+              opacity="0.8"
+              transform="translate(-1, -2)"
+            />
 
-            <g clipPath="url(#latte-interior)">
-              <rect x="80" y="130" width="140" height="200" fill="url(#latteGradient)" />
-              <ellipse cx="150" cy="138" rx="63" ry="13" fill="#FFFFFF" opacity="0.95" />
+            {/* Latte Mug Body */}
+            <path
+              d="M88,140 Q80,225 108,298 Q160,318 212,298 Q240,225 232,140 Z"
+              fill="#FAF5EE"
+              stroke="#D8C8B6"
+              strokeWidth="3"
+            />
 
-              <path
-                d="M150,135 C145,130 137,131 137,136 C137,141 150,146 150,146 C150,146 163,141 163,136 C163,131 155,130 150,135 Z"
-                fill={liquidColor}
-                opacity={0.65}
+            {/* Specular Glaze Sheen */}
+            <path
+              d="M98,155 Q90,220 114,285"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="5.5"
+              strokeLinecap="round"
+              opacity="0.6"
+            />
+
+            {/* Layered Tea & Milk Interior */}
+            <g clipPath={`url(#${uid}-latte-interior)`}>
+              {/* Three-Tier Ombre Gradient */}
+              <rect
+                x="80"
+                y="140"
+                width="160"
+                height="180"
+                fill={`url(#${uid}-latteLayer)`}
               />
-              <circle cx="150" cy="132" r="1.8" fill={liquidColor} opacity="0.5" />
-              <circle cx="150" cy="129" r="1.2" fill={liquidColor} opacity="0.4" />
 
-              {renderGarnishes(garnishes, 150, 138)}
+              {/* Thick Froth Top Surface */}
+              <ellipse
+                cx="160"
+                cy="146"
+                rx="68"
+                ry="16"
+                fill={`url(#${uid}-foamTop)`}
+              />
+
+              {/* =================================================== */}
+              {/* ADORABLE LATTE ART (Cute Bear / Heart Rosetta)      */}
+              {/* =================================================== */}
+              {latteArt === "bear" ? (
+                /* Cute 3D Foam Bear Face */
+                <g transform="translate(160, 146)">
+                  {/* Bear Left Ear */}
+                  <circle cx="-16" cy="-10" r="7" fill={liquidColor} opacity="0.75" />
+                  <circle cx="-16" cy="-10" r="4" fill="#FFFFFF" opacity="0.9" />
+
+                  {/* Bear Right Ear */}
+                  <circle cx="16" cy="-10" r="7" fill={liquidColor} opacity="0.75" />
+                  <circle cx="16" cy="-10" r="4" fill="#FFFFFF" opacity="0.9" />
+
+                  {/* Bear Head */}
+                  <ellipse cx="0" cy="0" rx="18" ry="11" fill={liquidColor} opacity="0.7" />
+                  <ellipse cx="0" cy="0" rx="17" ry="10" fill="#FFFFFF" opacity="0.95" />
+
+                  {/* Cute Cheeks */}
+                  <ellipse cx="-10" cy="2" rx="3.5" ry="2" fill="#FFAEC9" opacity="0.75" />
+                  <ellipse cx="10" cy="2" rx="3.5" ry="2" fill="#FFAEC9" opacity="0.75" />
+
+                  {/* Snout */}
+                  <ellipse cx="0" cy="2" rx="6" ry="4" fill={liquidColor} opacity="0.25" />
+                  <ellipse cx="0" cy="2" rx="5" ry="3.5" fill="#FFFFFF" />
+
+                  {/* Eyes & Nose in Tea Tone */}
+                  <circle cx="-6" cy="-1.5" r="1.5" fill={liquidColor} />
+                  <circle cx="6" cy="-1.5" r="1.5" fill={liquidColor} />
+                  <ellipse cx="0" cy="1" rx="1.8" ry="1.2" fill={liquidColor} />
+                  <path d="M-1.5,2.5 Q0,4 1.5,2.5" stroke={liquidColor} strokeWidth="0.8" fill="none" />
+                </g>
+              ) : (
+                /* Elegant Multi-Layer Rosetta Heart */
+                <g transform="translate(160, 145)">
+                  <path
+                    d="M0,8 C-12,2 -18,-6 -10,-10 C-3,-13 0,-4 0,-4 C0,-4 3,-13 10,-10 C18,-6 12,2 0,8 Z"
+                    fill={liquidColor}
+                    opacity="0.75"
+                  />
+                  <path
+                    d="M0,5 C-8,1 -12,-4 -7,-7 C-2,-9 0,-3 0,-3 C0,-3 2,-9 7,-7 C12,-4 8,1 0,5 Z"
+                    fill="#FFFFFF"
+                    opacity="0.85"
+                  />
+                  <circle cx="0" cy="-7" r="2" fill={liquidColor} opacity="0.6" />
+                  <circle cx="0" cy="-10" r="1.4" fill={liquidColor} opacity="0.4" />
+                </g>
+              )}
+
+              {/* Micro-foam Texture Bubbles */}
+              <g fill="#FFFFFF" opacity="0.7">
+                <circle cx="108" cy="144" r="1.8" />
+                <circle cx="114" cy="147" r="1.4" />
+                <circle cx="206" cy="143" r="2.0" />
+                <circle cx="212" cy="146" r="1.5" />
+                <circle cx="160" cy="158" r="1.6" />
+              </g>
+
+              {/* Garnishes */}
+              {renderCuteGarnishes(garnishes, 160, 146, uid)}
             </g>
 
-            <ellipse cx="150" cy="130" rx="65" ry="15" fill="none" stroke="#FFFFFF" strokeWidth="4" />
-            <ellipse cx="150" cy="130" rx="65" ry="15" fill="none" stroke="#E3D7C7" strokeWidth="1.5" />
+            {/* Creamy Rim Lips */}
+            <ellipse cx="160" cy="140" rx="72" ry="17" fill="none" stroke="#D8C8B6" strokeWidth="4" opacity="0.5" />
+            <ellipse cx="160" cy="139" rx="72" ry="17" fill="none" stroke="#FFFFFF" strokeWidth="5.5" />
+            <ellipse cx="160" cy="138.5" rx="70" ry="16" fill="none" stroke="#FAF5EF" strokeWidth="2" opacity="0.85" />
           </g>
         )}
       </svg>
@@ -346,57 +727,103 @@ export function CozyCupScene({
   );
 }
 
-function renderGarnishes(garnishes: string[], cx: number, cy: number) {
+function renderCuteGarnishes(
+  garnishes: string[],
+  cx: number,
+  cy: number,
+  uid: string
+) {
   return (
-    <g className="petal-floating">
+    <g className="leaf-float">
+      {/* Honey Swirl */}
       {garnishes.includes("honey") && (
-        <circle cx={cx} cy={cy} r="28" fill="url(#honeySheen)" />
+        <g>
+          <circle cx={cx} cy={cy} r="30" fill={`url(#${uid}-honeySheen)`} />
+          {/* Swirl Spiral Line */}
+          <path
+            d={`M${cx - 15},${cy - 2} Q${cx - 5},${cy - 12} ${cx + 10},${cy - 4} Q${cx + 18},${cy + 8} ${cx + 2},${cy + 10} Q${cx - 12},${cy + 6} ${cx - 2},${cy}`}
+            fill="none"
+            stroke="#FFE484"
+            strokeWidth="2"
+            strokeLinecap="round"
+            opacity="0.85"
+          />
+          {/* Little Honey Sparkle */}
+          <g className="sparkle-anim" transform={`translate(${cx + 12}, ${cy - 8})`}>
+            <polygon points="0,-4 1,-1 4,0 1,1 0,4 -1,1 -4,0 -1,-1" fill="#FFFFFF" />
+          </g>
+        </g>
       )}
 
+      {/* Cinnamon Stick with Spiral Wood Grain */}
       {garnishes.includes("cinnamon") && (
-        <g transform={`translate(${cx - 10}, ${cy - 25}) rotate(-25)`}>
-          <rect x="0" y="0" width="8" height="60" rx="3" fill="#783F27" stroke="#5C2E1B" strokeWidth="1" />
-          <line x1="2" y1="5" x2="2" y2="55" stroke="#9C583B" strokeWidth="1" />
-          <ellipse cx="4" cy="4" rx="3.5" ry="2" fill="#5C2E1B" />
+        <g transform={`translate(${cx - 14}, ${cy - 28}) rotate(-28)`}>
+          <rect
+            x="0"
+            y="0"
+            width="10"
+            height="68"
+            rx="4"
+            fill="#804229"
+            stroke="#5C2B17"
+            strokeWidth="1.2"
+          />
+          <line x1="2.5" y1="6" x2="2.5" y2="62" stroke="#A65C3D" strokeWidth="1.2" />
+          <ellipse cx="5" cy="5" rx="4" ry="2.5" fill="#5C2B17" />
+          <ellipse cx="5" cy="5" rx="2.5" ry="1.5" fill="#9E5434" />
+          <ellipse cx="5" cy="5" rx="1.2" ry="0.8" fill="#3D1A0D" />
         </g>
       )}
 
+      {/* Osmanthus Golden Blossoms */}
       {garnishes.includes("osmanthus") && (
-        <g fill="#FFAA00" opacity="0.9">
-          <circle cx={cx - 20} cy={cy - 2} r="2" />
-          <circle cx={cx - 17} cy={cy - 2} r="2" />
-          <circle cx={cx - 18.5} cy={cy - 4} r="2" />
-          <circle cx={cx - 18.5} cy={cy} r="2" />
-          <circle cx={cx - 18.5} cy={cy - 2} r="1.5" fill="#FFF275" />
-
-          <circle cx={cx + 15} cy={cy + 3} r="1.8" />
-          <circle cx={cx + 18} cy={cy + 3} r="1.8" />
-          <circle cx={cx + 16.5} cy={cy + 1.2} r="1.8" />
-          <circle cx={cx + 16.5} cy={cy + 4.8} r="1.8" />
-          <circle cx={cx + 16.5} cy={cy + 3} r="1.2" fill="#FFF275" />
-
-          <ellipse cx={cx + 2} cy={cy - 5} rx="2" ry="1.2" fill="#FFB703" transform={`rotate(15 ${cx + 2} ${cy - 5})`} />
-          <ellipse cx={cx - 8} cy={cy + 5} rx="1.8" ry="1" fill="#FFB703" transform={`rotate(-20 ${cx - 8} ${cy + 5})`} />
+        <g fill="#FFB703" opacity="0.95">
+          {/* Cluster 1 */}
+          <g transform={`translate(${cx - 24}, ${cy - 3})`}>
+            <circle cx="-3" cy="0" r="2.2" />
+            <circle cx="3" cy="0" r="2.2" />
+            <circle cx="0" cy="-3" r="2.2" />
+            <circle cx="0" cy="3" r="2.2" />
+            <circle cx="0" cy="0" r="1.6" fill="#FFF3B0" />
+          </g>
+          {/* Cluster 2 */}
+          <g transform={`translate(${cx + 20}, ${cy + 4})`}>
+            <circle cx="-2.5" cy="0" r="2" />
+            <circle cx="2.5" cy="0" r="2" />
+            <circle cx="0" cy="-2.5" r="2" />
+            <circle cx="0" cy="2.5" r="2" />
+            <circle cx="0" cy="0" r="1.4" fill="#FFF3B0" />
+          </g>
+          {/* Floating Petal Dots */}
+          <circle cx={cx - 6} cy={cy + 8} r="1.8" fill="#FFC300" />
+          <circle cx={cx + 6} cy={cy - 8} r="2.0" fill="#FFC300" />
         </g>
       )}
 
+      {/* Sakura / Rose Petals */}
       {garnishes.includes("rose") && (
-        <g fill="#B82E48" opacity="0.85">
+        <g>
+          {/* Petal 1 */}
           <path
-            d={`M${cx - 12},${cy - 6} C${cx - 18},${cy - 12} ${cx - 6},${cy - 14} ${cx - 8},${cy - 4} Z`}
-            fill="#B82E48"
-            stroke="#8A1C32"
-            strokeWidth="0.5"
+            d={`M${cx - 16},${cy - 5} C${cx - 24},${cy - 14} ${cx - 8},${cy - 16} ${cx - 10},${cy - 4} Z`}
+            fill="#E63946"
+            stroke="#B5172A"
+            strokeWidth="0.8"
+            opacity="0.9"
           />
+          {/* Petal 2 */}
           <path
-            d={`M${cx + 10},${cy - 2} C${cx + 6},${cy - 8} ${cx + 16},${cy - 10} ${cx + 14},${cy} Z`}
-            fill="#C93B57"
-            stroke="#8A1C32"
-            strokeWidth="0.5"
+            d={`M${cx + 14},${cy - 3} C${cx + 8},${cy - 12} ${cx + 22},${cy - 14} ${cx + 18},${cy + 2} Z`}
+            fill="#F26A8D"
+            stroke="#B5172A"
+            strokeWidth="0.8"
+            opacity="0.88"
           />
+          {/* Petal 3 */}
           <path
-            d={`M${cx - 2},${cy + 4} C${cx - 8},${cy + 1} ${cx - 2},${cy - 2} ${cx + 2},${cy + 3} Z`}
-            fill="#9E223B"
+            d={`M${cx - 2},${cy + 6} C${cx - 8},${cy + 2} ${cx - 2},${cy - 2} ${cx + 4},${cy + 4} Z`}
+            fill="#C9184A"
+            opacity="0.85"
           />
         </g>
       )}
