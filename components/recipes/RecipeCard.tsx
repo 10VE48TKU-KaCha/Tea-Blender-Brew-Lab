@@ -7,22 +7,25 @@ import { RecipeWithBlends } from "@/types/tea";
 import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import FlavorRadarChart from "@/components/charts/FlavorRadarChart";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface RecipeCardProps {
   recipe: RecipeWithBlends;
 }
 
 export function RecipeCard({ recipe }: RecipeCardProps) {
+  const { t, lang, translateIngredient } = useLanguage();
+
   const radarData = [
-    { dimension: "Sweetness", score: recipe.sweetnessScore, fullMark: 10 },
-    { dimension: "Aroma", score: recipe.aromaScore, fullMark: 10 },
-    { dimension: "Body", score: recipe.bodyScore, fullMark: 10 },
-    { dimension: "Bitterness", score: recipe.bitternessScore, fullMark: 10 },
-    { dimension: "Clarity", score: Math.max(1, 10 - recipe.bodyScore * 0.4), fullMark: 10 },
+    { dimension: t.sweetness, score: recipe.sweetnessScore, fullMark: 10 },
+    { dimension: t.aroma, score: recipe.aromaScore, fullMark: 10 },
+    { dimension: t.body, score: recipe.bodyScore, fullMark: 10 },
+    { dimension: t.bitterness, score: recipe.bitternessScore, fullMark: 10 },
+    { dimension: t.clarity, score: Math.max(1, 10 - recipe.bodyScore * 0.4), fullMark: 10 },
   ];
 
   const createdDate = new Date(recipe.createdAt);
-  const formattedDate = createdDate.toLocaleDateString(undefined, {
+  const formattedDate = createdDate.toLocaleDateString(lang === "th" ? "th-TH" : "en-US", {
     month: "short",
     day: "numeric",
   });
@@ -53,7 +56,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             <div className="flex flex-wrap gap-1.5 mt-2">
               {recipe.blendItems.map((blend) => (
                 <Badge key={blend.id} variant="outline" className="text-[10px] px-1.5 py-0">
-                  {blend.ingredient.name} {blend.ratioPercent}%
+                  {translateIngredient(blend.ingredient.name)} {blend.ratioPercent}%
                 </Badge>
               ))}
             </div>

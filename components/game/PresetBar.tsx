@@ -4,6 +4,7 @@ import React from "react";
 import { ServingStyle } from "./CozyCupScene";
 import { BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
 
 export interface TeaPreset {
   id: string;
@@ -124,22 +125,75 @@ interface PresetBarProps {
 }
 
 export function PresetBar({ onSelectPreset, activePresetId }: PresetBarProps) {
+  const { t, lang } = useLanguage();
+
+  const getPresetLocalized = (preset: TeaPreset) => {
+    if (lang !== "th") return preset;
+    let name = preset.name;
+    let badge = preset.badge;
+    let desc = preset.desc;
+
+    if (preset.id === "kyoto-spring") {
+      name = t.presetKyotoSpring.name;
+      badge = t.presetKyotoSpring.badge;
+      desc = t.presetKyotoSpring.desc;
+    } else if (preset.id === "royal-velvet") {
+      name = t.presetRoyalVelvet.name;
+      badge = t.presetRoyalVelvet.badge;
+      desc = t.presetRoyalVelvet.desc;
+    } else if (preset.id === "tokyo-zen") {
+      name = t.presetTokyoZen.name;
+      badge = t.presetTokyoZen.badge;
+      desc = t.presetTokyoZen.desc;
+    } else if (preset.id === "mountain-fog") {
+      name = t.presetMountainFog.name;
+      badge = t.presetMountainFog.badge;
+      desc = t.presetMountainFog.desc;
+    } else if (preset.id === "midnight-lullaby") {
+      name = t.presetMidnightLullaby.name;
+      badge = t.presetMidnightLullaby.badge;
+      desc = t.presetMidnightLullaby.desc;
+    } else if (preset.id === "nordic-berry") {
+      name = t.presetNordicBerry.name;
+      badge = t.presetNordicBerry.badge;
+      desc = t.presetNordicBerry.desc;
+    } else if (preset.id === "golden-rooibos") {
+      name = t.presetGoldenRooibos.name;
+      badge = t.presetGoldenRooibos.badge;
+      desc = t.presetGoldenRooibos.desc;
+    } else if (preset.id === "persian-saffron") {
+      name = t.presetPersianSaffron.name;
+      badge = t.presetPersianSaffron.badge;
+      desc = t.presetPersianSaffron.desc;
+    }
+
+    return { ...preset, name, badge, desc };
+  };
+
   return (
     <div className="w-full mb-6">
       <div className="flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-2 text-sm font-semibold text-dark-wood">
           <BookOpen className="w-4 h-4 text-amber" />
-          <span>Signature World Blend Presets</span>
+          <span>{t.presetBookTitle}</span>
         </div>
-        <span className="text-xs text-wood/60">1-click master blends from around the globe</span>
+        <span className="text-xs text-wood/60 hidden sm:inline">{t.presetBookSubtitle}</span>
       </div>
 
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x">
-        {SIGNATURE_PRESETS.map((preset) => {
-          const isActive = activePresetId === preset.id;
+        {SIGNATURE_PRESETS.map((rawPreset) => {
+          const preset = getPresetLocalized(rawPreset);
+          const isActive = activePresetId === rawPreset.id;
+          const styleLabel =
+            rawPreset.servingStyle === "hot"
+              ? t.styleHot
+              : rawPreset.servingStyle === "iced"
+              ? t.styleIced
+              : t.styleLatte;
+
           return (
             <button
-              key={preset.id}
+              key={rawPreset.id}
               type="button"
               onClick={() => onSelectPreset(preset)}
               className={cn(
@@ -166,7 +220,7 @@ export function PresetBar({ onSelectPreset, activePresetId }: PresetBarProps) {
               <div className="flex items-center gap-2 mt-2 pt-2 border-t border-wood/10 text-[10px] text-wood/80 font-medium">
                 <span>🌡️ {preset.waterTempC}°C</span>
                 <span>⏳ {preset.steepingTimeSec}s</span>
-                <span className="capitalize">🫖 {preset.servingStyle}</span>
+                <span>🫖 {styleLabel}</span>
               </div>
             </button>
           );

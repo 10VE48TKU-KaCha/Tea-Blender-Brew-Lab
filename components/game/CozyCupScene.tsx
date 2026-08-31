@@ -11,6 +11,7 @@ export type Turbidity = "clear" | "cloudy" | "velvet";
 export interface CozyCupSceneProps {
   liquidColor: string;
   opacity: number;
+  liquidLevel?: number; // 0.0 (empty) to 1.0 (full)
   steamIntensity?: number;
   servingStyle?: ServingStyle;
   cupGlaze?: CupGlaze;
@@ -93,6 +94,7 @@ const GLAZE_THEMES: Record<
 export function CozyCupScene({
   liquidColor,
   opacity,
+  liquidLevel = 1,
   steamIntensity = 0.5,
   servingStyle = "hot",
   cupGlaze = "earthenware",
@@ -102,7 +104,9 @@ export function CozyCupScene({
   className,
 }: CozyCupSceneProps) {
   const uid = useId().replace(/:/g, "_");
-  const effectiveSteam = servingStyle === "iced" ? 0 : steamIntensity;
+  // Steam scales with liquidLevel (if empty, steam dies down)
+  const effectiveSteam = servingStyle === "iced" ? 0 : steamIntensity * Math.max(0.15, liquidLevel);
+  const clampedLevel = Math.max(0, Math.min(1, liquidLevel));
   const glaze = GLAZE_THEMES[cupGlaze] || GLAZE_THEMES.earthenware;
   const isCloudy = turbidity === "cloudy";
   const isClear = turbidity === "clear";
@@ -353,67 +357,111 @@ export function CozyCupScene({
 
             {/* Liquid Masked Section */}
             <g clipPath={`url(#${uid}-hot-interior)`}>
-              {/* Deep liquid volume */}
-              <rect
-                x="80"
-                y="152"
-                width="160"
-                height="170"
-                fill={`url(#${uid}-liquidDeep)`}
-              />
+              {/* Ceramic Inner Shadow / Empty Basin Base */}
+              <ellipse cx="160" cy="295" rx="46" ry="10" fill="#2E1C14" opacity="0.22" />
 
-              {/* Liquid Surface Meniscus */}
-              <ellipse
-                cx="160"
-                cy="154"
-                rx="68"
-                ry="16"
-                fill={`url(#${uid}-liquidSurface)`}
-              />
+              {clampedLevel > 0.01 && (
+                <g style={{ transition: "all 0.8s cubic-bezier(0.2, 0.8, 0.4, 1)" }}>
+                  {/* Dynamic Deep liquid volume */}
+                  {/* Y moves down from 152 to 295, height shrinks from 170 to 0 */}
+                  <rect
+                    x="80"
+                    y={152 + (1 - clampedLevel) * 142}
+                    width="160"
+                    height={Math.max(0, 170 - (1 - clampedLevel) * 142)}
+                    fill={`url(#${uid}-liquidDeep)`}
+                    style={{ transition: "y 0.8s linear, height 0.8s linear" }}
+                  />
 
-              {/* Gentle Surface Ripple */}
-              <ellipse
-                cx="160"
-                cy="154"
-                rx="52"
-                ry="11"
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth="1.2"
-                className="ripple-anim"
-              />
+                  {/* Liquid Surface Meniscus */}
+                  {/* cy descends from 154 (full) to 294 (bottom); radius rx shrinks from 68 to 44 */}
+                  <ellipse
+                    cx="160"
+                    cy={154 + (1 - clampedLevel) * 140}
+                    rx={Math.max(15, 68 - (1 - clampedLevel) * 24)}
+                    ry={Math.max(4, 16 - (1 - clampedLevel) * 6)}
+                    fill={`url(#${uid}-liquidSurface)`}
+                    style={{ transition: "cy 0.8s linear, rx 0.8s linear, ry 0.8s linear" }}
+                  />
 
-              {/* Cloudy Texture / Micro-froth */}
-              {isCloudy && (
-                <g fill="#FFFFFF" opacity="0.32">
-                  <circle cx="132" cy="154" r="3.2" />
-                  <circle cx="142" cy="157" r="2.8" />
-                  <circle cx="158" cy="152" r="3.6" />
-                  <circle cx="172" cy="155" r="2.4" />
-                  <circle cx="184" cy="153" r="2.8" />
-                  <circle cx="148" cy="159" r="2.2" />
+                  {/* Gentle Surface Ripple */}
+                  <ellipse
+                    cx="160"
+                    cy={154 + (1 - clampedLevel) * 140}
+                    rx={Math.max(10, 52 - (1 - clampedLevel) * 20)}
+                    ry={Math.max(3, 11 - (1 - clampedLevel) * 4)}
+                    fill="none"
+                    stroke="#FFFFFF"
+                    strokeWidth="1.2"
+                    className="ripple-anim"
+                    style={{ transition: "cy 0.8s linear, rx 0.8s linear, ry 0.8s linear" }}
+                  />
+
+                  {/* Cloudy Texture / Micro-froth */}
+                  {isCloudy && clampedLevel > 0.15 && (
+                    <g
+                      fill="#FFFFFF"
+                      opacity={0.32 * clampedLevel}
+                      transform={`translate(0, ${(1 - clampedLevel) * 138})`}
+                      style={{ transition: "transform 0.8s linear, opacity 0.8s linear" }}
+                    >
+                      <circle cx="132" cy="154" r="3.2" />
+                      <circle cx="142" cy="157" r="2.8" />
+                      <circle cx="158" cy="152" r="3.6" />
+                      <circle cx="172" cy="155" r="2.4" />
+                      <circle cx="184" cy="153" r="2.8" />
+                      <circle cx="148" cy="159" r="2.2" />
+                    </g>
+                  )}
+
+                  {/* Crystal Shimmer Reflection if Clear */}
+                  {isClear && clampedLevel > 0.15 && (
+                    <ellipse
+                      cx="142"
+                      cy={152 + (1 - clampedLevel) * 138}
+                      rx={Math.max(10, 30 - (1 - clampedLevel) * 12)}
+                      ry="4.5"
+                      fill="#FFFFFF"
+                      opacity={0.45 * clampedLevel}
+                      style={{ transition: "cy 0.8s linear, opacity 0.8s linear" }}
+                    />
+                  )}
+
+                  {/* Cute Floating Tea Leaf Bud descending with liquid */}
+                  {clampedLevel > 0.08 && (
+                    <g
+                      className="leaf-float"
+                      transform={`translate(138, ${150 + (1 - clampedLevel) * 138})`}
+                      style={{ transition: "transform 0.8s linear" }}
+                    >
+                      <path
+                        d="M0,0 Q8,-7 18,-2 Q12,5 0,0 Z"
+                        fill="#5A7D36"
+                        stroke="#3E5723"
+                        strokeWidth="0.8"
+                      />
+                      <path d="M2,-1 L14,-3" stroke="#85A85C" strokeWidth="0.6" fill="none" />
+                      <circle cx="18" cy="-2" r="1" fill="#7BA05B" />
+                    </g>
+                  )}
+
+                  {/* Garnishes descending with surface */}
+                  <g
+                    transform={`translate(0, ${(1 - clampedLevel) * 138})`}
+                    style={{ transition: "transform 0.8s linear" }}
+                  >
+                    {renderCuteGarnishes(garnishes, 160, 154, uid)}
+                  </g>
                 </g>
               )}
 
-              {/* Crystal Shimmer Reflection if Clear */}
-              {isClear && (
-                <ellipse cx="142" cy="152" rx="30" ry="4.5" fill="#FFFFFF" opacity="0.45" />
+              {/* Water Ring / Residue mark when empty */}
+              {clampedLevel <= 0.05 && (
+                <g>
+                  <ellipse cx="160" cy="292" rx="38" ry="8" fill="none" stroke={liquidColor} strokeWidth="1.2" opacity="0.35" />
+                  <ellipse cx="160" cy="292" rx="20" ry="4" fill={liquidColor} opacity="0.15" />
+                </g>
               )}
-
-              {/* Cute Floating Tea Leaf Bud */}
-              <g className="leaf-float" transform="translate(138, 150)">
-                <path
-                  d="M0,0 Q8,-7 18,-2 Q12,5 0,0 Z"
-                  fill="#5A7D36"
-                  stroke="#3E5723"
-                  strokeWidth="0.8"
-                />
-                <path d="M2,-1 L14,-3" stroke="#85A85C" strokeWidth="0.6" fill="none" />
-                <circle cx="18" cy="-2" r="1" fill="#7BA05B" />
-              </g>
-
-              {/* Garnishes */}
-              {renderCuteGarnishes(garnishes, 160, 154, uid)}
             </g>
 
             {/* Cup Rim Lip (3D Depth Bevel) */}
@@ -461,26 +509,48 @@ export function CozyCupScene({
 
             {/* Glass Interior Content */}
             <g clipPath={`url(#${uid}-iced-interior)`}>
-              {/* Tea Liquid Volume */}
-              <rect
-                x="95"
-                y="126"
-                width="130"
-                height="200"
-                fill={`url(#${uid}-liquidDeep)`}
-              />
+              {/* Glass Inner Shading */}
+              <ellipse cx="160" cy="312" rx="44" ry="9" fill="#B3D5E4" opacity="0.3" />
 
-              {/* Top Surface Meniscus */}
-              <ellipse
-                cx="160"
-                cy="126"
-                rx="58"
-                ry="13"
-                fill={`url(#${uid}-liquidSurface)`}
-              />
+              {clampedLevel > 0.01 && (
+                <g style={{ transition: "all 0.8s cubic-bezier(0.2, 0.8, 0.4, 1)" }}>
+                  {/* Tea Liquid Volume: Y moves from 126 to 310, height shrinks */}
+                  <rect
+                    x="95"
+                    y={126 + (1 - clampedLevel) * 184}
+                    width="130"
+                    height={Math.max(0, 200 - (1 - clampedLevel) * 184)}
+                    fill={`url(#${uid}-liquidDeep)`}
+                    style={{ transition: "y 0.8s linear, height 0.8s linear" }}
+                  />
 
-              {/* Cute Floating Ice Cube 1 */}
-              <g className="ice-float-1" transform="translate(122, 134)">
+                  {/* Top Surface Meniscus: cy descends from 126 to 310, rx shrinks from 58 to 44 */}
+                  <ellipse
+                    cx="160"
+                    cy={126 + (1 - clampedLevel) * 184}
+                    rx={Math.max(20, 58 - (1 - clampedLevel) * 14)}
+                    ry={Math.max(4, 13 - (1 - clampedLevel) * 4)}
+                    fill={`url(#${uid}-liquidSurface)`}
+                    style={{ transition: "cy 0.8s linear, rx 0.8s linear, ry 0.8s linear" }}
+                  />
+
+                  {/* Floating Garnishes */}
+                  <g
+                    transform={`translate(0, ${(1 - clampedLevel) * 175})`}
+                    style={{ transition: "transform 0.8s linear" }}
+                  >
+                    {renderCuteGarnishes(garnishes, 160, 130, uid)}
+                  </g>
+                </g>
+              )}
+
+              {/* Cute Floating Ice Cubes - they sink gracefully with liquid level */}
+              {/* Ice Cube 1 */}
+              <g
+                className="ice-float-1"
+                transform={`translate(122, ${Math.min(270, 134 + (1 - clampedLevel) * 145)})`}
+                style={{ transition: "transform 0.8s linear" }}
+              >
                 <rect
                   x="0"
                   y="0"
@@ -497,8 +567,12 @@ export function CozyCupScene({
                 <circle cx="28" cy="26" r="2.5" fill="#FFFFFF" opacity="0.7" />
               </g>
 
-              {/* Cute Floating Ice Cube 2 */}
-              <g className="ice-float-2" transform="translate(158, 150)">
+              {/* Ice Cube 2 */}
+              <g
+                className="ice-float-2"
+                transform={`translate(158, ${Math.min(276, 150 + (1 - clampedLevel) * 135)})`}
+                style={{ transition: "transform 0.8s linear" }}
+              >
                 <rect
                   x="0"
                   y="0"
@@ -514,8 +588,12 @@ export function CozyCupScene({
                 <circle cx="22" cy="22" r="2" fill="#FFFFFF" opacity="0.6" />
               </g>
 
-              {/* Cute Floating Ice Cube 3 (Submerged) */}
-              <g className="ice-float-3" transform="translate(136, 196)">
+              {/* Ice Cube 3 */}
+              <g
+                className="ice-float-3"
+                transform={`translate(136, ${Math.min(280, 196 + (1 - clampedLevel) * 90)})`}
+                style={{ transition: "transform 0.8s linear" }}
+              >
                 <rect
                   x="0"
                   y="0"
@@ -528,9 +606,6 @@ export function CozyCupScene({
                   strokeWidth="1.5"
                 />
               </g>
-
-              {/* Floating Garnishes */}
-              {renderCuteGarnishes(garnishes, 160, 130, uid)}
             </g>
 
             {/* Heavy Glass Base */}
@@ -635,85 +710,119 @@ export function CozyCupScene({
 
             {/* Layered Tea & Milk Interior */}
             <g clipPath={`url(#${uid}-latte-interior)`}>
-              {/* Three-Tier Ombre Gradient */}
-              <rect
-                x="80"
-                y="140"
-                width="160"
-                height="180"
-                fill={`url(#${uid}-latteLayer)`}
-              />
+              {/* Mug Basin Shading */}
+              <ellipse cx="160" cy="295" rx="46" ry="10" fill="#2E1C14" opacity="0.18" />
 
-              {/* Thick Froth Top Surface */}
-              <ellipse
-                cx="160"
-                cy="146"
-                rx="68"
-                ry="16"
-                fill={`url(#${uid}-foamTop)`}
-              />
-
-              {/* =================================================== */}
-              {/* ADORABLE LATTE ART (Cute Bear / Heart Rosetta)      */}
-              {/* =================================================== */}
-              {latteArt === "bear" ? (
-                /* Cute 3D Foam Bear Face */
-                <g transform="translate(160, 146)">
-                  {/* Bear Left Ear */}
-                  <circle cx="-16" cy="-10" r="7" fill={liquidColor} opacity="0.75" />
-                  <circle cx="-16" cy="-10" r="4" fill="#FFFFFF" opacity="0.9" />
-
-                  {/* Bear Right Ear */}
-                  <circle cx="16" cy="-10" r="7" fill={liquidColor} opacity="0.75" />
-                  <circle cx="16" cy="-10" r="4" fill="#FFFFFF" opacity="0.9" />
-
-                  {/* Bear Head */}
-                  <ellipse cx="0" cy="0" rx="18" ry="11" fill={liquidColor} opacity="0.7" />
-                  <ellipse cx="0" cy="0" rx="17" ry="10" fill="#FFFFFF" opacity="0.95" />
-
-                  {/* Cute Cheeks */}
-                  <ellipse cx="-10" cy="2" rx="3.5" ry="2" fill="#FFAEC9" opacity="0.75" />
-                  <ellipse cx="10" cy="2" rx="3.5" ry="2" fill="#FFAEC9" opacity="0.75" />
-
-                  {/* Snout */}
-                  <ellipse cx="0" cy="2" rx="6" ry="4" fill={liquidColor} opacity="0.25" />
-                  <ellipse cx="0" cy="2" rx="5" ry="3.5" fill="#FFFFFF" />
-
-                  {/* Eyes & Nose in Tea Tone */}
-                  <circle cx="-6" cy="-1.5" r="1.5" fill={liquidColor} />
-                  <circle cx="6" cy="-1.5" r="1.5" fill={liquidColor} />
-                  <ellipse cx="0" cy="1" rx="1.8" ry="1.2" fill={liquidColor} />
-                  <path d="M-1.5,2.5 Q0,4 1.5,2.5" stroke={liquidColor} strokeWidth="0.8" fill="none" />
-                </g>
-              ) : (
-                /* Elegant Multi-Layer Rosetta Heart */
-                <g transform="translate(160, 145)">
-                  <path
-                    d="M0,8 C-12,2 -18,-6 -10,-10 C-3,-13 0,-4 0,-4 C0,-4 3,-13 10,-10 C18,-6 12,2 0,8 Z"
-                    fill={liquidColor}
-                    opacity="0.75"
+              {clampedLevel > 0.01 && (
+                <g style={{ transition: "all 0.8s cubic-bezier(0.2, 0.8, 0.4, 1)" }}>
+                  {/* Three-Tier Ombre Gradient */}
+                  <rect
+                    x="80"
+                    y={140 + (1 - clampedLevel) * 150}
+                    width="160"
+                    height={Math.max(0, 180 - (1 - clampedLevel) * 150)}
+                    fill={`url(#${uid}-latteLayer)`}
+                    style={{ transition: "y 0.8s linear, height 0.8s linear" }}
                   />
-                  <path
-                    d="M0,5 C-8,1 -12,-4 -7,-7 C-2,-9 0,-3 0,-3 C0,-3 2,-9 7,-7 C12,-4 8,1 0,5 Z"
-                    fill="#FFFFFF"
-                    opacity="0.85"
+
+                  {/* Thick Froth Top Surface */}
+                  <ellipse
+                    cx="160"
+                    cy={146 + (1 - clampedLevel) * 148}
+                    rx={Math.max(16, 68 - (1 - clampedLevel) * 22)}
+                    ry={Math.max(4, 16 - (1 - clampedLevel) * 6)}
+                    fill={`url(#${uid}-foamTop)`}
+                    style={{ transition: "cy 0.8s linear, rx 0.8s linear, ry 0.8s linear" }}
                   />
-                  <circle cx="0" cy="-7" r="2" fill={liquidColor} opacity="0.6" />
-                  <circle cx="0" cy="-10" r="1.4" fill={liquidColor} opacity="0.4" />
+
+                  {/* =================================================== */}
+                  {/* ADORABLE LATTE ART (Cute Bear / Heart Rosetta)      */}
+                  {/* =================================================== */}
+                  <g
+                    transform={`translate(0, ${(1 - clampedLevel) * 148}) scale(${Math.max(0.4, clampedLevel)})`}
+                    style={{
+                      transformOrigin: "160px 146px",
+                      transition: "transform 0.8s linear",
+                    }}
+                  >
+                    {latteArt === "bear" ? (
+                      /* Cute 3D Foam Bear Face */
+                      <g transform="translate(160, 146)">
+                        {/* Bear Left Ear */}
+                        <circle cx="-16" cy="-10" r="7" fill={liquidColor} opacity="0.75" />
+                        <circle cx="-16" cy="-10" r="4" fill="#FFFFFF" opacity="0.9" />
+
+                        {/* Bear Right Ear */}
+                        <circle cx="16" cy="-10" r="7" fill={liquidColor} opacity="0.75" />
+                        <circle cx="16" cy="-10" r="4" fill="#FFFFFF" opacity="0.9" />
+
+                        {/* Bear Head */}
+                        <ellipse cx="0" cy="0" rx="18" ry="11" fill={liquidColor} opacity="0.7" />
+                        <ellipse cx="0" cy="0" rx="17" ry="10" fill="#FFFFFF" opacity="0.95" />
+
+                        {/* Cute Cheeks */}
+                        <ellipse cx="-10" cy="2" rx="3.5" ry="2" fill="#FFAEC9" opacity="0.75" />
+                        <ellipse cx="10" cy="2" rx="3.5" ry="2" fill="#FFAEC9" opacity="0.75" />
+
+                        {/* Snout */}
+                        <ellipse cx="0" cy="2" rx="6" ry="4" fill={liquidColor} opacity="0.25" />
+                        <ellipse cx="0" cy="2" rx="5" ry="3.5" fill="#FFFFFF" />
+
+                        {/* Eyes & Nose in Tea Tone */}
+                        <circle cx="-6" cy="-1.5" r="1.5" fill={liquidColor} />
+                        <circle cx="6" cy="-1.5" r="1.5" fill={liquidColor} />
+                        <ellipse cx="0" cy="1" rx="1.8" ry="1.2" fill={liquidColor} />
+                        <path d="M-1.5,2.5 Q0,4 1.5,2.5" stroke={liquidColor} strokeWidth="0.8" fill="none" />
+                      </g>
+                    ) : (
+                      /* Elegant Multi-Layer Rosetta Heart */
+                      <g transform="translate(160, 145)">
+                        <path
+                          d="M0,8 C-12,2 -18,-6 -10,-10 C-3,-13 0,-4 0,-4 C0,-4 3,-13 10,-10 C18,-6 12,2 0,8 Z"
+                          fill={liquidColor}
+                          opacity="0.75"
+                        />
+                        <path
+                          d="M0,5 C-8,1 -12,-4 -7,-7 C-2,-9 0,-3 0,-3 C0,-3 2,-9 7,-7 C12,-4 8,1 0,5 Z"
+                          fill="#FFFFFF"
+                          opacity="0.85"
+                        />
+                        <circle cx="0" cy="-7" r="2" fill={liquidColor} opacity="0.6" />
+                        <circle cx="0" cy="-10" r="1.4" fill={liquidColor} opacity="0.4" />
+                      </g>
+                    )}
+                  </g>
+
+                  {/* Micro-foam Texture Bubbles */}
+                  {clampedLevel > 0.25 && (
+                    <g
+                      fill="#FFFFFF"
+                      opacity={0.7 * clampedLevel}
+                      transform={`translate(0, ${(1 - clampedLevel) * 148})`}
+                      style={{ transition: "transform 0.8s linear, opacity 0.8s linear" }}
+                    >
+                      <circle cx="108" cy="144" r="1.8" />
+                      <circle cx="114" cy="147" r="1.4" />
+                      <circle cx="206" cy="143" r="2.0" />
+                      <circle cx="212" cy="146" r="1.5" />
+                      <circle cx="160" cy="158" r="1.6" />
+                    </g>
+                  )}
+
+                  {/* Garnishes */}
+                  <g
+                    transform={`translate(0, ${(1 - clampedLevel) * 148})`}
+                    style={{ transition: "transform 0.8s linear" }}
+                  >
+                    {renderCuteGarnishes(garnishes, 160, 146, uid)}
+                  </g>
                 </g>
               )}
 
-              {/* Micro-foam Texture Bubbles */}
-              <g fill="#FFFFFF" opacity="0.7">
-                <circle cx="108" cy="144" r="1.8" />
-                <circle cx="114" cy="147" r="1.4" />
-                <circle cx="206" cy="143" r="2.0" />
-                <circle cx="212" cy="146" r="1.5" />
-                <circle cx="160" cy="158" r="1.6" />
-              </g>
-
-              {/* Garnishes */}
-              {renderCuteGarnishes(garnishes, 160, 146, uid)}
+              {/* Froth ring when nearly empty */}
+              {clampedLevel <= 0.05 && (
+                <ellipse cx="160" cy="294" rx="36" ry="7" fill="none" stroke="#FAF5EF" strokeWidth="1.5" opacity="0.5" />
+              )}
             </g>
 
             {/* Creamy Rim Lips */}

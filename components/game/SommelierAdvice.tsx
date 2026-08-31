@@ -5,6 +5,7 @@ import { SommelierAdvice, FoodPairing } from "@/lib/sommelier-engine";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { AlertCircle, CheckCircle2, Lightbulb, Utensils } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface SommelierAdviceProps {
   advices: SommelierAdvice[];
@@ -12,13 +13,15 @@ interface SommelierAdviceProps {
 }
 
 export function SommelierAdviceSection({ advices, pairings }: SommelierAdviceProps) {
+  const { t, translateFoodPairing } = useLanguage();
+
   return (
     <div className="w-full space-y-4">
       {/* 1. Extraction Intelligence & Guidance */}
       <Card className="bg-white/70 backdrop-blur-sm border-wood/20 shadow-sm overflow-hidden">
         <CardHeader className="py-3 px-4 bg-amber-light/10 border-b border-wood/10">
           <CardTitle className="text-sm font-semibold text-dark-wood flex items-center gap-2">
-            <span>🍵</span> Tea Master's Extraction Notes
+            <span>🍵</span> {t.sommelierTitle}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3.5 space-y-2.5">
@@ -59,33 +62,36 @@ export function SommelierAdviceSection({ advices, pairings }: SommelierAdvicePro
         <CardHeader className="py-3 px-4 bg-amber-light/10 border-b border-wood/10">
           <CardTitle className="text-sm font-semibold text-dark-wood flex items-center gap-2">
             <Utensils className="w-3.5 h-3.5 text-wood" />
-            <span>Harmonious Pastry Pairings</span>
+            <span>{t.foodPairingTitle}</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3.5 space-y-2">
-          {pairings.map((pairing, idx) => (
-            <div
-              key={idx}
-              className="flex items-start gap-3 p-2.5 rounded-xl bg-white/60 border border-wood/10 hover:border-wood/30 transition-colors"
-            >
-              <span className="text-2xl p-1 rounded-lg bg-cream border border-wood/10 shrink-0">
-                {pairing.emoji}
-              </span>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-1">
-                  <h5 className="font-semibold text-dark-wood text-xs truncate">
-                    {pairing.name}
-                  </h5>
-                  <span className="text-[10px] uppercase tracking-wider text-wood/60 px-1.5 py-0.5 rounded bg-cream">
-                    {pairing.category}
-                  </span>
+          {pairings.map((rawPairing, idx) => {
+            const pairing = translateFoodPairing(rawPairing);
+            return (
+              <div
+                key={idx}
+                className="flex items-start gap-3 p-2.5 rounded-xl bg-white/60 border border-wood/10 hover:border-wood/30 transition-colors"
+              >
+                <span className="text-2xl p-1 rounded-lg bg-cream border border-wood/10 shrink-0">
+                  {pairing.emoji}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-1">
+                    <h5 className="font-semibold text-dark-wood text-xs truncate">
+                      {pairing.name}
+                    </h5>
+                    <span className="text-[10px] uppercase tracking-wider text-wood/60 px-1.5 py-0.5 rounded bg-cream">
+                      {pairing.category}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-wood/80 mt-0.5 leading-snug">
+                    {pairing.reason}
+                  </p>
                 </div>
-                <p className="text-[11px] text-wood/80 mt-0.5 leading-snug">
-                  {pairing.reason}
-                </p>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </CardContent>
       </Card>
     </div>

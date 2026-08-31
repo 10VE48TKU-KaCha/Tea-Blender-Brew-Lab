@@ -4,6 +4,7 @@ import React from "react";
 import { ServingStyle } from "./CozyCupScene";
 import { cn } from "@/lib/utils";
 import { Sparkles, Heart } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ServingStyleSelectorProps {
   servingStyle: ServingStyle;
@@ -14,19 +15,6 @@ interface ServingStyleSelectorProps {
   onLatteArtChange?: (art: "bear" | "heart") => void;
 }
 
-const STYLES: { id: ServingStyle; label: string; icon: string; desc: string }[] = [
-  { id: "hot", label: "Hot Brew", icon: "♨️", desc: "Chubby ceramic" },
-  { id: "iced", label: "Iced Glass", icon: "🧊", desc: "Crystal tumbler" },
-  { id: "latte", label: "Tea Latte", icon: "🥛", desc: "Layered & foam art" },
-];
-
-const BOTANICALS: { id: string; label: string; icon: string }[] = [
-  { id: "osmanthus", label: "Osmanthus", icon: "🌼" },
-  { id: "rose", label: "Rose Petals", icon: "🌹" },
-  { id: "cinnamon", label: "Cinnamon", icon: "🪵" },
-  { id: "honey", label: "Honey Swirl", icon: "🍯" },
-];
-
 export function ServingStyleSelector({
   servingStyle,
   onStyleChange,
@@ -35,15 +23,30 @@ export function ServingStyleSelector({
   latteArt = "bear",
   onLatteArtChange,
 }: ServingStyleSelectorProps) {
+  const { t } = useLanguage();
+
+  const styles: { id: ServingStyle; label: string; icon: string; desc: string }[] = [
+    { id: "hot", label: t.styleHot, icon: "♨️", desc: t.styleHotDesc },
+    { id: "iced", label: t.styleIced, icon: "🧊", desc: t.styleIcedDesc },
+    { id: "latte", label: t.styleLatte, icon: "🥛", desc: t.styleLatteDesc },
+  ];
+
+  const botanicals: { id: string; label: string; icon: string }[] = [
+    { id: "osmanthus", label: t.garnishOsmanthus, icon: "🌼" },
+    { id: "rose", label: t.garnishRose, icon: "🌹" },
+    { id: "cinnamon", label: t.garnishCinnamon, icon: "🪵" },
+    { id: "honey", label: t.garnishHoney, icon: "🍯" },
+  ];
+
   return (
     <div className="w-full space-y-3.5 bg-white/70 backdrop-blur-md rounded-2xl p-4 border border-wood/15 shadow-sm">
       {/* Serving Style Switcher */}
       <div>
         <div className="text-xs font-semibold uppercase tracking-wider text-wood/70 mb-2 flex items-center gap-1.5">
-          <span>☕</span> Serving Style Mode
+          <span>☕</span> {t.servingStyleMode}
         </div>
         <div className="grid grid-cols-3 gap-2">
-          {STYLES.map((style) => {
+          {styles.map((style) => {
             const isSelected = servingStyle === style.id;
             return (
               <button
@@ -71,10 +74,10 @@ export function ServingStyleSelector({
         <div className="pt-2 border-t border-wood/10 animate-in fade-in duration-200">
           <div className="text-xs font-semibold uppercase tracking-wider text-wood/70 mb-2 flex items-center justify-between">
             <span className="flex items-center gap-1.5">
-              <span>🎨</span> Latte Foam Art
+              <span>🎨</span> {t.latteFoamArt}
             </span>
             <span className="text-[11px] text-amber-700 font-normal">
-              {latteArt === "bear" ? "🐻 Cozy Bear" : "💖 Rosetta Heart"}
+              {latteArt === "bear" ? `🐻 ${t.artBear}` : `💖 ${t.artHeart}`}
             </span>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -89,7 +92,7 @@ export function ServingStyleSelector({
               )}
             >
               <span>🐻</span>
-              <span>Cute Foam Bear</span>
+              <span>{t.artBear}</span>
             </button>
             <button
               type="button"
@@ -102,7 +105,7 @@ export function ServingStyleSelector({
               )}
             >
               <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-              <span>Rosetta Heart</span>
+              <span>{t.artHeart}</span>
             </button>
           </div>
         </div>
@@ -113,16 +116,16 @@ export function ServingStyleSelector({
         <div className="text-xs font-semibold uppercase tracking-wider text-wood/70 mb-2 flex items-center justify-between">
           <span className="flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-amber" />
-            Botanical Floating Add-ins
+            {t.botanicalAddins}
           </span>
           {garnishes.length > 0 && (
             <span className="text-[11px] text-amber-700 font-normal">
-              {garnishes.length} selected
+              {garnishes.length} {t.selectedCount}
             </span>
           )}
         </div>
         <div className="flex flex-wrap gap-2">
-          {BOTANICALS.map((botanical) => {
+          {botanicals.map((botanical) => {
             const isChecked = garnishes.includes(botanical.id);
             return (
               <button

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Minus } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface IngredientControlProps {
   ingredient: TeaIngredient;
@@ -14,8 +15,22 @@ interface IngredientControlProps {
 }
 
 export function IngredientControl({ ingredient, value, onChange }: IngredientControlProps) {
+  const { translateIngredient, lang, t } = useLanguage();
   const handleIncrement = () => onChange(Math.min(100, value + 5));
   const handleDecrement = () => onChange(Math.max(0, value - 5));
+
+  const categoryLabel =
+    lang === "th"
+      ? ingredient.category === "BLACK"
+        ? t.catBlack
+        : ingredient.category === "GREEN"
+        ? t.catGreen
+        : ingredient.category === "OOLONG"
+        ? t.catOolong
+        : ingredient.category === "WHITE"
+        ? t.catWhite
+        : t.catHerbal
+      : ingredient.category;
 
   return (
     <div className="rounded-2xl border border-amber/20 bg-white/80 p-4 shadow-sm backdrop-blur-sm">
@@ -25,9 +40,9 @@ export function IngredientControl({ ingredient, value, onChange }: IngredientCon
             className="h-4 w-4 rounded-full border border-black/10"
             style={{ backgroundColor: ingredient.baseColor }}
           />
-          <span className="font-semibold text-wood-dark">{ingredient.name}</span>
+          <span className="font-semibold text-wood-dark">{translateIngredient(ingredient.name)}</span>
         </div>
-        <Badge variant={ingredient.category as any}>{ingredient.category}</Badge>
+        <Badge variant={ingredient.category as any}>{categoryLabel}</Badge>
       </div>
 
       <div className="flex items-center gap-4">

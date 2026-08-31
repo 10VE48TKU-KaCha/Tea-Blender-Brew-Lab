@@ -8,6 +8,7 @@ import FlavorRadarChart from "@/components/charts/FlavorRadarChart";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, Copy, Check, Share2, Sparkles, Download } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface TeaPostcardModalProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ export function TeaPostcardModal({
   servingStyle,
   garnishes,
 }: TeaPostcardModalProps) {
+  const { t, lang, translateIngredient } = useLanguage();
   const [copied, setCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -41,36 +43,43 @@ export function TeaPostcardModal({
 
   const activeBlends = blendInputs.filter((b) => b.ratioPercent > 0);
   const blendCode = extraction.blendCode || "#KISSA-8888";
-  const dateStr = new Date().toLocaleDateString("en-US", {
+  const dateStr = new Date().toLocaleDateString(lang === "th" ? "th-TH" : "en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
 
   const radarData = [
-    { dimension: "Sweetness", score: extraction.sweetnessScore, fullMark: 10 },
-    { dimension: "Aroma", score: extraction.aromaScore, fullMark: 10 },
-    { dimension: "Body", score: extraction.bodyScore, fullMark: 10 },
-    { dimension: "Bitterness", score: extraction.bitternessScore, fullMark: 10 },
-    { dimension: "Clarity", score: extraction.clarityScore, fullMark: 10 },
+    { dimension: t.sweetness, score: extraction.sweetnessScore, fullMark: 10 },
+    { dimension: t.aroma, score: extraction.aromaScore, fullMark: 10 },
+    { dimension: t.body, score: extraction.bodyScore, fullMark: 10 },
+    { dimension: t.bitterness, score: extraction.bitternessScore, fullMark: 10 },
+    { dimension: t.clarity, score: extraction.clarityScore, fullMark: 10 },
   ];
 
   const handleCopyShare = () => {
     const ingredientsText = activeBlends
-      .map((b) => `${b.ingredient.name} (${b.ratioPercent}%)`)
+      .map((b) => `${translateIngredient(b.ingredient.name)} (${b.ratioPercent}%)`)
       .join(", ");
 
-    const shareText = `🍵 [Kissa Lab] Crafted Recipe: "${title || extraction.cozyTitle}"\n` +
+    const shareText = `🍵 [Kissa Lab] ${title || extraction.cozyTitle}\n` +
       `Code: ${blendCode}\n` +
-      `Blend: ${ingredientsText}\n` +
-      `Parameters: ${waterTempC}°C | ${steepingTimeSec}s | ${waterAmountMl}ml (${servingStyle})\n` +
-      `Notes: "${extraction.tastingNotes}"\n` +
-      `Craft your cozy cup at: ${window.location.origin}/lab`;
+      `${t.postcardBlendRatio}: ${ingredientsText}\n` +
+      `${t.brewParamsTitle}: ${waterTempC}°C | ${steepingTimeSec}s | ${waterAmountMl}ml\n` +
+      `"${extraction.tastingNotes}"\n` +
+      `${window.location.origin}/lab`;
 
     navigator.clipboard.writeText(shareText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
+
+  const servingStyleLabel =
+    servingStyle === "hot"
+      ? t.styleHot
+      : servingStyle === "iced"
+      ? t.styleIced
+      : t.styleLatte;
 
   return (
     <AnimatePresence>
@@ -95,7 +104,7 @@ export function TeaPostcardModal({
           <div className="flex items-center justify-between mb-4 pb-2 border-b border-wood/15">
             <div className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-wood/80 font-bold">
               <Sparkles className="w-4 h-4 text-amber" />
-              <span>Vintage Tea Ticket</span>
+              <span>{t.postcardTitle}</span>
             </div>
             <button
               onClick={onClose}
@@ -125,7 +134,7 @@ export function TeaPostcardModal({
                 {title || extraction.cozyTitle}
               </h3>
               <p className="text-[11px] text-wood/60 mt-0.5">
-                Certified by Kissa Laboratory • {dateStr}
+                {lang === "th" ? "รับรองโดยห้องทดลองคิสสะ" : "Certified by Kissa Laboratory"} • {dateStr}
               </p>
             </div>
 
@@ -151,12 +160,14 @@ export function TeaPostcardModal({
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-dark-wood">Tea Liquor</span>
+                  <span className="font-semibold text-dark-wood">
+                    {lang === "th" ? "น้ำชาที่สกัดได้" : "Tea Liquor"}
+                  </span>
                   <span className="font-mono text-[11px] text-wood">{extraction.renderedHex}</span>
                 </div>
                 <div className="text-[10px] text-wood/70 mt-0.5">
-                  Glaze: <span className="capitalize font-medium text-dark-wood">{extraction.cupGlaze || "Ceramic"}</span> •{" "}
-                  Style: <span className="capitalize font-medium text-dark-wood">{servingStyle}</span>
+                  {lang === "th" ? "ถ้วย" : "Glaze"}: <span className="capitalize font-medium text-dark-wood">{extraction.cupGlaze || "Ceramic"}</span> •{" "}
+                  {lang === "th" ? "สไตล์" : "Style"}: <span className="capitalize font-medium text-dark-wood">{servingStyleLabel}</span>
                 </div>
               </div>
             </div>
@@ -173,12 +184,12 @@ export function TeaPostcardModal({
             {/* Recipe Formula List */}
             <div className="pt-3 border-t border-dashed border-wood/20 space-y-1.5">
               <div className="text-[10px] uppercase font-bold tracking-wider text-wood/60 mb-1">
-                Artisan Formula
+                {t.postcardBlendRatio}
               </div>
               {activeBlends.map((item) => (
                 <div key={item.ingredient.id} className="flex justify-between text-xs">
                   <span className="text-dark-wood font-medium truncate max-w-[200px]">
-                    {item.ingredient.name}
+                    {translateIngredient(item.ingredient.name)}
                   </span>
                   <span className="font-mono text-wood font-bold">{item.ratioPercent}%</span>
                 </div>
@@ -202,18 +213,20 @@ export function TeaPostcardModal({
               {copied ? (
                 <>
                   <Check className="w-4 h-4 text-emerald-400" />
-                  <span>Recipe & Code Copied!</span>
+                  <span>{t.linkCopied}</span>
                 </>
               ) : (
                 <>
                   <Copy className="w-4 h-4" />
-                  <span>Copy Recipe & Show Friends</span>
+                  <span>{t.copyCardLink}</span>
                 </>
               )}
             </Button>
 
             <p className="text-[10px] text-center text-wood/60">
-              Share your custom code {blendCode} with tea lovers worldwide 🍵
+              {lang === "th"
+                ? `แบ่งปันรหัสสูตร ${blendCode} กับคนรักชาทั่วโลก 🍵`
+                : `Share your custom code ${blendCode} with tea lovers worldwide 🍵`}
             </p>
           </div>
         </motion.div>

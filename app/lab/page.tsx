@@ -19,17 +19,10 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Play, Sparkles, Share2, Search, Filter, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const CATEGORY_TABS: { id: string; label: string; icon: string }[] = [
-  { id: "ALL", label: "All Teas", icon: "🌍" },
-  { id: "BLACK", label: "Black", icon: "🫖" },
-  { id: "GREEN", label: "Green", icon: "🍵" },
-  { id: "OOLONG", label: "Oolong", icon: "🌿" },
-  { id: "WHITE", label: "White", icon: "🤍" },
-  { id: "HERBAL", label: "Herbal", icon: "🌼" },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function LabPage() {
+  const { t, lang } = useLanguage();
   const [ingredients, setIngredients] = useState<TeaIngredient[]>([]);
   const [blendRatios, setBlendRatios] = useState<Record<string, number>>({});
   const [waterTempC, setWaterTempC] = useState<number>(85);
@@ -52,6 +45,15 @@ export default function LabPage() {
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const [isBrewModalOpen, setIsBrewModalOpen] = useState<boolean>(false);
   const [isPostcardOpen, setIsPostcardOpen] = useState<boolean>(false);
+
+  const categoryTabs = useMemo(() => [
+    { id: "ALL", label: t.catAll, icon: "🌍" },
+    { id: "BLACK", label: t.catBlack, icon: "🫖" },
+    { id: "GREEN", label: t.catGreen, icon: "🍵" },
+    { id: "OOLONG", label: t.catOolong, icon: "🌿" },
+    { id: "WHITE", label: t.catWhite, icon: "🤍" },
+    { id: "HERBAL", label: t.catHerbal, icon: "🌼" },
+  ], [t]);
 
   useEffect(() => {
     async function fetchIngredients() {
@@ -210,13 +212,13 @@ export default function LabPage() {
   const radarData = useMemo(() => {
     if (!extraction) return [];
     return [
-      { dimension: "Sweetness", score: extraction.sweetnessScore, fullMark: 10 },
-      { dimension: "Aroma", score: extraction.aromaScore, fullMark: 10 },
-      { dimension: "Body", score: extraction.bodyScore, fullMark: 10 },
-      { dimension: "Bitterness", score: extraction.bitternessScore, fullMark: 10 },
-      { dimension: "Clarity", score: extraction.clarityScore, fullMark: 10 },
+      { dimension: t.sweetness, score: extraction.sweetnessScore, fullMark: 10 },
+      { dimension: t.aroma, score: extraction.aromaScore, fullMark: 10 },
+      { dimension: t.body, score: extraction.bodyScore, fullMark: 10 },
+      { dimension: t.bitterness, score: extraction.bitternessScore, fullMark: 10 },
+      { dimension: t.clarity, score: extraction.clarityScore, fullMark: 10 },
     ];
-  }, [extraction]);
+  }, [extraction, t]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -224,13 +226,13 @@ export default function LabPage() {
       <div className="text-center mb-6">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-light/30 border border-amber/30 text-dark-wood text-xs font-semibold mb-2">
           <Globe className="w-3.5 h-3.5 text-amber-700" />
-          <span>World Specialty Tea Laboratory • 1,000+ Unique Possibilities</span>
+          <span>{t.heroBadge}</span>
         </div>
         <h1 className="text-4xl md:text-5xl font-display text-dark-wood font-bold">
-          Tea Blending Lab
+          {t.heroTitle}
         </h1>
-        <p className="text-wood mt-2 text-base sm:text-lg">
-          Blend rare leaves from 11 countries, tune extraction physics, and discover custom sensory profiles
+        <p className="text-wood mt-2 text-base sm:text-lg max-w-2xl mx-auto">
+          {t.heroSubtitle}
         </p>
       </div>
 
@@ -247,7 +249,7 @@ export default function LabPage() {
           <section className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <h2 className="text-2xl font-display text-dark-wood flex items-center gap-2">
-                <span>🍃</span> World Tea Pantry ({ingredients.length})
+                <span>🍃</span> {t.pantryTitle} ({ingredients.length})
               </h2>
 
               {/* Active blend counter badge */}
@@ -263,14 +265,16 @@ export default function LabPage() {
                   )}
                 >
                   <Filter className="w-3 h-3" />
-                  <span>{activeCount} Selected Teas {showOnlyActive ? "(Showing Selected)" : "(View Selected)"}</span>
+                  <span>
+                    {activeCount} {lang === "th" ? "ชนิดที่เลือก" : "Selected Teas"} {showOnlyActive ? (lang === "th" ? "(แสดงที่เลือก)" : "(Showing Selected)") : (lang === "th" ? "(ดูที่เลือก)" : "(View Selected)")}
+                  </span>
                 </button>
               )}
             </div>
 
             {/* Category Filter Tabs */}
             <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-              {CATEGORY_TABS.map((tab) => {
+              {categoryTabs.map((tab) => {
                 const isSelected = selectedCategory === tab.id;
                 return (
                   <button
@@ -299,7 +303,7 @@ export default function LabPage() {
               <Search className="w-4 h-4 text-wood/50 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search by tea name or country (e.g. Matcha, Earl Grey, Japan)..."
+                placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 text-xs bg-white/70 backdrop-blur-sm border border-wood/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber/50 placeholder:text-wood/50"
@@ -317,10 +321,10 @@ export default function LabPage() {
 
             {/* Ingredients Controls List */}
             {isLoading ? (
-              <p className="text-wood py-6 text-center">Opening tea canisters...</p>
+              <p className="text-wood py-6 text-center">{lang === "th" ? "กำลังเปิดกล่องใบชา..." : "Opening tea canisters..."}</p>
             ) : filteredIngredients.length === 0 ? (
               <div className="text-center py-8 bg-white/40 rounded-2xl border border-wood/15 text-xs text-wood/70">
-                No teas found matching "{searchQuery || selectedCategory}".
+                {t.noTeasFound}
               </div>
             ) : (
               <motion.div layout className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
@@ -339,14 +343,14 @@ export default function LabPage() {
           {/* Brew Parameters Section */}
           <section>
             <h2 className="text-2xl font-display text-dark-wood mb-4 flex items-center gap-2">
-              <span>🌡️</span> Brew Parameters
+              <span>🌡️</span> {t.brewParamsTitle}
             </h2>
             <div className="space-y-4">
               <Card className="bg-white/80 backdrop-blur-sm border-wood/20">
                 <CardContent className="pt-6">
                   <div className="flex justify-between mb-2">
                     <label className="font-medium text-dark-wood flex items-center gap-1.5">
-                      <span>🌡️</span> Water Temperature
+                      <span>🌡️</span> {t.waterTemp}
                     </label>
                     <span className="text-amber font-bold">{waterTempC}°C</span>
                   </div>
@@ -362,9 +366,9 @@ export default function LabPage() {
                     className="w-full"
                   />
                   <div className="flex justify-between text-[11px] text-wood/60 mt-1">
-                    <span>60°C (Cold/Delicate)</span>
-                    <span>80°C (Green/Oolong)</span>
-                    <span>100°C (Boiling Black)</span>
+                    <span>60°C ({lang === "th" ? "ชาขาว/ชาอ่อน" : "Cold/Delicate"})</span>
+                    <span>80°C ({lang === "th" ? "ชาเขียว/อู่หลง" : "Green/Oolong"})</span>
+                    <span>100°C ({lang === "th" ? "ชาดำเดือด" : "Boiling Black"})</span>
                   </div>
                 </CardContent>
               </Card>
@@ -373,7 +377,7 @@ export default function LabPage() {
                 <CardContent className="pt-6">
                   <div className="flex justify-between mb-2">
                     <label className="font-medium text-dark-wood flex items-center gap-1.5">
-                      <span>⏳</span> Steeping Time
+                      <span>⏳</span> {t.steepingTime}
                     </label>
                     <span className="text-amber font-bold">{formatTime(steepingTimeSec)}</span>
                   </div>
@@ -390,9 +394,9 @@ export default function LabPage() {
                     className="w-full"
                   />
                   <div className="flex justify-between text-[11px] text-wood/60 mt-1">
-                    <span>30s (Flash Steep)</span>
-                    <span>120s (Balanced)</span>
-                    <span>300s (Deep Extraction)</span>
+                    <span>30s ({lang === "th" ? "ชงเร็วทันใจ" : "Flash Steep"})</span>
+                    <span>120s ({lang === "th" ? "สมดุลกลมกล่อม" : "Balanced"})</span>
+                    <span>300s ({lang === "th" ? "สกัดเข้มลึก" : "Deep Extraction"})</span>
                   </div>
                 </CardContent>
               </Card>
@@ -401,7 +405,7 @@ export default function LabPage() {
                 <CardContent className="pt-6">
                   <div className="flex justify-between mb-2">
                     <label className="font-medium text-dark-wood flex items-center gap-1.5">
-                      <span>💧</span> Water Amount
+                      <span>💧</span> {t.waterAmount}
                     </label>
                     <span className="text-amber font-bold">{waterAmountMl}ml</span>
                   </div>
@@ -450,7 +454,7 @@ export default function LabPage() {
                   className="px-5 py-2 bg-amber hover:bg-wood text-white font-medium rounded-full shadow-md flex items-center gap-2 cursor-pointer transition-all hover:scale-105"
                 >
                   <Play className="w-4 h-4 fill-white" />
-                  <span>Start Live Zen Brew ({formatTime(steepingTimeSec)})</span>
+                  <span>{t.startLiveBrew} ({formatTime(steepingTimeSec)})</span>
                 </Button>
 
                 <Button
@@ -459,7 +463,7 @@ export default function LabPage() {
                   className="px-4 py-2 border-wood/30 bg-white/80 hover:bg-cream text-dark-wood font-medium rounded-full shadow-sm flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105"
                 >
                   <Share2 className="w-3.5 h-3.5 text-wood" />
-                  <span>🎴 Issue Tea Ticket</span>
+                  <span>🎴 {t.createPostcard}</span>
                 </Button>
               </motion.div>
             )}
@@ -511,14 +515,16 @@ export default function LabPage() {
                 {/* Radar Chart */}
                 <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-4 border border-wood/15 flex flex-col items-center">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-wood/70 mb-2">
-                    Sensory Flavor Radar
+                    {t.profilerTitle}
                   </h4>
                   <FlavorRadarChart data={radarData} size="md" />
                 </div>
 
                 {/* Color Hex & Glaze Badge */}
-                <div className="flex items-center justify-center gap-4 bg-white/50 backdrop-blur-sm py-3 px-6 rounded-2xl border border-wood/15">
-                  <span className="text-dark-wood font-medium text-sm">Extracted Liquor:</span>
+                <div className="flex items-center justify-center gap-4 bg-white/50 backdrop-blur-sm py-3 px-6 rounded-2xl border border-wood/15 flex-wrap">
+                  <span className="text-dark-wood font-medium text-sm">
+                    {lang === "th" ? "สีน้ำชา:" : "Extracted Liquor:"}
+                  </span>
                   <div
                     className="w-8 h-8 rounded-full shadow-inner border border-wood/20"
                     style={{ backgroundColor: extraction.renderedHex }}
@@ -527,7 +533,7 @@ export default function LabPage() {
                     {extraction.renderedHex}
                   </Badge>
                   <span className="text-xs text-wood capitalize">
-                    Ceramic: {extraction.cupGlaze}
+                    {lang === "th" ? "เนื้อถ้วย" : "Ceramic"}: {extraction.cupGlaze}
                   </span>
                 </div>
 
@@ -540,24 +546,24 @@ export default function LabPage() {
                 {/* Save Blend Card */}
                 <Card className="border-wood/30 shadow-md bg-white/80 backdrop-blur-sm">
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-dark-wood text-lg flex items-center justify-between">
+                    <CardTitle className="text-dark-wood text-lg flex items-center justify-between flex-wrap gap-2">
                       <span className="flex items-center gap-2">
                         <Sparkles className="w-4 h-4 text-amber" />
-                        Save Your Blend to Community Archive
+                        {lang === "th" ? "บันทึกสูตรชาของคุณลงคลังชุมชน" : "Save Your Blend to Community Archive"}
                       </span>
                       <Button
                         onClick={() => setIsPostcardOpen(true)}
                         variant="ghost"
                         className="text-xs text-wood hover:text-dark-wood p-0 h-auto cursor-pointer"
                       >
-                        🎴 Preview Ticket
+                        🎴 {lang === "th" ? "ดูตัวอย่างโปสการ์ด" : "Preview Ticket"}
                       </Button>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <input
                       type="text"
-                      placeholder="Name your recipe (e.g. Kyoto Morning Reverie)"
+                      placeholder={t.recipeNamePlaceholder}
                       className="w-full px-3 py-2 border border-wood/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber/50 text-sm bg-white"
                       value={recipeName}
                       onChange={(e) => setRecipeName(e.target.value)}
@@ -568,7 +574,7 @@ export default function LabPage() {
                         disabled={isSaving || !recipeName.trim()}
                         onClick={handleSave}
                       >
-                        {isSaving ? "Saving to Archive..." : "Save Recipe"}
+                        {isSaving ? t.saving : t.saveRecipe}
                       </Button>
                       <AnimatePresence>
                         {showSaveSuccess && (
@@ -578,7 +584,7 @@ export default function LabPage() {
                             exit={{ opacity: 0 }}
                             className="absolute top-full left-0 right-0 mt-2 p-2 bg-emerald-100 text-emerald-800 rounded-xl text-center text-sm font-medium border border-emerald-200"
                           >
-                            ✓ Recipe saved successfully to archive!
+                            ✓ {t.savedSuccess}
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -594,7 +600,7 @@ export default function LabPage() {
                 exit={{ opacity: 0 }}
                 className="text-center text-wood/60 italic py-12"
               >
-                Select a signature preset or adjust world tea sliders to brew
+                {t.craftYourFirstBlend}
               </motion.div>
             )}
           </AnimatePresence>

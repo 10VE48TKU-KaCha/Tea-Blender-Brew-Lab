@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface MobileActionDrawerProps {
   onSave: () => void;
@@ -17,9 +18,12 @@ export function MobileActionDrawer({
   onSave,
   isSaving,
   hasBlend,
-  cozyTitle = "Your Blend",
+  cozyTitle,
   renderedHex,
 }: MobileActionDrawerProps) {
+  const { t, lang } = useLanguage();
+  const title = cozyTitle || (lang === "th" ? "สูตรชาของคุณ" : "Your Blend");
+
   return (
     <motion.div
       initial={{ y: "100%" }}
@@ -36,14 +40,14 @@ export function MobileActionDrawer({
               style={{ backgroundColor: renderedHex }}
             />
           )}
-          <span className="font-semibold text-wood-dark">{cozyTitle}</span>
+          <span className="font-semibold text-wood-dark">{title}</span>
         </div>
         <Button
           onClick={onSave}
           disabled={!hasBlend || isSaving}
           className="min-w-[100px]"
         >
-          {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+          {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : t.saveRecipe}
         </Button>
       </div>
     </motion.div>

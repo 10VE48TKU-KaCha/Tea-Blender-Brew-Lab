@@ -6,6 +6,7 @@ import { CozyCupScene, ServingStyle } from "./CozyCupScene";
 import { playChime, playWaterPour, playSoftTick } from "@/lib/audio";
 import { Button } from "@/components/ui/button";
 import { Volume2, VolumeX, Play, Pause, RotateCcw, X, Sparkles, Check } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ZenBrewModalProps {
   isOpen: boolean;
@@ -18,14 +19,6 @@ interface ZenBrewModalProps {
   garnishes: string[];
 }
 
-const ZEN_QUOTES = [
-  "“Water is the mother of tea, a teapot its father, and fire the teacher.”",
-  "“Drink your tea slowly and reverently, as if it is the axis on which the world revolves.”",
-  "“There is poetry in a cup of tea, steeped gently with patience and care.”",
-  "“Listen to the water singing softly in the kettle; every second deepens the flavor.”",
-  "“Quiet your mind, let the leaves unfurl their quiet fragrant secrets.”",
-];
-
 export function ZenBrewModal({
   isOpen,
   onClose,
@@ -36,6 +29,7 @@ export function ZenBrewModal({
   servingStyle,
   garnishes,
 }: ZenBrewModalProps) {
+  const { t, lang } = useLanguage();
   const [remainingSeconds, setRemainingSeconds] = useState(totalSeconds);
   const [isRunning, setIsRunning] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -44,17 +38,19 @@ export function ZenBrewModal({
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const quotes = t.zenQuotes;
+
   // Initialize/reset when modal opens or totalSeconds change
   useEffect(() => {
     if (isOpen) {
       setRemainingSeconds(totalSeconds);
       setIsRunning(false);
       setIsCompleted(false);
-      setCurrentQuoteIndex(Math.floor(Math.random() * ZEN_QUOTES.length));
+      setCurrentQuoteIndex(Math.floor(Math.random() * quotes.length));
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
     }
-  }, [isOpen, totalSeconds]);
+  }, [isOpen, totalSeconds, quotes.length]);
 
   // Main countdown timer loop
   useEffect(() => {
@@ -89,10 +85,10 @@ export function ZenBrewModal({
   useEffect(() => {
     if (!isRunning) return;
     const quoteInterval = setInterval(() => {
-      setCurrentQuoteIndex((prev) => (prev + 1) % ZEN_QUOTES.length);
+      setCurrentQuoteIndex((prev) => (prev + 1) % quotes.length);
     }, 12000);
     return () => clearInterval(quoteInterval);
-  }, [isRunning]);
+  }, [isRunning, quotes.length]);
 
   if (!isOpen) return null;
 
@@ -100,6 +96,9 @@ export function ZenBrewModal({
     100,
     Math.max(0, ((totalSeconds - remainingSeconds) / totalSeconds) * 100)
   );
+
+  // Dynamic Liquid Level: starts at 1.0 (full) and smoothly drops down to 0.0 (empty)
+  const liquidLevel = Math.max(0, Math.min(1, remainingSeconds / totalSeconds));
 
   const handleStart = () => {
     if (soundEnabled && remainingSeconds === totalSeconds) {
@@ -129,12 +128,19 @@ export function ZenBrewModal({
 
   // Steeping Phase Indicator
   const getSteepingPhase = () => {
-    if (isCompleted) return "🍵 Infusion Perfected";
-    if (progressPercent < 20) return "💧 Awakening the leaves";
-    if (progressPercent < 50) return "🍃 Gentle leaf unfurling";
-    if (progressPercent < 80) return "✨ Rich aromas blooming";
-    return "🫖 Flavor harmony peaking";
+    if (isCompleted) return t.phasePerfected;
+    if (progressPercent < 20) return t.phaseAwakening;
+    if (progressPercent < 50) return t.phaseUnfurling;
+    if (progressPercent < 80) return t.phaseAromas;
+    return t.phaseHarmony;
   };
+
+  const servingStyleLabel =
+    servingStyle === "hot"
+      ? t.styleHot
+      : servingStyle === "iced"
+      ? t.styleIced
+      : t.styleLatte;
 
   return (
     <AnimatePresence>
@@ -162,14 +168,14 @@ export function ZenBrewModal({
               type="button"
               onClick={() => setSoundEnabled(!soundEnabled)}
               className="p-2 rounded-full bg-wood/10 text-dark-wood hover:bg-wood/20 transition-colors cursor-pointer"
-              title={soundEnabled ? "Mute sounds" : "Unmute sounds"}
+              title={soundEnabled ? t.muteSounds : t.unmuteSounds}
             >
               {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4 text-wood/50" />}
             </button>
 
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber/15 text-dark-wood text-xs font-semibold tracking-wide">
               <span>🫖</span>
-              <span>Zen Steeping Process</span>
+              <span>{t.zenSteepingProcess}</span>
             </div>
 
             <button
@@ -184,35 +190,36 @@ export function ZenBrewModal({
           {/* Title & Subtitle */}
           <div className="space-y-0.5 mb-1">
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-dark-wood tracking-tight">
-              {title || "Artisan's Steep"}
+              {title || (lang === "th" ? "การชงชาช่างศิลป์" : "Artisan's Steep")}
             </h2>
-            <div className="flex items-center justify-center gap-2 text-xs text-wood font-medium">
+            <div className="flex items-center justify-center gap-2 text-xs text-wood font-medium flex-wrap">
               <span>{waterTempC}°C</span>
               <span>•</span>
-              <span className="capitalize">{servingStyle} Style</span>
+              <span>{servingStyleLabel}</span>
               <span>•</span>
               <span className="text-amber-700 font-semibold">{getSteepingPhase()}</span>
             </div>
           </div>
 
-          {/* Teacup Live Diffusion Scene with Ambient Aura */}
+          {/* Teacup Live Diffusion & Level Draining Scene */}
           <div className="relative py-2 flex justify-center items-center">
             {/* Ambient Aura Glow reflecting tea color */}
             <motion.div
               animate={{
                 scale: isRunning ? [1, 1.06, 1] : 1,
-                opacity: currentOpacity * 0.35,
+                opacity: currentOpacity * 0.35 * Math.max(0.2, liquidLevel),
               }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full blur-2xl -z-0 pointer-events-none"
               style={{ backgroundColor: targetHex }}
             />
 
-            {/* Redesigned Cozy Cup */}
+            {/* Redesigned Cozy Cup with dynamic liquidLevel */}
             <div className="w-56 sm:w-64 relative z-10">
               <CozyCupScene
                 liquidColor={targetHex}
                 opacity={currentOpacity}
+                liquidLevel={liquidLevel}
                 steamIntensity={isRunning ? Math.max(0.45, (waterTempC - 50) / 45) : 0.25}
                 servingStyle={servingStyle}
                 garnishes={garnishes}
@@ -248,17 +255,17 @@ export function ZenBrewModal({
                   className="p-3 bg-emerald-100/95 border border-emerald-300 text-emerald-900 rounded-2xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
                 >
                   <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Steeping Complete! Take your warm, soothing sip. 🍵</span>
+                  <span>{t.steepingComplete}</span>
                 </motion.div>
               ) : (
                 <motion.p
-                  key={currentQuoteIndex}
+                  key={`${currentQuoteIndex}-${lang}`}
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   className="text-xs text-wood/80 italic max-w-sm mx-auto leading-relaxed"
                 >
-                  {ZEN_QUOTES[currentQuoteIndex]}
+                  {quotes[currentQuoteIndex % quotes.length]}
                 </motion.p>
               )}
             </AnimatePresence>
@@ -272,7 +279,7 @@ export function ZenBrewModal({
                 className="px-6 py-2.5 bg-dark-wood hover:bg-wood text-cream rounded-full font-medium flex items-center gap-2 shadow-md cursor-pointer transition-transform active:scale-95"
               >
                 <Play className="w-4 h-4 fill-cream" />
-                <span>{remainingSeconds === totalSeconds ? "Start Steep" : "Resume"}</span>
+                <span>{remainingSeconds === totalSeconds ? t.startSteep : t.resumeSteep}</span>
               </Button>
             ) : (
               <Button
@@ -281,7 +288,7 @@ export function ZenBrewModal({
                 className="px-6 py-2.5 border-wood/30 text-dark-wood hover:bg-wood/10 rounded-full font-medium flex items-center gap-2 cursor-pointer transition-transform active:scale-95"
               >
                 <Pause className="w-4 h-4" />
-                <span>Pause</span>
+                <span>{t.pauseSteep}</span>
               </Button>
             )}
 
@@ -289,7 +296,7 @@ export function ZenBrewModal({
               onClick={handleReset}
               variant="ghost"
               className="p-2.5 text-wood hover:text-dark-wood hover:bg-wood/10 rounded-full cursor-pointer transition-transform active:scale-95"
-              title="Reset Timer"
+              title={t.resetTimer}
             >
               <RotateCcw className="w-4 h-4" />
             </Button>
@@ -300,7 +307,7 @@ export function ZenBrewModal({
                 className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full font-medium flex items-center gap-1.5 shadow-md cursor-pointer transition-transform active:scale-95 text-xs"
               >
                 <Check className="w-3.5 h-3.5" />
-                <span>Enjoy Tea</span>
+                <span>{t.enjoyTea}</span>
               </Button>
             )}
           </div>
