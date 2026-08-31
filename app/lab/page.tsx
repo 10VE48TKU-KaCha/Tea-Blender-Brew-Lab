@@ -451,7 +451,7 @@ export default function LabPage() {
               >
                 <Button
                   onClick={() => setIsBrewModalOpen(true)}
-                  className="px-5 py-2 bg-amber hover:bg-wood text-white font-medium rounded-full shadow-md flex items-center gap-2 cursor-pointer transition-all hover:scale-105"
+                  className="px-6 py-2.5 bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-white font-semibold rounded-full shadow-lg shadow-amber-900/20 ring-1 ring-amber-400/50 flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
                 >
                   <Play className="w-4 h-4 fill-white" />
                   <span>{t.startLiveBrew} ({formatTime(steepingTimeSec)})</span>
@@ -460,9 +460,9 @@ export default function LabPage() {
                 <Button
                   onClick={() => setIsPostcardOpen(true)}
                   variant="outline"
-                  className="px-4 py-2 border-wood/30 bg-white/80 hover:bg-cream text-dark-wood font-medium rounded-full shadow-sm flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105"
+                  className="px-5 py-2.5 border-[#8C5E45]/30 bg-white/90 hover:bg-amber-50 text-dark-wood font-medium rounded-full shadow-sm flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105 active:scale-95"
                 >
-                  <Share2 className="w-3.5 h-3.5 text-wood" />
+                  <Share2 className="w-3.5 h-3.5 text-[#8C5E45]" />
                   <span>🎴 {t.createPostcard}</span>
                 </Button>
               </motion.div>

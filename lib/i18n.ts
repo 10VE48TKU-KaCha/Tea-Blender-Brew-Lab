@@ -98,6 +98,14 @@ export interface TranslationDictionary {
   pauseSteep: string;
   resetTimer: string;
   enjoyTea: string;
+  startSipping: string;
+  sippingInProgress: string;
+  cupEmptied: string;
+  brewAgain: string;
+  stepWarmWater: string;
+  stepAddLeaves: string;
+  stepSteepingInfusion: string;
+  stepSavoring: string;
   phaseAwakening: string;
   phaseUnfurling: string;
   phaseAromas: string;
@@ -243,16 +251,24 @@ export const translations: Record<Language, TranslationDictionary> = {
     foodPairingSubtitle: "Delicacies that harmonize with this cup's unique aroma and body",
     noBlendSelectedPrompt: "Blend at least one tea ingredient to unlock Sommelier advice",
 
-    zenSteepingProcess: "Zen Steeping Process",
+    zenSteepingProcess: "Zen Steeping Ceremony",
     muteSounds: "Mute sounds",
     unmuteSounds: "Unmute sounds",
-    steepingComplete: "Steeping Complete! Take your warm, soothing sip. 🍵",
+    steepingComplete: "Steeping Complete! Fresh aroma fills the air. 🍵",
     steepingCompleteDesc: "Your tea has reached its peak extraction harmony.",
-    startSteep: "Start Steep",
+    startSteep: "Start Infusion",
     resumeSteep: "Resume",
     pauseSteep: "Pause",
     resetTimer: "Reset Timer",
-    enjoyTea: "Enjoy Tea",
+    enjoyTea: "Savor & Drink Tea",
+    startSipping: "Savor & Sip Tea 🍵",
+    sippingInProgress: "Sipping gently...",
+    cupEmptied: "Cup Emptied • Pure Serenity Achieved ✨",
+    brewAgain: "Brew Another Cup",
+    stepWarmWater: "1. Pour Hot Water",
+    stepAddLeaves: "2. Add Tea Ingredients",
+    stepSteepingInfusion: "3. Live Steeping",
+    stepSavoring: "4. Savor & Enjoy",
     phaseAwakening: "💧 Awakening the leaves",
     phaseUnfurling: "🍃 Gentle leaf unfurling",
     phaseAromas: "✨ Rich aromas blooming",
@@ -404,13 +420,21 @@ export const translations: Record<Language, TranslationDictionary> = {
     zenSteepingProcess: "พิธีการชงชาแบบเซน",
     muteSounds: "ปิดเสียง",
     unmuteSounds: "เปิดเสียง",
-    steepingComplete: "การสกัดชงชาเสร็จสมบูรณ์! ได้เวลาจิบชาร้อนๆ ผ่อนคลายกายใจ 🍵",
+    steepingComplete: "การสกัดชงชาเสร็จสมบูรณ์! กลิ่นหอมฟุ้งอบอวลทั่วห้อง 🍵",
     steepingCompleteDesc: "น้ำชาของคุณได้เดินทางมาถึงจุดที่รสชาติและกลิ่นผสานกลมกลืนที่สุดแล้ว",
-    startSteep: "เริ่มชง",
+    startSteep: "เริ่มสกัดชา",
     resumeSteep: "ชงต่อ",
     pauseSteep: "พักชั่วคราว",
     resetTimer: "รีเซ็ตเวลา",
     enjoyTea: "ดื่มด่ำกับชา",
+    startSipping: "ดื่มด่ำกับชา (เริ่มจิบ) 🍵",
+    sippingInProgress: "กำลังจิบชาช้าๆ อย่างผ่อนคลาย...",
+    cupEmptied: "จิบชาหมดถ้วยแล้ว • สัมผัสความสงบและละมุนใจ ✨",
+    brewAgain: "ชงชาอีกกา",
+    stepWarmWater: "1. รินน้ำร้อน",
+    stepAddLeaves: "2. ใส่ใบชา & ส่วนผสม",
+    stepSteepingInfusion: "3. สกัดกลิ่น & รสชาติ",
+    stepSavoring: "4. จิบดื่มด่ำ",
     phaseAwakening: "💧 ปลุกใบชาให้ตื่นตัว",
     phaseUnfurling: "🍃 ใบชาเริ่มคลี่ตัวอย่างนุ่มนวล",
     phaseAromas: "✨ กลิ่นหอมอบอวลเริ่มผลิบาน",

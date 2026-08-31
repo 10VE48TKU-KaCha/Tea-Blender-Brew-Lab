@@ -119,3 +119,31 @@ export function playSoftTick() {
   osc.start(now);
   osc.stop(now + 0.05);
 }
+
+/**
+ * Plays a gentle, relaxing sip sound with subtle warmth.
+ */
+export function playSipSound() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  // Gentle breathy water suction + bell chime note
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(587.33, now); // D5 calming note
+  osc.frequency.exponentialRampToValueAtTime(880, now + 0.3); // Ramp up to A5
+
+  gain.gain.setValueAtTime(0.001, now);
+  gain.gain.linearRampToValueAtTime(0.12, now + 0.08);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.85);
+}
