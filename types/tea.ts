@@ -68,6 +68,38 @@ export interface BrewParams {
   steepingTimeSec: number;
 }
 
+// === Vessel, Glaze & Presentation Types ===
+export type CupVesselType =
+  | "mug"       // Classic Yunomi / Artisan Ceramic Mug
+  | "tumbler"   // Fluted Crystal Tumbler / Can Glass (Iced)
+  | "latte"     // Wide Cafe Latte Bowl
+  | "chawan"    // Japanese Ceremonial Matcha Bowl
+  | "gaiwan"    // Chinese Gongfu Gaiwan (Lidded bowl)
+  | "goblet"    // Cold Brew Stemmed Wine Goblet
+  | "kuksa"     // Scandinavian Carved Wooden Cup
+  | "zisha";    // Yixing Purple Clay Cup
+
+export type CupGlaze =
+  | "celadon"     // Celadon Jade Green
+  | "tenmoku"     // Tenmoku Rust Bronze
+  | "hakuji"      // Pure Hakuji Porcelain
+  | "earthenware" // Warm Stoneware / Terracotta
+  | "sakura"      // Sakura Blossom Pink
+  | "kintsugi"    // Kintsugi Gold Vein Repair
+  | "obsidian"    // Midnight Obsidian Stardust
+  | "wood"        // Natural Hinoki / Teak Wood
+  | "crystal";    // Diamond Ribbed Crystal Glass
+
+export type CoasterStyle =
+  | "wood"     // Bamboo / Cedar Wood Ring
+  | "rattan"   // Woven Rattan Coaster
+  | "marble"   // Carrara White Marble Tray
+  | "ceramic"  // Gold-Rim Glazed Saucer
+  | "stone"    // Zen Riverstone Pedestal
+  | "none";    // Floating / Clean Table
+
+export type LatteArtType = "bear" | "heart" | "leaf" | "cat" | "sakura";
+
 export interface ExtractionResult {
   renderedHex: string;
   opacity: number;
@@ -79,7 +111,8 @@ export interface ExtractionResult {
   cozyTitle: string;
   tastingNotes: string;
   blendCode?: string;
-  cupGlaze?: "celadon" | "tenmoku" | "hakuji" | "earthenware";
+  recommendedVessel?: CupVesselType;
+  cupGlaze?: CupGlaze;
   turbidity?: "clear" | "cloudy" | "velvet";
   originCountries?: string[];
 }

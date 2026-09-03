@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ServingStyle } from "./CozyCupScene";
+import { ServingStyle, CupVesselType, CupGlaze, CoasterStyle, LatteArtType } from "./CozyCupScene";
 import { BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/LanguageContext";
@@ -17,6 +17,10 @@ export interface TeaPreset {
   steepingTimeSec: number;
   waterAmountMl: number;
   servingStyle: ServingStyle;
+  vesselType?: CupVesselType;
+  cupGlaze?: CupGlaze;
+  coasterStyle?: CoasterStyle;
+  latteArt?: LatteArtType;
   garnishes: string[];
 }
 
@@ -35,6 +39,9 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
     steepingTimeSec: 90,
     waterAmountMl: 180,
     servingStyle: "hot",
+    vesselType: "chawan",
+    cupGlaze: "celadon",
+    coasterStyle: "stone",
     garnishes: ["osmanthus"],
   },
   {
@@ -51,6 +58,10 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
     steepingTimeSec: 180,
     waterAmountMl: 220,
     servingStyle: "latte",
+    vesselType: "latte",
+    cupGlaze: "sakura",
+    coasterStyle: "ceramic",
+    latteArt: "heart",
     garnishes: ["cinnamon", "honey"],
   },
   {
@@ -67,6 +78,10 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
     steepingTimeSec: 60,
     waterAmountMl: 160,
     servingStyle: "latte",
+    vesselType: "chawan",
+    cupGlaze: "kintsugi",
+    coasterStyle: "stone",
+    latteArt: "bear",
     garnishes: [],
   },
   {
@@ -83,6 +98,9 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
     steepingTimeSec: 140,
     waterAmountMl: 160,
     servingStyle: "hot",
+    vesselType: "gaiwan",
+    cupGlaze: "hakuji",
+    coasterStyle: "marble",
     garnishes: [],
   },
   {
@@ -99,6 +117,9 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
     steepingTimeSec: 240,
     waterAmountMl: 250,
     servingStyle: "hot",
+    vesselType: "kuksa",
+    cupGlaze: "wood",
+    coasterStyle: "rattan",
     garnishes: ["honey", "rose"],
   },
   {
@@ -108,13 +129,16 @@ export const SIGNATURE_PRESETS: TeaPreset[] = [
     icon: "🧊",
     desc: "Tart Egyptian hibiscus with sweet South African rooibos on ice",
     ingredientRatios: {
-      "Nile Valley Hibiscus 🇪🇬": 60,
-      "Cederberg Red Rooibos 🇿🇦": 40,
+      "Egyptian Sun-Dried Hibiscus 🇪🇬": 60,
+      "Kyoto Roasted Hojicha 🇯🇵": 40,
     },
     waterTempC: 70,
     steepingTimeSec: 120,
     waterAmountMl: 240,
     servingStyle: "iced",
+    vesselType: "tumbler",
+    cupGlaze: "crystal",
+    coasterStyle: "wood",
     garnishes: ["rose"],
   },
 ];

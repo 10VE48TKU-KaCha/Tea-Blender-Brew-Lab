@@ -55,15 +55,77 @@ export interface TranslationDictionary {
   styleIcedDesc: string;
   styleLatte: string;
   styleLatteDesc: string;
+
+  // Cup Studio & Artisan Vessels
+  cupStudioTitle: string;
+  cupStudioSubtitle: string;
+  tabVessel: string;
+  tabGlaze: string;
+  tabCoaster: string;
+  tabLatteArt: string;
+  tabBotanicals: string;
+
+  // 8 Vessels
+  vesselMug: string;
+  vesselMugDesc: string;
+  vesselTumbler: string;
+  vesselTumblerDesc: string;
+  vesselLatte: string;
+  vesselLatteDesc: string;
+  vesselChawan: string;
+  vesselChawanDesc: string;
+  vesselGaiwan: string;
+  vesselGaiwanDesc: string;
+  vesselGoblet: string;
+  vesselGobletDesc: string;
+  vesselKuksa: string;
+  vesselKuksaDesc: string;
+  vesselZisha: string;
+  vesselZishaDesc: string;
+
+  // 9 Glazes & Materials
+  glazeCeladon: string;
+  glazeCeladonDesc: string;
+  glazeTenmoku: string;
+  glazeTenmokuDesc: string;
+  glazeHakuji: string;
+  glazeHakujiDesc: string;
+  glazeEarthenware: string;
+  glazeEarthenwareDesc: string;
+  glazeSakura: string;
+  glazeSakuraDesc: string;
+  glazeKintsugi: string;
+  glazeKintsugiDesc: string;
+  glazeObsidian: string;
+  glazeObsidianDesc: string;
+  glazeWood: string;
+  glazeWoodDesc: string;
+  glazeCrystal: string;
+  glazeCrystalDesc: string;
+
+  // 6 Coasters
+  coasterWood: string;
+  coasterRattan: string;
+  coasterMarble: string;
+  coasterCeramic: string;
+  coasterStone: string;
+  coasterNone: string;
+
   latteFoamArt: string;
   artBear: string;
   artHeart: string;
+  artLeaf: string;
+  artCat: string;
+  artSakura: string;
   botanicalAddins: string;
   selectedCount: string;
   garnishOsmanthus: string;
   garnishRose: string;
   garnishCinnamon: string;
   garnishHoney: string;
+  garnishMint: string;
+  garnishLemon: string;
+  garnishBoba: string;
 
   // Profiler & Sensory
   profilerTitle: string;
@@ -221,15 +283,76 @@ export const translations: Record<Language, TranslationDictionary> = {
     styleIcedDesc: "Crystal tumbler",
     styleLatte: "Tea Latte",
     styleLatteDesc: "Layered & foam art",
+
+    cupStudioTitle: "Artisan Cup & Vessel Studio",
+    cupStudioSubtitle: "Craft your customized drinking vessel, glaze finish, coaster, and garnishes",
+    tabVessel: "Vessel Shape",
+    tabGlaze: "Material & Glaze",
+    tabCoaster: "Coaster & Stand",
+    tabLatteArt: "Foam Art",
+    tabBotanicals: "Botanicals",
+
+    // 8 Vessels
+    vesselMug: "Artisan Ceramic Mug",
+    vesselMugDesc: "Classic Yunomi mug with saucer & handle",
+    vesselTumbler: "Fluted Crystal Tumbler",
+    vesselTumblerDesc: "Tall iced glass with crystal ice & straw",
+    vesselLatte: "Wide Cafe Latte Bowl",
+    vesselLatteDesc: "Shallow basin for barista foam art",
+    vesselChawan: "Matcha Ceremony Chawan",
+    vesselChawanDesc: "Wabi-sabi bowl with whisk froth",
+    vesselGaiwan: "Gongfu Lidded Gaiwan",
+    vesselGaiwanDesc: "Flared porcelain bowl with lid & saucer",
+    vesselGoblet: "Cold Brew Wine Goblet",
+    vesselGobletDesc: "Stemmed crystal glass with brilliant clarity",
+    vesselKuksa: "Scandinavian Kuksa",
+    vesselKuksaDesc: "Carved birch wood cup for forest brews",
+    vesselZisha: "Yixing Purple Clay Cup",
+    vesselZishaDesc: "Mineral-rich zisha clay for aged teas",
+
+    // 9 Glazes & Materials
+    glazeCeladon: "Celadon Jade",
+    glazeCeladonDesc: "Emerald crackle porcelain glaze",
+    glazeTenmoku: "Tenmoku Rust Bronze",
+    glazeTenmokuDesc: "Dark iron crystalline oil spots",
+    glazeHakuji: "Hakuji Pure White",
+    glazeHakujiDesc: "Luminous minimalist ivory porcelain",
+    glazeEarthenware: "Warm Stoneware",
+    glazeEarthenwareDesc: "Rustic terracotta with sand speckles",
+    glazeSakura: "Sakura Blossom Pink",
+    glazeSakuraDesc: "Pastel blossom blush with gold rim",
+    glazeKintsugi: "Kintsugi Gold Vein",
+    glazeKintsugiDesc: "Japanese gold lacquer repair seam",
+    glazeObsidian: "Midnight Obsidian",
+    glazeObsidianDesc: "Deep cosmic blue with stardust sparkle",
+    glazeWood: "Hinoki & Teak Wood",
+    glazeWoodDesc: "Organic hand-carved natural grain",
+    glazeCrystal: "Diamond Crystal Glass",
+    glazeCrystalDesc: "Optic faceted transparent glass",
+
+    // 6 Coasters
+    coasterWood: "Bamboo Wood Ring",
+    coasterRattan: "Woven Rattan Mat",
+    coasterMarble: "Carrara White Marble",
+    coasterCeramic: "Gold-Trim Saucer",
+    coasterStone: "Zen Riverstone",
+    coasterNone: "Clean Tabletop",
+
     latteFoamArt: "Latte Foam Art",
     artBear: "Cute Foam Bear",
     artHeart: "Rosetta Heart",
+    artLeaf: "Zen Leaf Tulip",
+    artCat: "Playful Cat Paw",
+    artSakura: "Sakura Flower",
     botanicalAddins: "Botanical Floating Add-ins",
     selectedCount: "selected",
     garnishOsmanthus: "Osmanthus",
     garnishRose: "Rose Petals",
-    garnishCinnamon: "Cinnamon",
+    garnishCinnamon: "Cinnamon Stick",
     garnishHoney: "Honey Swirl",
+    garnishMint: "Fresh Mint Leaf",
+    garnishLemon: "Citrus Lemon Wheel",
+    garnishBoba: "Boba Tapioca Pearls",
 
     profilerTitle: "Sensory Extraction Profile",
     sweetness: "Sweetness",
@@ -387,15 +510,76 @@ export const translations: Record<Language, TranslationDictionary> = {
     styleIcedDesc: "แก้วคริสตัลใส",
     styleLatte: "ชาทีลาเต้",
     styleLatteDesc: "ฟองนมนุ่ม & ลาเต้อาร์ต",
+
+    cupStudioTitle: "สตูดิโอแก้วและภาชนะชา",
+    cupStudioSubtitle: "ปรับแต่งรูปทรงภาชนะ วัสดุเคลือบ ที่รองแก้ว และท็อปปิ้งอย่างอิสระ",
+    tabVessel: "รูปทรงภาชนะ",
+    tabGlaze: "วัสดุและสีเคลือบ",
+    tabCoaster: "ที่รองแก้ว / ถาด",
+    tabLatteArt: "ศิลปะฟองนม",
+    tabBotanicals: "พฤกษศาสตร์",
+
+    // 8 Vessels
+    vesselMug: "ถ้วยเซรามิกคลาสสิก",
+    vesselMugDesc: "ถ้วยชาเซรามิกพร้อมหูจับและจานรองอบอุ่น",
+    vesselTumbler: "แก้วคริสตัลทรงสูง",
+    vesselTumblerDesc: "แก้วใสสำหรับชาเย็น พร้อมน้ำแข็งและหลอดแก้ว",
+    vesselLatte: "ถ้วยลาเต้ปากกว้าง",
+    vesselLatteDesc: "ถ้วยปากกว้างพิเศษสำหรับวาดฟองนมลาเต้อาร์ต",
+    vesselChawan: "ถ้วยชามมัทฉะพิธีการ",
+    vesselChawanDesc: "ชามเซรามิกวาบิซาบิพร้อมฟองมัทฉะเนียนนุ่ม",
+    vesselGaiwan: "ถ้วยชาไก่วานกังฟู",
+    vesselGaiwanDesc: "ถ้วยมีฝาปิดพร้อมจานรองสไตล์จีนดั้งเดิม",
+    vesselGoblet: "แก้วก้านไวน์โคลด์บริว",
+    vesselGobletDesc: "แก้วทรงก้านสำหรับชาสกัดเย็นใสประกายหรูหรา",
+    vesselKuksa: "ถ้วยไม้คุกซ่าแฮนด์เมด",
+    vesselKuksaDesc: "ถ้วยไม้แกะสลักธรรมชาติสไตล์นอร์ดิก",
+    vesselZisha: "ถ้วยดินเผาจื่อซา",
+    vesselZishaDesc: "ถ้วยดินเผาแร่ธาตุธรรมชาติสำหรับชาผู่เอ๋อร์และอู่หลง",
+
+    // 9 Glazes & Materials
+    glazeCeladon: "หยกเขียวเซลาดอน",
+    glazeCeladonDesc: "เคลือบศิลาดลแตกลายงาเงางามดั่งหยก",
+    glazeTenmoku: "เท็นโมกุบรอนซ์สนิมเหล็ก",
+    glazeTenmokuDesc: "ผิวเคลือบจุดน้ำมันคริสตัลและขอบบรอนซ์",
+    glazeHakuji: "พอร์ซเลนขาวบริสุทธิ์",
+    glazeHakujiDesc: "สีงาช้างประกายสะอาดตา สไตล์มินิมอล",
+    glazeEarthenware: "ดินเผาสโตนแวร์อบอุ่น",
+    glazeEarthenwareDesc: "เนื้อดินเผาสีธรรมชาติพร้อมลายจุดทราย",
+    glazeSakura: "กลีบซากุระชมพูทอง",
+    glazeSakuraDesc: "สีชมพูพาสเทลไล่เฉดตัดขอบทองหรูหรา",
+    glazeKintsugi: "คินสึงิประสานทอง",
+    glazeKintsugiDesc: "ศิลปะซ่อมแซมเส้นสายรักทองคำแบบญี่ปุ่น",
+    glazeObsidian: "ออบซิเดียนประกายดาว",
+    glazeObsidianDesc: "สีน้ำเงินเข้มห้วงอวกาศประกายระยิบระยับ",
+    glazeWood: "เนื้อไม้ฮิโนกิ/ไม้สัก",
+    glazeWoodDesc: "ลวดลายวงปีและเสี้ยนไม้ธรรมชาติแท้",
+    glazeCrystal: "แก้วคริสตัลใส",
+    glazeCrystalDesc: "แก้วเจียระไนโปร่งใสสะท้อนแสงระยิบระยับ",
+
+    // 6 Coasters
+    coasterWood: "ที่รองไม้ไผ่ธรรมชาติ",
+    coasterRattan: "แผ่นรองสานหวาย",
+    coasterMarble: "ถาดหินอ่อนคาร์รารา",
+    coasterCeramic: "จานรองเคลือบขอบทอง",
+    coasterStone: "แท่นหินแม่น้ำเซน",
+    coasterNone: "วางบนโต๊ะโดยตรง",
+
     latteFoamArt: "ศิลปะฟองนมลาเต้",
     artBear: "น้องหมีฟองนมนุ่ม",
     artHeart: "หัวใจโรเซตต้า",
+    artLeaf: "ใบชาทิวลิปเซน",
+    artCat: "อุ้งเท้าแมวเหมียว",
+    artSakura: "ดอกซากุระบาน",
     botanicalAddins: "ท็อปปิ้งพฤกษศาสตร์ลอยน้ำ",
     selectedCount: "รายการที่เลือก",
     garnishOsmanthus: "ดอกหอมหมื่นลี้",
     garnishRose: "กลีบกุหลาบ",
     garnishCinnamon: "แท่งอบเชย",
     garnishHoney: "น้ำผึ้งแท้",
+    garnishMint: "ใบสะระแหน่สด",
+    garnishLemon: "เลมอนสไลซ์ฉ่ำ",
+    garnishBoba: "ไข่มุกบราวน์ชูการ์",
 
     profilerTitle: "มิติรสสัมผัสและโปรไฟล์การสกัด",
     sweetness: "ความหวานละมุน",

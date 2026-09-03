@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TeaIngredient, BlendInput, TeaCategory } from "@/types/tea";
+import { TeaIngredient, BlendInput, TeaCategory, CupVesselType, CupGlaze, CoasterStyle, LatteArtType } from "@/types/tea";
 import { calculateExtraction } from "@/lib/extraction-engine";
 import { getSommelierAdvices, getFoodPairings } from "@/lib/sommelier-engine";
 import IngredientControl from "@/components/game/IngredientControl";
@@ -38,10 +38,14 @@ export default function LabPage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showOnlyActive, setShowOnlyActive] = useState<boolean>(false);
 
-  // New Interactive States
+  // Vessel, Glaze, Coaster & Presentation States
   const [servingStyle, setServingStyle] = useState<ServingStyle>("hot");
+  const [vesselType, setVesselType] = useState<CupVesselType>("mug");
+  const [cupGlaze, setCupGlaze] = useState<CupGlaze>("earthenware");
+  const [coasterStyle, setCoasterStyle] = useState<CoasterStyle>("ceramic");
+  const [latteArt, setLatteArt] = useState<LatteArtType>("bear");
   const [garnishes, setGarnishes] = useState<string[]>([]);
-  const [latteArt, setLatteArt] = useState<"bear" | "heart">("bear");
+  const [hasUserCustomizedVessel, setHasUserCustomizedVessel] = useState<boolean>(false);
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const [isBrewModalOpen, setIsBrewModalOpen] = useState<boolean>(false);
   const [isPostcardOpen, setIsPostcardOpen] = useState<boolean>(false);
@@ -143,6 +147,16 @@ export default function LabPage() {
     setBlendRatios((prev) => ({ ...prev, [id]: value }));
   };
 
+  // Auto-sync vessel style with recipe extraction recommendation if not manually customized
+  useEffect(() => {
+    if (extraction && !hasUserCustomizedVessel && extraction.recommendedVessel) {
+      setVesselType(extraction.recommendedVessel);
+      if (extraction.cupGlaze) {
+        setCupGlaze(extraction.cupGlaze);
+      }
+    }
+  }, [extraction, hasUserCustomizedVessel]);
+
   const handleSelectPreset = (preset: TeaPreset) => {
     setActivePresetId(preset.id);
     setRecipeName(preset.name);
@@ -150,7 +164,12 @@ export default function LabPage() {
     setSteepingTimeSec(preset.steepingTimeSec);
     setWaterAmountMl(preset.waterAmountMl);
     setServingStyle(preset.servingStyle);
+    if (preset.vesselType) setVesselType(preset.vesselType);
+    if (preset.cupGlaze) setCupGlaze(preset.cupGlaze);
+    if (preset.coasterStyle) setCoasterStyle(preset.coasterStyle);
+    if (preset.latteArt) setLatteArt(preset.latteArt);
     setGarnishes(preset.garnishes);
+    setHasUserCustomizedVessel(true);
 
     const nextRatios: Record<string, number> = {};
     ingredients.forEach((ing) => {
@@ -436,7 +455,9 @@ export default function LabPage() {
               opacity={hasBlend ? 0.85 : 0.2}
               steamIntensity={Math.max(0, (waterTempC - 60) / 40)}
               servingStyle={servingStyle}
-              cupGlaze={extraction?.cupGlaze || "earthenware"}
+              vesselType={vesselType}
+              cupGlaze={cupGlaze}
+              coasterStyle={coasterStyle}
               turbidity={extraction?.turbidity || "velvet"}
               garnishes={garnishes}
               latteArt={latteArt}
@@ -469,14 +490,32 @@ export default function LabPage() {
             )}
           </div>
 
-          {/* Serving Style & Botanicals Selector */}
+          {/* Artisan Cup & Vessel Studio */}
           <ServingStyleSelector
             servingStyle={servingStyle}
             onStyleChange={setServingStyle}
+            vesselType={vesselType}
+            onVesselChange={(v) => {
+              setVesselType(v);
+              setHasUserCustomizedVessel(true);
+            }}
+            cupGlaze={cupGlaze}
+            onGlazeChange={(g) => {
+              setCupGlaze(g);
+              setHasUserCustomizedVessel(true);
+            }}
+            coasterStyle={coasterStyle}
+            onCoasterChange={(c) => {
+              setCoasterStyle(c);
+              setHasUserCustomizedVessel(true);
+            }}
+            latteArt={latteArt}
+            onLatteArtChange={(a) => {
+              setLatteArt(a);
+              setHasUserCustomizedVessel(true);
+            }}
             garnishes={garnishes}
             onGarnishToggle={handleGarnishToggle}
-            latteArt={latteArt}
-            onLatteArtChange={setLatteArt}
           />
 
           {/* Extraction Analytics & Flavor Radar */}
@@ -627,6 +666,10 @@ export default function LabPage() {
         title={recipeName || extraction?.cozyTitle || "Artisan's Steep"}
         waterTempC={waterTempC}
         servingStyle={servingStyle}
+        vesselType={vesselType}
+        cupGlaze={cupGlaze}
+        coasterStyle={coasterStyle}
+        latteArt={latteArt}
         garnishes={garnishes}
       />
 
@@ -645,6 +688,10 @@ export default function LabPage() {
           steepingTimeSec={steepingTimeSec}
           waterAmountMl={waterAmountMl}
           servingStyle={servingStyle}
+          vesselType={vesselType}
+          cupGlaze={cupGlaze}
+          coasterStyle={coasterStyle}
+          latteArt={latteArt}
           garnishes={garnishes}
         />
       )}

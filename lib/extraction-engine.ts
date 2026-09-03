@@ -179,6 +179,7 @@ function defaultResult(): ExtractionResult {
     cozyTitle: "Empty Cup Meditation",
     tastingNotes: "A quiet moment with warm water. Add some tea leaves to begin your journey.",
     blendCode: "#KISSA-0000",
+    recommendedVessel: "mug",
     cupGlaze: "hakuji",
     turbidity: "clear",
     originCountries: [],
@@ -240,24 +241,42 @@ export function calculateExtraction(
   // 6. Dominant Category & Origin
   const dominantItem = [...weighted].sort((a, b) => b.weight - a.weight)[0];
   const dominantCategory = dominantItem?.ingredient.category || "BLACK";
+  const dominantName = dominantItem?.ingredient.name || "";
   const originCountries = extractOrigins(blendInputs);
 
-  // 7. Visual Cup Glaze & Turbidity
-  let cupGlaze: "celadon" | "tenmoku" | "hakuji" | "earthenware" = "earthenware";
+  // 7. Visual Cup Glaze, Vessel Recommendation & Turbidity
+  let recommendedVessel: import("@/types/tea").CupVesselType = "mug";
+  let cupGlaze: import("@/types/tea").CupGlaze = "earthenware";
   let turbidity: "clear" | "cloudy" | "velvet" = "velvet";
 
-  if (dominantCategory === "GREEN") {
+  if (dominantName.includes("Matcha")) {
+    recommendedVessel = "chawan";
     cupGlaze = "celadon";
-    turbidity = dominantItem.ingredient.name.includes("Matcha") ? "cloudy" : "velvet";
-  } else if (dominantCategory === "BLACK") {
-    cupGlaze = "tenmoku";
+    turbidity = "cloudy";
+  } else if (dominantCategory === "GREEN") {
+    recommendedVessel = "chawan";
+    cupGlaze = "celadon";
+    turbidity = "velvet";
+  } else if (dominantCategory === "OOLONG") {
+    recommendedVessel = "gaiwan";
+    cupGlaze = "hakuji";
+    turbidity = "clear";
+  } else if (dominantName.includes("Pu-erh") || dominantName.includes("Da Hong Pao")) {
+    recommendedVessel = "zisha";
+    cupGlaze = "earthenware";
     turbidity = "velvet";
   } else if (dominantCategory === "WHITE") {
+    recommendedVessel = "goblet";
     cupGlaze = "hakuji";
     turbidity = "clear";
-  } else if (dominantCategory === "OOLONG") {
-    cupGlaze = "hakuji";
+  } else if (dominantCategory === "HERBAL") {
+    recommendedVessel = "kuksa";
+    cupGlaze = "wood";
     turbidity = "clear";
+  } else if (dominantCategory === "BLACK") {
+    recommendedVessel = "mug";
+    cupGlaze = "tenmoku";
+    turbidity = "velvet";
   }
 
   // 8. Procedural Unique Blend Code & Title
@@ -278,6 +297,7 @@ export function calculateExtraction(
     cozyTitle,
     tastingNotes,
     blendCode,
+    recommendedVessel,
     cupGlaze,
     turbidity,
     originCountries,

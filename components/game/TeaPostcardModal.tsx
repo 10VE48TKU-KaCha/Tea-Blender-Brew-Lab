@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExtractionResult, BlendInput } from "@/types/tea";
+import { ExtractionResult, BlendInput, CupVesselType, CupGlaze, CoasterStyle, LatteArtType } from "@/types/tea";
 import { ServingStyle } from "./CozyCupScene";
 import FlavorRadarChart from "@/components/charts/FlavorRadarChart";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,11 @@ interface TeaPostcardModalProps {
   waterTempC: number;
   steepingTimeSec: number;
   waterAmountMl: number;
-  servingStyle: ServingStyle;
+  servingStyle?: ServingStyle;
+  vesselType?: CupVesselType;
+  cupGlaze?: CupGlaze;
+  coasterStyle?: CoasterStyle;
+  latteArt?: LatteArtType;
   garnishes: string[];
 }
 
@@ -32,7 +36,11 @@ export function TeaPostcardModal({
   waterTempC,
   steepingTimeSec,
   waterAmountMl,
-  servingStyle,
+  servingStyle = "hot",
+  vesselType = "mug",
+  cupGlaze,
+  coasterStyle,
+  latteArt,
   garnishes,
 }: TeaPostcardModalProps) {
   const { t, lang, translateIngredient } = useLanguage();
@@ -152,12 +160,14 @@ export function TeaPostcardModal({
               </div>
             )}
 
-            {/* Tea Liquor & Glaze Preview */}
+            {/* Tea Liquor, Vessel & Glaze Preview */}
             <div className="flex items-center gap-3 my-4 p-3 bg-[#FAF6EE] rounded-xl border border-wood/10">
               <div
-                className="w-10 h-10 rounded-full border-2 border-white shadow-sm shrink-0"
+                className="w-10 h-10 rounded-full border-2 border-white shadow-sm shrink-0 flex items-center justify-center text-sm"
                 style={{ backgroundColor: extraction.renderedHex }}
-              />
+              >
+                {vesselType === "chawan" ? "🍵" : vesselType === "gaiwan" ? "🫖" : vesselType === "tumbler" ? "🧊" : vesselType === "goblet" ? "🥂" : vesselType === "latte" ? "🥛" : vesselType === "kuksa" ? "🪵" : vesselType === "zisha" ? "🏺" : "☕"}
+              </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-semibold text-dark-wood">
@@ -165,9 +175,9 @@ export function TeaPostcardModal({
                   </span>
                   <span className="font-mono text-[11px] text-wood">{extraction.renderedHex}</span>
                 </div>
-                <div className="text-[10px] text-wood/70 mt-0.5">
-                  {lang === "th" ? "ถ้วย" : "Glaze"}: <span className="capitalize font-medium text-dark-wood">{extraction.cupGlaze || "Ceramic"}</span> •{" "}
-                  {lang === "th" ? "สไตล์" : "Style"}: <span className="capitalize font-medium text-dark-wood">{servingStyleLabel}</span>
+                <div className="text-[10px] text-wood/70 mt-0.5 capitalize">
+                  <span>{lang === "th" ? "ภาชนะ" : "Vessel"}: <strong className="text-dark-wood">{vesselType}</strong></span> •{" "}
+                  <span>{lang === "th" ? "เคลือบ" : "Glaze"}: <strong className="text-dark-wood">{cupGlaze || extraction.cupGlaze || "Earthenware"}</strong></span>
                 </div>
               </div>
             </div>
