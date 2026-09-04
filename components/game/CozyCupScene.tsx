@@ -660,8 +660,11 @@ function renderMug(
         <path d="M222,175 C264,175 274,248 220,268" fill="none" stroke={glaze.highlight} strokeWidth="3.2" strokeLinecap="round" opacity="0.65" transform="translate(-1, -1.5)" />
       </g>
 
-      {/* Inner Basin Back Wall */}
+      {/* Inner Basin Back Wall & Back Rim Catchlights (Behind botanicals and fluid) */}
       <ellipse cx="160" cy="146" rx="69" ry="16.5" fill={glaze.rimInner} opacity="0.75" />
+      <path d="M91,146 A 69 16.5 0 0 1 229,146" fill="none" stroke={glaze.stroke} strokeWidth="3" opacity="0.3" />
+      <path d="M91,145 A 69 16.5 0 0 1 229,145" fill="none" stroke={glaze.rim} strokeWidth="4.5" />
+      <path d="M93,144.5 A 67 15.5 0 0 1 227,144.5" fill="none" stroke={glaze.highlight} strokeWidth="1.8" opacity="0.8" />
 
       {/* Fluid Basin (Clipped to Curved Cavity) */}
       <g clipPath={`url(#${uid}-mug-cavity)`}>
@@ -703,13 +706,16 @@ function renderMug(
               strokeWidth="1.2"
               className="ripple-anim"
             />
-            {/* Botanicals & Add-ins */}
-            <g transform={`translate(0, ${(1 - clampedLevel) * 146})`} style={{ transition: "transform 0.8s linear" }}>
-              {renderBotanicalsAndAddins(garnishes, 160, 146, uid)}
-            </g>
           </g>
         )}
       </g>
+
+      {/* Floating Botanicals & Add-ins (Unclipped so items extending above rim are not cut off) */}
+      {clampedLevel > 0.01 && (
+        <g transform={`translate(0, ${(1 - clampedLevel) * 146})`} style={{ transition: "transform 0.8s linear" }}>
+          {renderBotanicalsAndAddins(garnishes, 160, 146, uid)}
+        </g>
+      )}
 
       {/* Ceramic Outer Front Shell (Curved Rim Arc with NO Flat Lines) */}
       <path
@@ -727,10 +733,10 @@ function renderMug(
         <path d="M120,165 Q135,210 130,245 Q125,275 140,298" stroke={glaze.accentGold} strokeWidth="2.2" strokeLinecap="round" fill="none" />
       )}
 
-      {/* 3D Ceramic Rim Catchlights */}
-      <ellipse cx="160" cy="146" rx="69" ry="16.5" fill="none" stroke={glaze.stroke} strokeWidth="3" opacity="0.3" />
-      <ellipse cx="160" cy="145" rx="69" ry="16.5" fill="none" stroke={glaze.rim} strokeWidth="4.5" />
-      <ellipse cx="160" cy="144.5" rx="67" ry="15.5" fill="none" stroke={glaze.highlight} strokeWidth="1.8" opacity="0.8" />
+      {/* 3D Ceramic Front Rim Catchlights (Only the front lip, in front of the front shell) */}
+      <path d="M91,146 A 69 16.5 0 0 0 229,146" fill="none" stroke={glaze.stroke} strokeWidth="3" opacity="0.3" />
+      <path d="M91,145 A 69 16.5 0 0 0 229,145" fill="none" stroke={glaze.rim} strokeWidth="4.5" />
+      <path d="M93,144.5 A 67 15.5 0 0 0 227,144.5" fill="none" stroke={glaze.highlight} strokeWidth="1.8" opacity="0.8" />
     </g>
   );
 }
@@ -752,8 +758,10 @@ function renderTumbler(
       <path d="M112,302 L208,302 L206,322 Q160,332 114,322 Z" fill={`url(#${uid}-glassHeavyBase)`} stroke="#C4E0EC" strokeWidth="2" />
       <ellipse cx="160" cy="310" rx="42" ry="7" fill="#E8F4FA" opacity="0.65" />
 
-      {/* Inner Basin Back Wall */}
+      {/* Inner Basin Back Wall & Back Rim Lip (Behind fluid and botanicals) */}
       <ellipse cx="160" cy="114" rx="58" ry="13" fill="#EAF4FA" opacity="0.45" />
+      <path d="M102,114 A 58 13 0 0 1 218,114" fill="none" stroke="#E6F2F7" strokeWidth="3.5" />
+      <path d="M103.5,113.5 A 56.5 12 0 0 1 216.5,113.5" fill="none" stroke="#FFFFFF" strokeWidth="1.8" opacity="0.85" />
 
       {/* Glass Cavity with Liquid & Ice */}
       <g clipPath={`url(#${uid}-tumbler-cavity)`}>
@@ -782,13 +790,16 @@ function renderTumbler(
             {/* 3D Crystal Ice Cubes */}
             {renderIceCubes(uid, clampedLevel)}
 
-            {/* Botanicals & Add-ins */}
-            <g transform={`translate(0, ${(1 - clampedLevel) * 185})`} style={{ transition: "transform 0.8s linear" }}>
-              {renderBotanicalsAndAddins(garnishes, 160, 122, uid)}
-            </g>
           </g>
         )}
       </g>
+
+      {/* Floating Botanicals & Add-ins (Unclipped so items extending above rim are not cut off) */}
+      {clampedLevel > 0.01 && (
+        <g transform={`translate(0, ${(1 - clampedLevel) * 185})`} style={{ transition: "transform 0.8s linear" }}>
+          {renderBotanicalsAndAddins(garnishes, 160, 122, uid)}
+        </g>
+      )}
 
       {/* Glass Wall Outer Specular Shell */}
       <path
@@ -813,9 +824,9 @@ function renderTumbler(
         <path d="M115,188 Q115,198 116,204" stroke="#FFFFFF" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.75" />
       </g>
 
-      {/* Rim Lip */}
-      <ellipse cx="160" cy="114" rx="58" ry="13" fill="none" stroke="#E6F2F7" strokeWidth="3.5" />
-      <ellipse cx="160" cy="113.5" rx="56.5" ry="12" fill="none" stroke="#FFFFFF" strokeWidth="1.8" opacity="0.85" />
+      {/* Front Rim Lip Catchlight */}
+      <path d="M102,114 A 58 13 0 0 0 218,114" fill="none" stroke="#E6F2F7" strokeWidth="3.5" />
+      <path d="M103.5,113.5 A 56.5 12 0 0 0 216.5,113.5" fill="none" stroke="#FFFFFF" strokeWidth="1.8" opacity="0.85" />
 
       {/* Reusable Eco Glass Straw */}
       <g transform="translate(196, 75) rotate(14)">
@@ -847,8 +858,11 @@ function renderLatteBowl(
         <path d="M228,172 C274,172 284,252 224,270" fill="none" stroke="#FFFFFF" strokeWidth="3.2" strokeLinecap="round" opacity="0.8" transform="translate(-1, -1.5)" />
       </g>
 
-      {/* Inner Basin Back Wall */}
+      {/* Inner Basin Back Wall & Back Rim Catchlights (Behind botanicals and fluid) */}
       <ellipse cx="160" cy="138" rx="74" ry="17" fill={glaze.rimInner} opacity="0.75" />
+      <path d="M86,138 A 74 17 0 0 1 234,138" fill="none" stroke={glaze.stroke} strokeWidth="3" opacity="0.4" />
+      <path d="M86,137 A 74 17 0 0 1 234,137" fill="none" stroke="#FFFFFF" strokeWidth="5" />
+      <path d="M88,136.5 A 72 16 0 0 1 232,136.5" fill="none" stroke={glaze.rim} strokeWidth="2" opacity="0.85" />
 
       {/* Cavity & Foam Cap */}
       <g clipPath={`url(#${uid}-latte-cavity)`}>
@@ -880,13 +894,16 @@ function renderLatteBowl(
               {renderLatteArt(latteArt, liquidColor)}
             </g>
 
-            {/* Botanicals & Add-ins */}
-            <g transform={`translate(0, ${(1 - clampedLevel) * 152})`} style={{ transition: "transform 0.8s linear" }}>
-              {renderBotanicalsAndAddins(garnishes, 160, 142, uid)}
-            </g>
           </g>
         )}
       </g>
+
+      {/* Floating Botanicals & Add-ins (Unclipped so items extending above rim are not cut off) */}
+      {clampedLevel > 0.01 && (
+        <g transform={`translate(0, ${(1 - clampedLevel) * 152})`} style={{ transition: "transform 0.8s linear" }}>
+          {renderBotanicalsAndAddins(garnishes, 160, 142, uid)}
+        </g>
+      )}
 
       {/* Wide Cafe Mug Outer Shell (Smooth Curved Rim with NO Flat Line) */}
       <path
@@ -897,10 +914,10 @@ function renderLatteBowl(
       />
       <path d="M96,152 Q88,218 114,284" fill="none" stroke="#FFFFFF" strokeWidth="5.5" strokeLinecap="round" opacity="0.65" />
 
-      {/* Rim Lips */}
-      <ellipse cx="160" cy="138" rx="74" ry="17" fill="none" stroke={glaze.stroke} strokeWidth="3" opacity="0.4" />
-      <ellipse cx="160" cy="137" rx="74" ry="17" fill="none" stroke="#FFFFFF" strokeWidth="5" />
-      <ellipse cx="160" cy="136.5" rx="72" ry="16" fill="none" stroke={glaze.rim} strokeWidth="2" opacity="0.85" />
+      {/* 3D Ceramic Front Rim Catchlights */}
+      <path d="M86,138 A 74 17 0 0 0 234,138" fill="none" stroke={glaze.stroke} strokeWidth="3" opacity="0.4" />
+      <path d="M86,137 A 74 17 0 0 0 234,137" fill="none" stroke="#FFFFFF" strokeWidth="5" />
+      <path d="M88,136.5 A 72 16 0 0 0 232,136.5" fill="none" stroke={glaze.rim} strokeWidth="2" opacity="0.85" />
     </g>
   );
 }
@@ -924,8 +941,10 @@ function renderChawan(
       <path d="M124,300 L196,300 L192,316 Q160,322 128,316 Z" fill={glaze.bodyBottom} stroke={glaze.stroke} strokeWidth="2.2" />
       <ellipse cx="160" cy="308" rx="34" ry="6" fill="#1C140E" opacity="0.3" />
 
-      {/* Inner Basin Back Wall */}
+      {/* Inner Basin Back Wall & Back Rim Lip */}
       <ellipse cx="160" cy="152" rx="82" ry="18" fill={glaze.rimInner} opacity="0.75" />
+      <path d="M78,152 A 82 18 0 0 1 242,152" fill="none" stroke={glaze.rim} strokeWidth="4.5" />
+      <path d="M80,151.5 A 80 17 0 0 1 240,151.5" fill="none" stroke={glaze.highlight} strokeWidth="1.8" opacity="0.8" />
 
       {/* Fluid Basin */}
       <g clipPath={`url(#${uid}-chawan-cavity)`}>
@@ -964,13 +983,16 @@ function renderChawan(
               <circle cx="168" cy="160" r="2.5" opacity="0.65" />
             </g>
 
-            {/* Botanicals */}
-            <g transform={`translate(0, ${(1 - clampedLevel) * 142})`} style={{ transition: "transform 0.8s linear" }}>
-              {renderBotanicalsAndAddins(garnishes, 160, 154, uid)}
-            </g>
           </g>
         )}
       </g>
+
+      {/* Floating Botanicals & Add-ins (Unclipped so items extending above rim are not cut off) */}
+      {clampedLevel > 0.01 && (
+        <g transform={`translate(0, ${(1 - clampedLevel) * 142})`} style={{ transition: "transform 0.8s linear" }}>
+          {renderBotanicalsAndAddins(garnishes, 160, 154, uid)}
+        </g>
+      )}
 
       {/* Organic Wabi-Sabi Bowl Front Body */}
       <path
@@ -983,9 +1005,9 @@ function renderChawan(
       {/* Tactile Glaze Drops & Highlights */}
       <path d="M90,165 Q80,224 114,288" fill="none" stroke={glaze.highlight} strokeWidth="4" opacity="0.45" strokeLinecap="round" />
 
-      {/* Uneven Wabi-Sabi Rim Lip */}
-      <ellipse cx="160" cy="152" rx="82" ry="18" fill="none" stroke={glaze.rim} strokeWidth="4.5" />
-      <ellipse cx="160" cy="151.5" rx="80" ry="17" fill="none" stroke={glaze.highlight} strokeWidth="1.8" opacity="0.8" />
+      {/* Uneven Wabi-Sabi Front Rim Lip */}
+      <path d="M78,152 A 82 18 0 0 0 242,152" fill="none" stroke={glaze.rim} strokeWidth="4.5" />
+      <path d="M80,151.5 A 80 17 0 0 0 240,151.5" fill="none" stroke={glaze.highlight} strokeWidth="1.8" opacity="0.8" />
     </g>
   );
 }
@@ -1015,8 +1037,10 @@ function renderGaiwan(
 
       {/* Gaiwan Bowl, Liquid, and Lid (Resting in Saucer Well) */}
       <g transform="translate(0, 24)">
-        {/* Inner Basin Back Wall */}
+        {/* Inner Basin Back Wall & Back Rim Catchlight */}
         <ellipse cx="160" cy="162" rx="72" ry="16" fill={glaze.rimInner} opacity="0.75" />
+        <path d="M88,162 A 72 16 0 0 1 232,162" fill="none" stroke={glaze.rim} strokeWidth="4" />
+        <path d="M90,161 A 70 15 0 0 1 230,161" fill="none" stroke={glaze.highlight} strokeWidth="1.8" opacity="0.85" />
 
         {/* Fluid Basin */}
         <g clipPath={`url(#${uid}-gaiwan-cavity)`}>
@@ -1039,12 +1063,16 @@ function renderGaiwan(
                 fill={`url(#${uid}-surfaceMeniscus)`}
                 style={{ transition: "cy 0.8s linear, rx 0.8s linear, ry 0.8s linear" }}
               />
-              <g transform={`translate(0, ${(1 - clampedLevel) * 128})`} style={{ transition: "transform 0.8s linear" }}>
-                {renderBotanicalsAndAddins(garnishes, 160, 162, uid)}
-              </g>
             </g>
           )}
         </g>
+
+        {/* Floating Botanicals & Add-ins (Unclipped so items extending above rim are not cut off) */}
+        {clampedLevel > 0.01 && (
+          <g transform={`translate(0, ${(1 - clampedLevel) * 128})`} style={{ transition: "transform 0.8s linear" }}>
+            {renderBotanicalsAndAddins(garnishes, 160, 162, uid)}
+          </g>
+        )}
 
         {/* Flared Gaiwan Porcelain Cup Body (Smooth Curved Arc) */}
         <path
@@ -1055,9 +1083,9 @@ function renderGaiwan(
         />
         <path d="M98,172 Q92,222 120,280" fill="none" stroke={glaze.highlight} strokeWidth="4.5" opacity="0.5" strokeLinecap="round" />
 
-        {/* Flared Rim Catchlight */}
-        <ellipse cx="160" cy="162" rx="72" ry="16" fill="none" stroke={glaze.rim} strokeWidth="4" />
-        <ellipse cx="160" cy="161" rx="70" ry="15" fill="none" stroke={glaze.highlight} strokeWidth="1.8" opacity="0.85" />
+        {/* Flared Front Rim Catchlight */}
+        <path d="M88,162 A 72 16 0 0 0 232,162" fill="none" stroke={glaze.rim} strokeWidth="4" />
+        <path d="M90,161 A 70 15 0 0 0 230,161" fill="none" stroke={glaze.highlight} strokeWidth="1.8" opacity="0.85" />
 
         {/* Tilted / Resting Gaiwan Lid with Finial Crown Knob */}
         <g transform="translate(4, -18) rotate(3 160 140)">
@@ -1103,8 +1131,10 @@ function renderGoblet(
       <rect x="156.5" y="235" width="7" height="96" rx="3.5" fill={`url(#${uid}-glassHeavyBase)`} stroke="#C4E0EC" strokeWidth="1.2" />
       <line x1="158.5" y1="238" x2="158.5" y2="328" stroke="#FFFFFF" strokeWidth="1.8" opacity="0.8" />
 
-      {/* Inner Basin Back Wall */}
+      {/* Inner Basin Back Wall & Back Rim Lip */}
       <ellipse cx="160" cy="106" rx="56" ry="12" fill="#EAF4FA" opacity="0.4" />
+      <path d="M104,106 A 56 12 0 0 1 216,106" fill="none" stroke="#E6F2F7" strokeWidth="2.8" />
+      <path d="M105.5,105.5 A 54.5 11 0 0 1 214.5,105.5" fill="none" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.9" />
 
       {/* Liquid in Bowl */}
       <g clipPath={`url(#${uid}-goblet-cavity)`}>
@@ -1135,13 +1165,16 @@ function renderGoblet(
               <circle cx="178" cy="190" r="1.2" />
             </g>
 
-            {/* Botanicals */}
-            <g transform={`translate(0, ${(1 - clampedLevel) * 128})`} style={{ transition: "transform 0.8s linear" }}>
-              {renderBotanicalsAndAddins(garnishes, 160, 108, uid)}
-            </g>
           </g>
         )}
       </g>
+
+      {/* Floating Botanicals & Add-ins (Unclipped so items extending above rim are not cut off) */}
+      {clampedLevel > 0.01 && (
+        <g transform={`translate(0, ${(1 - clampedLevel) * 128})`} style={{ transition: "transform 0.8s linear" }}>
+          {renderBotanicalsAndAddins(garnishes, 160, 108, uid)}
+        </g>
+      )}
 
       {/* Crystal Tulip Bowl Outer Shell (Smooth Curved Rim) */}
       <path
@@ -1155,9 +1188,9 @@ function renderGoblet(
       <path d="M109,118 Q101,175 130,224" stroke="#FFFFFF" strokeWidth="3" fill="none" opacity="0.65" strokeLinecap="round" />
       <path d="M211,118 Q219,175 190,224" stroke="#FFFFFF" strokeWidth="1.8" fill="none" opacity="0.4" strokeLinecap="round" />
 
-      {/* Fine Crystal Rim Lip */}
-      <ellipse cx="160" cy="106" rx="56" ry="12" fill="none" stroke="#E6F2F7" strokeWidth="2.8" />
-      <ellipse cx="160" cy="105.5" rx="54.5" ry="11" fill="none" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.9" />
+      {/* Fine Crystal Front Rim Lip */}
+      <path d="M104,106 A 56 12 0 0 0 216,106" fill="none" stroke="#E6F2F7" strokeWidth="2.8" />
+      <path d="M105.5,105.5 A 54.5 11 0 0 0 214.5,105.5" fill="none" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.9" />
     </g>
   );
 }
@@ -1191,8 +1224,11 @@ function renderKuksa(
         <circle cx="262" cy="304" r="5" fill="#DEAC7F" stroke="#6E401B" strokeWidth="1.2" />
       </g>
 
-      {/* Inner Basin Back Wall */}
+      {/* Inner Basin Back Wall & Back Rim Lip */}
       <ellipse cx="160" cy="148" rx="64" ry="15" fill={glaze.rimInner} opacity="0.75" />
+      <path d="M96,148 A 64 15 0 0 1 224,148" fill="none" stroke="#6E401B" strokeWidth="3.5" />
+      <path d="M96,147 A 64 15 0 0 1 224,147" fill="none" stroke="#ECC39B" strokeWidth="2.5" />
+      <path d="M98,146.5 A 62 14 0 0 1 222,146.5" fill="none" stroke="#F8DFCA" strokeWidth="1.2" opacity="0.75" />
 
       {/* Fluid Basin */}
       <g clipPath={`url(#${uid}-kuksa-cavity)`}>
@@ -1215,12 +1251,16 @@ function renderKuksa(
               fill={`url(#${uid}-surfaceMeniscus)`}
               style={{ transition: "cy 0.8s linear, rx 0.8s linear, ry 0.8s linear" }}
             />
-            <g transform={`translate(0, ${(1 - clampedLevel) * 146})`} style={{ transition: "transform 0.8s linear" }}>
-              {renderBotanicalsAndAddins(garnishes, 160, 148, uid)}
-            </g>
           </g>
         )}
       </g>
+
+      {/* Floating Botanicals & Add-ins (Unclipped so items extending above rim are not cut off) */}
+      {clampedLevel > 0.01 && (
+        <g transform={`translate(0, ${(1 - clampedLevel) * 146})`} style={{ transition: "transform 0.8s linear" }}>
+          {renderBotanicalsAndAddins(garnishes, 160, 148, uid)}
+        </g>
+      )}
 
       {/* Solid Carved Wooden Body (Smooth Curved Rim) */}
       <path
@@ -1235,10 +1275,10 @@ function renderKuksa(
       <path d="M120,165 Q128,218 148,284" stroke="#8A5126" strokeWidth="1.5" fill="none" opacity="0.45" />
       <path d="M210,175 Q204,226 188,276" stroke="#8A5126" strokeWidth="2" fill="none" opacity="0.55" />
 
-      {/* Carved Wooden Rim Lip */}
-      <ellipse cx="160" cy="148" rx="64" ry="15" fill="none" stroke="#6E401B" strokeWidth="3.5" />
-      <ellipse cx="160" cy="147" rx="64" ry="15" fill="none" stroke="#ECC39B" strokeWidth="2.5" />
-      <ellipse cx="160" cy="146.5" rx="62" ry="14" fill="none" stroke="#F8DFCA" strokeWidth="1.2" opacity="0.75" />
+      {/* Carved Wooden Front Rim Lip */}
+      <path d="M96,148 A 64 15 0 0 0 224,148" fill="none" stroke="#6E401B" strokeWidth="3.5" />
+      <path d="M96,147 A 64 15 0 0 0 224,147" fill="none" stroke="#ECC39B" strokeWidth="2.5" />
+      <path d="M98,146.5 A 62 14 0 0 0 222,146.5" fill="none" stroke="#F8DFCA" strokeWidth="1.2" opacity="0.75" />
     </g>
   );
 }
@@ -1258,8 +1298,11 @@ function renderZisha(
 ) {
   return (
     <g>
-      {/* Inner Basin Back Wall */}
+      {/* Inner Basin Back Wall & Back Rim Catchlights */}
       <ellipse cx="160" cy="144" rx="58" ry="14" fill={glaze.rimInner} opacity="0.75" />
+      <path d="M102,144 A 58 14 0 0 1 218,144" fill="none" stroke="#2E1B15" strokeWidth="3.5" />
+      <path d="M102,143 A 58 14 0 0 1 218,143" fill="none" stroke={glaze.rim} strokeWidth="2.5" />
+      <path d="M103.5,142.5 A 56.5 13 0 0 1 216.5,142.5" fill="none" stroke={glaze.highlight} strokeWidth="1.2" opacity="0.7" />
 
       {/* Fluid Basin */}
       <g clipPath={`url(#${uid}-zisha-cavity)`}>
@@ -1282,12 +1325,16 @@ function renderZisha(
               fill={`url(#${uid}-surfaceMeniscus)`}
               style={{ transition: "cy 0.8s linear, rx 0.8s linear, ry 0.8s linear" }}
             />
-            <g transform={`translate(0, ${(1 - clampedLevel) * 150})`} style={{ transition: "transform 0.8s linear" }}>
-              {renderBotanicalsAndAddins(garnishes, 160, 144, uid)}
-            </g>
           </g>
         )}
       </g>
+
+      {/* Floating Botanicals & Add-ins (Unclipped so items extending above rim are not cut off) */}
+      {clampedLevel > 0.01 && (
+        <g transform={`translate(0, ${(1 - clampedLevel) * 150})`} style={{ transition: "transform 0.8s linear" }}>
+          {renderBotanicalsAndAddins(garnishes, 160, 144, uid)}
+        </g>
+      )}
 
       {/* Straight Profile Yixing Purple Clay Front Body (Smooth Curved Rim) */}
       <path
@@ -1302,10 +1349,10 @@ function renderZisha(
       <line x1="102" y1="200" x2="218" y2="200" stroke="#2E1B15" strokeWidth="1.5" opacity="0.4" />
       <line x1="106" y1="250" x2="214" y2="250" stroke="#2E1B15" strokeWidth="1.2" opacity="0.3" />
 
-      {/* Traditional Zisha Clay Rim */}
-      <ellipse cx="160" cy="144" rx="58" ry="14" fill="none" stroke="#2E1B15" strokeWidth="3.5" />
-      <ellipse cx="160" cy="143" rx="58" ry="14" fill="none" stroke={glaze.rim} strokeWidth="2.5" />
-      <ellipse cx="160" cy="142.5" rx="56.5" ry="13" fill="none" stroke={glaze.highlight} strokeWidth="1.2" opacity="0.7" />
+      {/* Traditional Zisha Clay Front Rim Catchlights */}
+      <path d="M102,144 A 58 14 0 0 0 218,144" fill="none" stroke="#2E1B15" strokeWidth="3.5" />
+      <path d="M102,143 A 58 14 0 0 0 218,143" fill="none" stroke={glaze.rim} strokeWidth="2.5" />
+      <path d="M103.5,142.5 A 56.5 13 0 0 0 216.5,142.5" fill="none" stroke={glaze.highlight} strokeWidth="1.2" opacity="0.7" />
     </g>
   );
 }

@@ -63,7 +63,7 @@ export function Navbar() {
               type="button"
               onClick={toggleLang}
               className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-amber/15 hover:bg-amber/25 text-dark-wood text-xs sm:text-sm font-semibold border border-wood/20 transition-all cursor-pointer shadow-xs active:scale-95"
-              title={lang === "en" ? "เปลี่ยนเป็นภาษาไทย" : "Switch to English"}
+              title={lang === "en" ? "TH" : "EN"}
             >
               <Languages className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-700" />
               <span>{lang === "en" ? "🇹🇭 TH" : "🇬🇧 EN"}</span>
