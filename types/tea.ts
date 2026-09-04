@@ -53,6 +53,13 @@ export const RecipeSchema = z.object({
   bodyScore: z.number(),
   renderedHex: z.string(),
   createdAt: z.coerce.date(),
+  vesselType: z.string().nullable().optional(),
+  cupGlaze: z.string().nullable().optional(),
+  coasterStyle: z.string().nullable().optional(),
+  servingStyle: z.string().nullable().optional(),
+  turbidity: z.string().nullable().optional(),
+  latteArt: z.string().nullable().optional(),
+  garnishes: z.string().nullable().optional(),
 });
 export type Recipe = z.infer<typeof RecipeSchema>;
 
@@ -69,6 +76,8 @@ export interface BrewParams {
 }
 
 // === Vessel, Glaze & Presentation Types ===
+export type ServingStyle = "hot" | "iced" | "latte";
+
 export type CupVesselType =
   | "mug"       // Classic Yunomi / Artisan Ceramic Mug
   | "tumbler"   // Fluted Crystal Tumbler / Can Glass (Iced)
@@ -124,6 +133,14 @@ export const CreateRecipeInputSchema = z.object({
   waterTempC: z.number().min(60).max(100),
   waterAmountMl: z.number().min(50).max(500),
   steepingTimeSec: z.number().int().min(30).max(300),
+  renderedHex: z.string().optional(),
+  vesselType: z.string().optional(),
+  cupGlaze: z.string().optional(),
+  coasterStyle: z.string().optional(),
+  servingStyle: z.string().optional(),
+  turbidity: z.string().optional(),
+  latteArt: z.string().nullable().optional(),
+  garnishes: z.union([z.array(z.string()), z.string()]).optional(),
   blendItems: z
     .array(
       z.object({

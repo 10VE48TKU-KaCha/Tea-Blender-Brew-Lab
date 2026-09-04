@@ -30,18 +30,45 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
     day: "numeric",
   });
 
+  let garnishesCount = 0;
+  try {
+    if (recipe.garnishes) {
+      const parsed = JSON.parse(recipe.garnishes);
+      if (Array.isArray(parsed)) garnishesCount = parsed.length;
+    }
+  } catch (e) {}
+
+  const vesselEmoji =
+    recipe.vesselType === "chawan" ? "🍵" :
+    recipe.vesselType === "gaiwan" ? "🫖" :
+    recipe.vesselType === "tumbler" ? "🧊" :
+    recipe.vesselType === "goblet" ? "🥂" :
+    recipe.vesselType === "latte" ? "🥛" :
+    recipe.vesselType === "kuksa" ? "🪵" :
+    recipe.vesselType === "zisha" ? "🏺" : "☕";
+
   return (
     <Link href={`/recipes/${recipe.id}`}>
       <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
         <Card className="h-full flex flex-col cursor-pointer overflow-hidden">
           <CardHeader className="flex-row items-center gap-3 pb-2">
             <div
-              className="h-8 w-8 rounded-full border border-black/10 shrink-0"
+              className="h-9 w-9 rounded-full border border-black/10 shadow-xs shrink-0 flex items-center justify-center text-sm"
               style={{ backgroundColor: recipe.renderedHex }}
-            />
-            <div className="flex flex-col">
+            >
+              <span className="drop-shadow-xs">{vesselEmoji}</span>
+            </div>
+            <div className="flex flex-col min-w-0 flex-1">
               <CardTitle className="text-base truncate">{recipe.title}</CardTitle>
-              <CardDescription className="text-xs">{formattedDate}</CardDescription>
+              <div className="flex items-center gap-1.5 text-xs text-wood/70 flex-wrap">
+                <span>{formattedDate}</span>
+                {recipe.vesselType && (
+                  <>
+                    <span>•</span>
+                    <span className="capitalize">{recipe.vesselType} ({recipe.cupGlaze || "earthenware"})</span>
+                  </>
+                )}
+              </div>
             </div>
           </CardHeader>
 
@@ -62,7 +89,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             </div>
           </CardContent>
 
-          <CardFooter className="bg-amber-light/10 border-t border-amber/10 py-3 gap-2 flex-wrap">
+          <CardFooter className="bg-amber-light/10 border-t border-amber/10 py-3 gap-1.5 flex-wrap">
             <Badge variant="secondary" className="text-xs">
               {recipe.waterTempC}°C
             </Badge>
@@ -72,6 +99,16 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             <Badge variant="secondary" className="text-xs">
               {recipe.waterAmountMl}ml
             </Badge>
+            {recipe.servingStyle && (
+              <Badge variant="outline" className="text-xs capitalize bg-white/60">
+                {recipe.servingStyle}
+              </Badge>
+            )}
+            {garnishesCount > 0 && (
+              <Badge variant="outline" className="text-xs bg-amber-50 text-amber-900 border-amber-200">
+                🌸 +{garnishesCount}
+              </Badge>
+            )}
           </CardFooter>
         </Card>
       </motion.div>

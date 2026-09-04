@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExtractionResult, BlendInput, CupVesselType, CupGlaze, CoasterStyle, LatteArtType } from "@/types/tea";
-import { ServingStyle } from "./CozyCupScene";
+import CozyCupScene, { ServingStyle } from "./CozyCupScene";
 import FlavorRadarChart from "@/components/charts/FlavorRadarChart";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ interface TeaPostcardModalProps {
   coasterStyle?: CoasterStyle;
   latteArt?: LatteArtType;
   garnishes: string[];
+  recipeId?: string;
 }
 
 export function TeaPostcardModal({
@@ -42,6 +43,7 @@ export function TeaPostcardModal({
   coasterStyle,
   latteArt,
   garnishes,
+  recipeId,
 }: TeaPostcardModalProps) {
   const { t, lang, translateIngredient } = useLanguage();
   const [copied, setCopied] = useState(false);
@@ -65,29 +67,55 @@ export function TeaPostcardModal({
     { dimension: t.clarity, score: extraction.clarityScore, fullMark: 10 },
   ];
 
-  const handleCopyShare = () => {
-    const ingredientsText = activeBlends
-      .map((b) => `${translateIngredient(b.ingredient.name)} (${b.ratioPercent}%)`)
-      .join(", ");
-
-    const shareText = `🍵 [Kissa Lab] ${title || extraction.cozyTitle}\n` +
-      `Code: ${blendCode}\n` +
-      `${t.postcardBlendRatio}: ${ingredientsText}\n` +
-      `${t.brewParamsTitle}: ${waterTempC}°C | ${steepingTimeSec}s | ${waterAmountMl}ml\n` +
-      `"${extraction.tastingNotes}"\n` +
-      `${window.location.origin}/lab`;
-
-    navigator.clipboard.writeText(shareText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
-
   const servingStyleLabel =
     servingStyle === "hot"
       ? t.styleHot
       : servingStyle === "iced"
       ? t.styleIced
       : t.styleLatte;
+
+  const handleCopyShare = async () => {
+    const ingredientsText = activeBlends
+      .map((b) => `${translateIngredient(b.ingredient.name)} (${b.ratioPercent}%)`)
+      .join(", ");
+
+    const presentationLines = [
+      `🎨 ${lang === "th" ? "สีน้ำชา" : "Color"}: ${extraction.renderedHex}`,
+      `☕ ${lang === "th" ? "ภาชนะ" : "Vessel"}: ${vesselType} (${cupGlaze || extraction.cupGlaze || "earthenware"})`,
+      `✨ ${lang === "th" ? "สไตล์" : "Style"}: ${servingStyleLabel}`,
+      garnishes && garnishes.length > 0 ? `🌸 ${lang === "th" ? "เครื่องเคียง" : "Garnishes"}: ${garnishes.join(", ")}` : null,
+      servingStyle === "latte" && latteArt ? `🥛 ${lang === "th" ? "ลาเต้อาร์ต" : "Latte Art"}: ${latteArt}` : null,
+    ].filter(Boolean).join("\n");
+
+    const linkUrl = recipeId ? `${window.location.origin}/recipes/${recipeId}` : `${window.location.origin}/lab`;
+
+    const shareText = `🍵 [Kissa Lab] ${title || extraction.cozyTitle}\n` +
+      `Code: ${blendCode}\n` +
+      `${presentationLines}\n` +
+      `${t.postcardBlendRatio}: ${ingredientsText}\n` +
+      `${t.brewParamsTitle}: ${waterTempC}°C | ${steepingTimeSec}s | ${waterAmountMl}ml\n` +
+      `"${extraction.tastingNotes}"\n` +
+      `${linkUrl}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `🍵 Kissa Lab - ${title || extraction.cozyTitle}`,
+          text: shareText,
+          url: linkUrl,
+        });
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+        return;
+      } catch (err) {
+        // user cancelled or fallback
+      }
+    }
+
+    await navigator.clipboard.writeText(shareText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
 
   return (
     <AnimatePresence>
@@ -160,25 +188,40 @@ export function TeaPostcardModal({
               </div>
             )}
 
-            {/* Tea Liquor, Vessel & Glaze Preview */}
-            <div className="flex items-center gap-3 my-4 p-3 bg-[#FAF6EE] rounded-xl border border-wood/10">
-              <div
-                className="w-10 h-10 rounded-full border-2 border-white shadow-sm shrink-0 flex items-center justify-center text-sm"
-                style={{ backgroundColor: extraction.renderedHex }}
-              >
-                {vesselType === "chawan" ? "🍵" : vesselType === "gaiwan" ? "🫖" : vesselType === "tumbler" ? "🧊" : vesselType === "goblet" ? "🥂" : vesselType === "latte" ? "🥛" : vesselType === "kuksa" ? "🪵" : vesselType === "zisha" ? "🏺" : "☕"}
+            {/* Brewed Cup & Color Scene */}
+            <div className="my-3 py-2 px-3 bg-gradient-to-b from-[#FAF6EE] to-[#F5EFE3] rounded-2xl border border-wood/15 shadow-inner flex flex-col items-center overflow-hidden">
+              <div className="h-44 w-full flex items-center justify-center scale-90 -my-2">
+                <CozyCupScene
+                  liquidColor={extraction.renderedHex}
+                  opacity={0.9}
+                  steamIntensity={Math.max(0, (waterTempC - 60) / 40)}
+                  servingStyle={servingStyle}
+                  vesselType={vesselType}
+                  cupGlaze={cupGlaze || extraction.cupGlaze || "earthenware"}
+                  coasterStyle={coasterStyle || "ceramic"}
+                  turbidity={extraction.turbidity || "velvet"}
+                  garnishes={garnishes}
+                  latteArt={latteArt}
+                />
               </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-dark-wood">
-                    {lang === "th" ? "น้ำชาที่สกัดได้" : "Tea Liquor"}
+
+              {/* Presentation specs badge strip */}
+              <div className="w-full flex items-center justify-between text-[11px] pt-2 border-t border-wood/10 mt-1 flex-wrap gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className="w-3.5 h-3.5 rounded-full border border-wood/20 shadow-xs shrink-0"
+                    style={{ backgroundColor: extraction.renderedHex }}
+                  />
+                  <span className="font-mono font-semibold text-dark-wood">{extraction.renderedHex}</span>
+                </div>
+                <div className="text-wood/80 capitalize font-medium">
+                  <span>{vesselType}</span> • <span>{cupGlaze || extraction.cupGlaze || "Earthenware"}</span>
+                </div>
+                {servingStyle !== "hot" && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold uppercase">
+                    {servingStyle}
                   </span>
-                  <span className="font-mono text-[11px] text-wood">{extraction.renderedHex}</span>
-                </div>
-                <div className="text-[10px] text-wood/70 mt-0.5 capitalize">
-                  <span>{lang === "th" ? "ภาชนะ" : "Vessel"}: <strong className="text-dark-wood">{vesselType}</strong></span> •{" "}
-                  <span>{lang === "th" ? "เคลือบ" : "Glaze"}: <strong className="text-dark-wood">{cupGlaze || extraction.cupGlaze || "Earthenware"}</strong></span>
-                </div>
+                )}
               </div>
             </div>
 

@@ -38,7 +38,22 @@ export async function POST(request: Request) {
       );
     }
 
-    const { title, description, waterTempC, waterAmountMl, steepingTimeSec, blendItems } = parsed.data;
+    const {
+      title,
+      description,
+      waterTempC,
+      waterAmountMl,
+      steepingTimeSec,
+      blendItems,
+      renderedHex: clientHex,
+      vesselType,
+      cupGlaze,
+      coasterStyle,
+      servingStyle,
+      turbidity,
+      latteArt,
+      garnishes,
+    } = parsed.data;
 
     // Fetch ingredient data for extraction calculation
     const ingredientIds = blendItems.map((b) => b.ingredientId);
@@ -77,7 +92,15 @@ export async function POST(request: Request) {
       steepingTimeSec,
     });
 
-    // Create recipe with blend items
+    // Normalize garnishes to JSON string
+    let garnishesStr = "[]";
+    if (Array.isArray(garnishes)) {
+      garnishesStr = JSON.stringify(garnishes);
+    } else if (typeof garnishes === "string") {
+      garnishesStr = garnishes;
+    }
+
+    // Create recipe with blend items and full presentation styling
     const recipe = await prisma.recipe.create({
       data: {
         title,
@@ -89,7 +112,14 @@ export async function POST(request: Request) {
         aromaScore: extraction.aromaScore,
         sweetnessScore: extraction.sweetnessScore,
         bodyScore: extraction.bodyScore,
-        renderedHex: extraction.renderedHex,
+        renderedHex: clientHex || extraction.renderedHex,
+        vesselType: vesselType || extraction.recommendedVessel || "mug",
+        cupGlaze: cupGlaze || extraction.cupGlaze || "earthenware",
+        coasterStyle: coasterStyle || "ceramic",
+        servingStyle: servingStyle || "hot",
+        turbidity: turbidity || extraction.turbidity || "velvet",
+        latteArt: latteArt ?? null,
+        garnishes: garnishesStr,
         blendItems: {
           create: blendItems.map((item) => ({
             ingredientId: item.ingredientId,

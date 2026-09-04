@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { TeaIngredient, BlendInput, TeaCategory, CupVesselType, CupGlaze, CoasterStyle, LatteArtType } from "@/types/tea";
 import { calculateExtraction } from "@/lib/extraction-engine";
@@ -31,6 +32,7 @@ export default function LabPage() {
   const [recipeName, setRecipeName] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [showSaveSuccess, setShowSaveSuccess] = useState<boolean>(false);
+  const [savedRecipeInfo, setSavedRecipeInfo] = useState<{ id: string; title: string } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Filter & Search states
@@ -199,6 +201,14 @@ export default function LabPage() {
         waterTempC,
         waterAmountMl,
         steepingTimeSec,
+        renderedHex: extraction?.renderedHex || "#d1d5db",
+        vesselType,
+        cupGlaze,
+        coasterStyle,
+        servingStyle,
+        turbidity: extraction?.turbidity || "velvet",
+        latteArt: servingStyle === "latte" ? latteArt : null,
+        garnishes,
         blendItems: Object.entries(blendRatios)
           .filter(([_, ratio]) => ratio > 0)
           .map(([ingredientId, ratioPercent]) => ({ ingredientId, ratioPercent })),
@@ -211,9 +221,10 @@ export default function LabPage() {
       });
 
       if (res.ok) {
+        const savedData = await res.json();
+        setSavedRecipeInfo({ id: savedData.id, title: savedData.title });
         setShowSaveSuccess(true);
-        setRecipeName("");
-        setTimeout(() => setShowSaveSuccess(false), 3000);
+        setTimeout(() => setShowSaveSuccess(false), 8000);
       }
     } catch (err) {
       console.error("Failed to save recipe", err);
@@ -621,9 +632,29 @@ export default function LabPage() {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0 }}
-                            className="absolute top-full left-0 right-0 mt-2 p-2 bg-emerald-100 text-emerald-800 rounded-xl text-center text-sm font-medium border border-emerald-200"
+                            className="mt-3 p-3 bg-emerald-50 text-emerald-900 rounded-xl text-center text-sm font-medium border border-emerald-200 shadow-sm space-y-2"
                           >
-                            ✓ {t.savedSuccess}
+                            <div className="flex items-center justify-center gap-1.5 font-bold text-emerald-800">
+                              <span>✓</span>
+                              <span>{t.savedSuccess}</span>
+                            </div>
+                            {savedRecipeInfo && (
+                              <div className="flex items-center justify-center gap-2 pt-1 flex-wrap">
+                                <Link
+                                  href={`/recipes/${savedRecipeInfo.id}`}
+                                  className="text-xs px-3 py-1.5 rounded-lg bg-emerald-700 text-white font-medium hover:bg-emerald-800 transition-colors shadow-xs"
+                                >
+                                  {lang === "th" ? "ดูสูตรในคลัง ↗" : "View in Archive ↗"}
+                                </Link>
+                                <button
+                                  type="button"
+                                  onClick={() => setIsPostcardOpen(true)}
+                                  className="text-xs px-3 py-1.5 rounded-lg bg-white border border-emerald-300 text-emerald-800 font-medium hover:bg-emerald-100 transition-colors shadow-xs"
+                                >
+                                  🎴 {lang === "th" ? "แชร์โปสการ์ด" : "Share Postcard"}
+                                </button>
+                              </div>
+                            )}
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -678,7 +709,7 @@ export default function LabPage() {
         <TeaPostcardModal
           isOpen={isPostcardOpen}
           onClose={() => setIsPostcardOpen(false)}
-          title={recipeName || extraction.cozyTitle}
+          title={recipeName || savedRecipeInfo?.title || extraction.cozyTitle}
           extraction={extraction}
           blendInputs={ingredients.map((ing) => ({
             ingredient: ing,
@@ -693,6 +724,7 @@ export default function LabPage() {
           coasterStyle={coasterStyle}
           latteArt={latteArt}
           garnishes={garnishes}
+          recipeId={savedRecipeInfo?.id}
         />
       )}
     </div>

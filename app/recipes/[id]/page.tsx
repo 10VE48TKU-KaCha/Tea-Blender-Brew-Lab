@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CozyCupScene from "@/components/game/CozyCupScene";
 import FlavorRadarChart from "@/components/charts/FlavorRadarChart";
+import RecipeShareBar from "@/components/recipes/RecipeShareBar";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,15 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
 
   if (!recipe) {
     notFound();
+  }
+
+  let parsedGarnishes: string[] = [];
+  try {
+    if (recipe.garnishes) {
+      parsedGarnishes = JSON.parse(recipe.garnishes);
+    }
+  } catch (e) {
+    parsedGarnishes = [];
   }
 
   const radarData = [
@@ -53,16 +63,48 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
           {recipe.title}
         </h1>
         {recipe.description && (
-          <p className="text-wood text-lg italic mb-8">"{recipe.description}"</p>
+          <p className="text-wood text-lg italic mb-6">"{recipe.description}"</p>
         )}
         
-        <div className="flex justify-center items-center h-64 mb-4">
+        <div className="flex justify-center items-center h-72 mb-6">
           <CozyCupScene 
             liquidColor={recipe.renderedHex || "#D4A574"} 
             opacity={0.9} 
             steamIntensity={Math.max(0, (recipe.waterTempC - 60) / 40)} 
+            servingStyle={(recipe.servingStyle as any) || "hot"}
+            vesselType={(recipe.vesselType as any) || "mug"}
+            cupGlaze={(recipe.cupGlaze as any) || "earthenware"}
+            coasterStyle={(recipe.coasterStyle as any) || "ceramic"}
+            turbidity={(recipe.turbidity as any) || "velvet"}
+            latteArt={(recipe.latteArt as any) || undefined}
+            garnishes={parsedGarnishes}
           />
         </div>
+
+        <RecipeShareBar
+          recipeId={recipe.id}
+          title={recipe.title}
+          description={recipe.description}
+          renderedHex={recipe.renderedHex || "#D4A574"}
+          waterTempC={recipe.waterTempC}
+          waterAmountMl={recipe.waterAmountMl}
+          steepingTimeSec={recipe.steepingTimeSec}
+          sweetnessScore={recipe.sweetnessScore}
+          aromaScore={recipe.aromaScore}
+          bodyScore={recipe.bodyScore}
+          bitternessScore={recipe.bitternessScore}
+          vesselType={(recipe.vesselType as any) || "mug"}
+          cupGlaze={(recipe.cupGlaze as any) || "earthenware"}
+          coasterStyle={(recipe.coasterStyle as any) || "ceramic"}
+          servingStyle={(recipe.servingStyle as any) || "hot"}
+          turbidity={(recipe.turbidity as any) || "velvet"}
+          latteArt={(recipe.latteArt as any) || undefined}
+          garnishes={parsedGarnishes}
+          blendItems={recipe.blendItems.map((b) => ({
+            ingredient: b.ingredient,
+            ratioPercent: b.ratioPercent,
+          }))}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

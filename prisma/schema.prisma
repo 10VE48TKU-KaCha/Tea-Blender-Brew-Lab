@@ -44,6 +44,15 @@ model Recipe {
   createdAt       DateTime    @default(now())
   blendItems      BlendItem[]
 
+  // Presentation & Cup Attributes
+  vesselType      String?     @default("mug")
+  cupGlaze        String?     @default("earthenware")
+  coasterStyle    String?     @default("ceramic")
+  servingStyle    String?     @default("hot")
+  turbidity       String?     @default("velvet")
+  latteArt        String?
+  garnishes       String?     @default("[]")
+
   @@map("recipes")
 }
 
