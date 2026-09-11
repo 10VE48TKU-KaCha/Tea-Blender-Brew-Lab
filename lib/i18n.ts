@@ -4,6 +4,7 @@ export interface TranslationDictionary {
   // Navigation & General
   navLab: string;
   navRecipes: string;
+  navCafe: string;
   navSubtitle: string;
   langToggle: string;
 
@@ -203,6 +204,7 @@ export const translations: Record<Language, TranslationDictionary> = {
   en: {
     navLab: "Lab",
     navRecipes: "Recipes",
+    navCafe: "Tea Bar",
     navSubtitle: "Specialty Tea Profiler",
     langToggle: "ภาษาไทย",
 
@@ -430,6 +432,7 @@ export const translations: Record<Language, TranslationDictionary> = {
   th: {
     navLab: "ห้องผสมชา",
     navRecipes: "คลังสูตรชา",
+    navCafe: "คาเฟ่ชงชา",
     navSubtitle: "เครื่องมือวิเคราะห์และจำลองการชงชา",
     langToggle: "English",
 

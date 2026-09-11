@@ -33,6 +33,12 @@
    - Save custom recipes to PostgreSQL database without login.
    - View community blends with mini radar charts and deep extraction metrics.
 
+6. **🎮 Kissa Cafe Mini-Game (`app/cafe`)**
+   - Cozy artisan tea ritual simulation with 5 unique patrons (Mochi the Cat, Grandpa Kenji, Hana, Céleste, Master Ryu).
+   - 10-step authentic tea ceremony ritual: kettle tuning, pre-warming, leaf scooping, awakening rinse, spiral pour, golden steep window, brass strainer, Gong Dao Bei fairness pitcher, and menu branches (Matcha whisking, ice sphere tongs, latte art).
+   - 1–3 Star evaluations, Customer Guestbook with polaroids, Teaware progression store, and Lab sync.
+   - Procedural Web Audio ASMR (rain 🌧️, fireplace 🪵, pouring, and sips).
+
 ---
 
 ## 🛠️ Tech Stack

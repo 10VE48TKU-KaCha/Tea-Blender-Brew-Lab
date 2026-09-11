@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Beaker, BookOpen, Coffee, Languages } from "lucide-react";
+import { Beaker, BookOpen, Coffee, Languages, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -14,6 +14,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/lab", label: t.navLab, icon: Beaker },
     { href: "/recipes", label: t.navRecipes, icon: BookOpen },
+    { href: "/cafe", label: t.navCafe, icon: Sparkles },
   ];
 
   return (
