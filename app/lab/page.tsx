@@ -263,14 +263,13 @@ export default function LabPage() {
             priority
             className="object-cover object-center group-hover:scale-102 transition-transform duration-700"
           />
-          {/* Frosted vignette gradient with ambient dark backing */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/30" />
-          <div className="absolute inset-0 [background:radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.55)_100%)]" />
+          {/* Frosted vignette gradient with softer ambient backing */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
 
-          {/* Text Container with Frosted Glass Scrim & Background Shadow */}
+          {/* Text Container with More Translucent Frosted Glass Scrim & Ambient Shadow */}
           <div className="absolute inset-0 flex flex-col items-center justify-end text-center p-4 sm:p-6 md:p-8">
-            <div className="w-full max-w-2xl mx-auto flex flex-col items-center p-4 sm:p-6 rounded-3xl bg-black/45 backdrop-blur-md border border-white/20 shadow-[0_10px_35px_rgba(0,0,0,0.7)] space-y-2.5">
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-amber-400/40 text-xs font-semibold text-amber-300 shadow-md">
+            <div className="w-full max-w-2xl mx-auto flex flex-col items-center p-4 sm:p-6 rounded-3xl bg-black/25 backdrop-blur-md border border-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.45)] space-y-2.5">
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-black/35 backdrop-blur-md border border-amber-300/35 text-xs font-semibold text-amber-200 shadow-sm">
                 <Globe className="w-3.5 h-3.5 text-amber-300" />
                 <span>{t.heroBadge}</span>
               </div>
