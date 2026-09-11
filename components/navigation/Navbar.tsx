@@ -35,10 +35,10 @@ export function Navbar() {
               <div className="absolute top-0 right-0 w-2 h-2 bg-amber-300 rounded-full animate-ping opacity-60" />
             </div>
             <div className="flex flex-col">
-              <span className="font-[family-name:var(--font-display)] text-xl font-bold text-wood-dark leading-none tracking-tight">
+              <span className="font-[family-name:var(--font-display)] text-xl font-bold text-wood-dark leading-none tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.1)]">
                 Kissa Lab
               </span>
-              <span className="text-[10px] uppercase tracking-wider text-wood/65 font-medium hidden sm:block">
+              <span className="text-[10px] uppercase tracking-wider text-wood/75 font-semibold hidden sm:block">
                 {t.navSubtitle}
               </span>
             </div>

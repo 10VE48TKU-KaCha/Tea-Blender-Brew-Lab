@@ -253,9 +253,9 @@ export default function LabPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      {/* Illustrated Hero Banner */}
-      <div className="relative rounded-3xl overflow-hidden mb-8 border border-wood/25 shadow-md group">
-        <div className="relative h-56 sm:h-72 md:h-80 w-full overflow-hidden">
+      {/* Illustrated Hero Banner with Ambient Shadow & Frosted Scrim */}
+      <div className="relative rounded-3xl overflow-hidden mb-8 border border-wood/25 shadow-lg group">
+        <div className="relative h-64 sm:h-80 md:h-96 w-full overflow-hidden">
           <Image
             src="/images/kissa_hero_artisan.jpg"
             alt="Kissa Artisan Tea Counter"
@@ -263,19 +263,24 @@ export default function LabPage() {
             priority
             className="object-cover object-center group-hover:scale-102 transition-transform duration-700"
           />
-          {/* Frosted vignette gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-dark-wood/90 via-dark-wood/50 to-transparent" />
-          <div className="absolute inset-0 flex flex-col items-center justify-end text-center p-6 sm:p-8 text-white space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs font-semibold text-amber-200">
-              <Globe className="w-3.5 h-3.5 text-amber-300" />
-              <span>{t.heroBadge}</span>
+          {/* Frosted vignette gradient with ambient dark backing */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/30" />
+          <div className="absolute inset-0 [background:radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.55)_100%)]" />
+
+          {/* Text Container with Frosted Glass Scrim & Background Shadow */}
+          <div className="absolute inset-0 flex flex-col items-center justify-end text-center p-4 sm:p-6 md:p-8">
+            <div className="w-full max-w-2xl mx-auto flex flex-col items-center p-4 sm:p-6 rounded-3xl bg-black/45 backdrop-blur-md border border-white/20 shadow-[0_10px_35px_rgba(0,0,0,0.7)] space-y-2.5">
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-amber-400/40 text-xs font-semibold text-amber-300 shadow-md">
+                <Globe className="w-3.5 h-3.5 text-amber-300" />
+                <span>{t.heroBadge}</span>
+              </div>
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-display font-bold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_14px_rgba(0,0,0,0.9),_0_4px_28px_rgba(0,0,0,0.8)] tracking-tight">
+                {t.heroTitle}
+              </h1>
+              <p className="text-stone-100 text-xs sm:text-sm md:text-base max-w-xl mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)] font-medium leading-relaxed">
+                {t.heroSubtitle}
+              </p>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold drop-shadow-md text-cream">
-              {t.heroTitle}
-            </h1>
-            <p className="text-cream/90 text-xs sm:text-sm md:text-base max-w-2xl mx-auto drop-shadow-xs">
-              {t.heroSubtitle}
-            </p>
           </div>
         </div>
       </div>
