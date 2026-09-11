@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { TeaIngredient, BlendInput, CupVesselType, LatteArtType } from "@/types/tea";
 import {
@@ -297,32 +298,50 @@ export default function CafePage() {
 
   return (
     <div className="min-h-screen pb-16 px-4 max-w-7xl mx-auto space-y-6">
-      {/* Top Header Bar */}
-      <header className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 pb-2 border-b border-wood/15">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-amber-700 text-cream flex items-center justify-center text-xl shadow-xs">
-            🍵
-          </div>
-          <div>
-            <h1 className="font-display font-bold text-2xl sm:text-3xl text-dark-wood">
+      {/* Illustrated Cafe Patrons Banner */}
+      <div className="relative rounded-3xl overflow-hidden border border-wood/25 shadow-md group">
+        <div className="relative h-48 sm:h-64 md:h-72 w-full overflow-hidden">
+          <Image
+            src="/images/cafe_patrons_banner.jpg"
+            alt="Kissa Cafe Patrons and Mochi the Cat"
+            fill
+            priority
+            className="object-cover object-center group-hover:scale-102 transition-transform duration-700"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-dark-wood/90 via-dark-wood/40 to-transparent" />
+          <div className="absolute inset-0 flex flex-col items-center justify-end text-center p-4 sm:p-6 text-white space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs font-semibold text-amber-200">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>{lang === "th" ? "บรรยากาศคาเฟ่ชาสไตล์คิสซาเต็น" : "Artisan Kissaten Tea Bar • 5 Patrons"}</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold drop-shadow-md text-cream">
               {lang === "th" ? "Kissa Cafe: คาเฟ่ชงชาหัตถศิลป์" : "Kissa Cafe: Artisan Tea Bar"}
             </h1>
-            <p className="text-xs text-wood">
+            <p className="text-cream/90 text-xs sm:text-sm max-w-xl mx-auto drop-shadow-xs hidden sm:block">
               {lang === "th"
-                ? "ต้อนรับลูกค้า รับออร์เดอร์ และรังสรรค์พิธีชงชาชั้นเลิศ"
+                ? "ต้อนรับลูกค้า รับออร์เดอร์ และรังสรรค์พิธีชงชาชั้นเลิศเพื่อสะสมเหรียญใบชา"
                 : "Welcome cozy patrons, craft authentic rituals, and earn tea master prestige."}
             </p>
           </div>
         </div>
+      </div>
 
-        {/* Top Control Badges & Audio Toggles */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-center">
+      {/* Top Controls Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/80 backdrop-blur-md p-3.5 rounded-2xl border border-wood/15 shadow-xs">
+        <div className="flex items-center gap-2">
           {/* Tea Coins Badge */}
-          <div className="flex items-center gap-1.5 bg-amber-100/90 border border-amber-300 px-3 py-1.5 rounded-full text-xs font-bold text-amber-900 shadow-inner">
+          <div className="flex items-center gap-1.5 bg-amber-100/90 border border-amber-300 px-3 py-1 rounded-full text-xs font-bold text-amber-900 shadow-inner">
             <Coins className="w-4 h-4 text-amber-700" />
             <span>{coins} {lang === "th" ? "เหรียญ" : "Coins"}</span>
           </div>
 
+          <div className="text-xs text-wood font-medium hidden sm:block">
+            {lang === "th" ? "ลูกค้าคนที่:" : "Patron:"} {customerIndex + 1}/{CAFE_CUSTOMERS.length} ({currentCustomer.name})
+          </div>
+        </div>
+
+        {/* Action Badges & Audio Toggles */}
+        <div className="flex items-center gap-2 flex-wrap justify-center">
           {/* Shop Button */}
           <Button
             variant="outline"
@@ -376,7 +395,7 @@ export default function CafePage() {
             )}
           </button>
         </div>
-      </header>
+      </div>
 
       {/* MAIN GAME CONTENT AREA */}
       <main className="space-y-6">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { TeaIngredient, BlendInput, TeaCategory, CupVesselType, CupGlaze, CoasterStyle, LatteArtType } from "@/types/tea";
@@ -252,18 +253,31 @@ export default function LabPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      {/* Header */}
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-light/30 border border-amber/30 text-dark-wood text-xs font-semibold mb-2">
-          <Globe className="w-3.5 h-3.5 text-amber-700" />
-          <span>{t.heroBadge}</span>
+      {/* Illustrated Hero Banner */}
+      <div className="relative rounded-3xl overflow-hidden mb-8 border border-wood/25 shadow-md group">
+        <div className="relative h-56 sm:h-72 md:h-80 w-full overflow-hidden">
+          <Image
+            src="/images/kissa_hero_artisan.jpg"
+            alt="Kissa Artisan Tea Counter"
+            fill
+            priority
+            className="object-cover object-center group-hover:scale-102 transition-transform duration-700"
+          />
+          {/* Frosted vignette gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-dark-wood/90 via-dark-wood/50 to-transparent" />
+          <div className="absolute inset-0 flex flex-col items-center justify-end text-center p-6 sm:p-8 text-white space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs font-semibold text-amber-200">
+              <Globe className="w-3.5 h-3.5 text-amber-300" />
+              <span>{t.heroBadge}</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold drop-shadow-md text-cream">
+              {t.heroTitle}
+            </h1>
+            <p className="text-cream/90 text-xs sm:text-sm md:text-base max-w-2xl mx-auto drop-shadow-xs">
+              {t.heroSubtitle}
+            </p>
+          </div>
         </div>
-        <h1 className="text-4xl md:text-5xl font-display text-dark-wood font-bold">
-          {t.heroTitle}
-        </h1>
-        <p className="text-wood mt-2 text-base sm:text-lg max-w-2xl mx-auto">
-          {t.heroSubtitle}
-        </p>
       </div>
 
       {/* Signature Preset Book */}
@@ -457,8 +471,8 @@ export default function LabPage() {
           </section>
         </div>
 
-        {/* RIGHT COLUMN: Visual Scene & Profiler (6 cols on lg) */}
-        <div className="lg:col-span-6 space-y-6 flex flex-col items-center order-1 lg:order-2">
+        {/* RIGHT COLUMN: Visual Scene & Profiler (6 cols on lg, sticky on desktop) */}
+        <div className="lg:col-span-6 space-y-6 flex flex-col items-center order-1 lg:order-2 lg:sticky lg:top-20 lg:self-start">
           {/* Animated Cup Scene with Dynamic Glaze, Turbidity & Garnishes */}
           <div className="w-full bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-wood/15 shadow-sm flex flex-col items-center">
             <CozyCupScene
