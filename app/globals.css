@@ -2,14 +2,17 @@
 
 @theme {
   --color-cream: #FAF6F0;
-  --color-cream-dark: #F0E8DC;
-  --color-wood: #8C5E45;
-  --color-wood-dark: #734A34;
-  --color-wood-light: #A47556;
-  --color-amber: #D4A574;
-  --color-amber-light: #E8C9A0;
-  --color-tea-green: #7BA05B;
-  --color-tea-gold: #C9A649;
+  --color-cream-dark: #F2E9DC;
+  --color-wood: #483428;
+  --color-wood-dark: #1C120C;
+  --color-wood-light: #6E5343;
+  --color-amber: #C8751E;
+  --color-amber-dark: #9A520E;
+  --color-amber-light: #FDEBD2;
+  --color-tea-green: #2D7A47;
+  --color-tea-gold: #D98824;
+  --color-terracotta: #BA4A1E;
+  --color-terracotta-dark: #9C3A12;
 
   --font-display: "Playfair Display", serif;
   --font-body: "Inter", sans-serif;
@@ -19,6 +22,8 @@ body {
   font-family: var(--font-body);
   background-color: var(--color-cream);
   color: var(--color-wood-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Steam animation for teacup */

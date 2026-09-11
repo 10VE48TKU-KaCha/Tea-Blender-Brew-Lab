@@ -183,14 +183,14 @@ export default function TastingResultModal({
               <Button
                 onClick={onBrewAgain}
                 variant="outline"
-                className="flex-1 border-wood/25 text-wood rounded-xl cursor-pointer text-xs"
+                className="flex-1 border-2 border-wood/25 text-wood-dark font-semibold rounded-xl cursor-pointer text-xs hover:bg-cream"
               >
                 <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
                 {lang === "th" ? "ชงใหม่ให้สมบูรณ์" : "Brew Again"}
               </Button>
               <Button
                 onClick={onNextCustomer}
-                className="flex-1 bg-dark-wood hover:bg-wood text-cream rounded-xl font-semibold shadow-md cursor-pointer text-xs"
+                className="flex-1 bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl font-bold shadow-md shadow-orange-950/20 cursor-pointer text-xs py-2.5 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <span>{lang === "th" ? "รับลูกค้าคนถัดไป" : "Next Customer"}</span>
                 <ArrowRight className="w-3.5 h-3.5 ml-1.5" />

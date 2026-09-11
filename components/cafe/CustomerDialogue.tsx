@@ -85,13 +85,13 @@ export default function CustomerDialogue({
             <Button
               variant="outline"
               onClick={onSwitchCustomer}
-              className="text-xs border-wood/25 text-wood hover:bg-wood/5 rounded-xl cursor-pointer"
+              className="text-xs border-2 border-wood/25 text-wood-dark font-semibold hover:bg-cream rounded-xl cursor-pointer"
             >
               🔄 {lang === "th" ? "เปลี่ยนลูกค้าคนถัดไป" : "Next Customer"}
             </Button>
             <Button
               onClick={onAcceptOrder}
-              className="bg-dark-wood hover:bg-wood text-cream font-semibold rounded-xl px-6 py-2.5 shadow-md cursor-pointer transition-all hover:scale-105 active:scale-95"
+              className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white font-bold rounded-xl px-6 py-2.5 shadow-md shadow-orange-950/20 cursor-pointer transition-all hover:scale-105 active:scale-95"
             >
               🍵 {lang === "th" ? "รับออเดอร์ & เริ่มเลือกใบชา" : "Accept Order & Begin"}
             </Button>

@@ -8,17 +8,19 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-gradient-to-r from-wood-dark to-wood text-cream shadow-md shadow-wood/20 hover:from-wood hover:to-wood-light hover:shadow-lg active:scale-[0.97] ring-1 ring-amber-400/20 font-semibold",
+          "bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] text-white shadow-md shadow-orange-950/20 hover:from-[#A43E16] hover:to-[#BA4A1E] hover:shadow-lg active:scale-[0.97] ring-1 ring-orange-300/35 font-semibold",
+        matcha:
+          "bg-gradient-to-r from-[#1E5C38] via-[#2A7549] to-[#368D5B] text-white shadow-md shadow-emerald-950/20 hover:from-[#17482C] hover:to-[#22613B] hover:shadow-lg active:scale-[0.97] ring-1 ring-emerald-300/35 font-semibold",
         secondary:
-          "bg-amber-light/80 backdrop-blur-xs text-wood-dark border border-amber/30 hover:bg-amber active:scale-[0.97] font-medium shadow-2xs",
+          "bg-amber-light/90 backdrop-blur-xs text-wood-dark border border-amber/40 hover:bg-amber hover:text-white active:scale-[0.97] font-semibold shadow-2xs",
         outline:
-          "border-2 border-wood/25 bg-white/60 backdrop-blur-xs text-wood-dark hover:bg-white hover:border-wood/40 hover:shadow-xs active:scale-[0.97]",
-        ghost: "text-wood hover:bg-wood/10 hover:text-wood-dark active:scale-[0.97]",
-        destructive: "bg-red-600 text-white hover:bg-red-700 shadow-sm active:scale-[0.97]",
+          "border-2 border-[#BA4A1E]/35 bg-white/90 backdrop-blur-xs text-wood-dark hover:bg-[#FFF6EF] hover:border-[#BA4A1E] hover:shadow-xs active:scale-[0.97] font-semibold",
+        ghost: "text-wood hover:bg-wood/10 hover:text-wood-dark active:scale-[0.97] font-medium",
+        destructive: "bg-red-600 text-white hover:bg-red-700 shadow-sm active:scale-[0.97] font-semibold",
         amberGlow:
           "bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white shadow-lg shadow-amber-900/25 ring-1 ring-amber-400/50 hover:from-amber-700 hover:to-amber-900 active:scale-[0.97] font-semibold hover:shadow-amber-900/40",
         glass:
-          "bg-white/70 backdrop-blur-md border border-wood/20 text-wood-dark shadow-xs hover:bg-white/90 hover:border-amber/40 active:scale-[0.97]",
+          "bg-white/85 backdrop-blur-md border border-wood/20 text-wood-dark shadow-xs hover:bg-white hover:border-amber/50 active:scale-[0.97] font-semibold",
         zen:
           "rounded-full bg-cream-dark text-wood-dark border border-wood/20 hover:bg-amber-light/30 active:scale-[0.95] font-medium px-5",
       },

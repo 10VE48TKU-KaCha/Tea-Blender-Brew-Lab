@@ -532,7 +532,7 @@ export function ZenBrewModal({
                   if (soundEnabled) playWaterPour(1500);
                   setCurrentStep("leaves");
                 }}
-                className="px-5 py-2 sm:py-2.5 bg-gradient-to-r from-[#8C5E45] to-[#6A432D] hover:from-[#6A432D] hover:to-[#533423] text-[#FAF6EE] rounded-full font-medium flex items-center gap-1.5 shadow-md cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm"
+                className="px-5 py-2 sm:py-2.5 bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-full font-bold flex items-center gap-1.5 shadow-md shadow-orange-950/20 cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm"
               >
                 <Leaf className="w-4 h-4" />
                 <span>{lang === "th" ? "ถัดไป: ใส่ใบชาและส่วนผสม" : "Next: Add Tea Leaves"}</span>
@@ -546,7 +546,7 @@ export function ZenBrewModal({
                   setCurrentStep("steeping");
                   handleStartSteep();
                 }}
-                className="px-5 py-2 sm:py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white rounded-full font-medium flex items-center gap-1.5 shadow-md cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm"
+                className="px-5 py-2 sm:py-2.5 bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-full font-bold flex items-center gap-1.5 shadow-md shadow-orange-950/20 cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm"
               >
                 <Flame className="w-4 h-4" />
                 <span>{lang === "th" ? "ถัดไป: เริ่มจับเวลาการสกัดชา" : "Next: Start Live Steeping"}</span>
@@ -559,7 +559,7 @@ export function ZenBrewModal({
                 {!isRunning ? (
                   <Button
                     onClick={handleStartSteep}
-                    className="px-5 py-2 sm:py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white rounded-full font-medium flex items-center gap-1.5 shadow-md cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm"
+                    className="px-5 py-2 sm:py-2.5 bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-full font-bold flex items-center gap-1.5 shadow-md shadow-orange-950/20 cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm"
                   >
                     <Play className="w-4 h-4 fill-white" />
                     <span>{remainingSeconds === totalSeconds ? t.startSteep : t.resumeSteep}</span>
@@ -568,7 +568,7 @@ export function ZenBrewModal({
                   <Button
                     onClick={handlePause}
                     variant="outline"
-                    className="px-5 py-2 sm:py-2.5 border-amber-800/40 text-amber-950 bg-white/80 hover:bg-amber-100/50 rounded-full font-medium flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-xs text-xs sm:text-sm"
+                    className="px-5 py-2 sm:py-2.5 border-[#BA4A1E]/40 text-wood-dark bg-white/90 hover:bg-orange-50/60 rounded-full font-medium flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-xs text-xs sm:text-sm"
                   >
                     <Pause className="w-4 h-4" />
                     <span>{t.pauseSteep}</span>
@@ -582,7 +582,7 @@ export function ZenBrewModal({
                     setIsCompleted(true);
                     setCurrentStep("sipping");
                   }}
-                  className="px-3.5 py-2 bg-gradient-to-r from-emerald-700 to-teal-800 hover:from-emerald-800 hover:to-teal-900 text-white rounded-full font-medium text-xs flex items-center gap-1 shadow-md cursor-pointer transition-all hover:scale-105 active:scale-95"
+                  className="px-3.5 py-2 bg-gradient-to-r from-[#1E5C38] to-[#368D5B] hover:from-[#164429] hover:to-[#1E5C38] text-white rounded-full font-semibold text-xs flex items-center gap-1 shadow-md cursor-pointer transition-all hover:scale-105 active:scale-95"
                 >
                   <Coffee className="w-3.5 h-3.5" />
                   <span>{t.enjoyTea}</span>
@@ -597,7 +597,7 @@ export function ZenBrewModal({
                   !isSipping ? (
                     <Button
                       onClick={handleStartSip}
-                      className="px-6 py-2.5 bg-gradient-to-r from-amber-700 via-amber-800 to-amber-900 hover:from-amber-800 hover:to-amber-950 text-white rounded-full font-bold flex items-center gap-2 shadow-lg ring-2 ring-amber-400/50 cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm"
+                      className="px-6 py-2.5 bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-full font-bold flex items-center gap-2 shadow-lg shadow-orange-950/20 ring-2 ring-orange-300/40 cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm"
                     >
                       <Coffee className="w-4 h-4" />
                       <span>{t.startSipping}</span>
@@ -605,7 +605,7 @@ export function ZenBrewModal({
                   ) : (
                     <Button
                       onClick={handlePauseSip}
-                      className="px-5 py-2 bg-amber-900/80 hover:bg-amber-950 text-white rounded-full font-medium flex items-center gap-1.5 shadow-md cursor-pointer transition-all active:scale-95 text-xs sm:text-sm"
+                      className="px-5 py-2 bg-stone-800 hover:bg-stone-900 text-white rounded-full font-medium flex items-center gap-1.5 shadow-md cursor-pointer transition-all active:scale-95 text-xs sm:text-sm"
                     >
                       <Pause className="w-4 h-4" />
                       <span>{lang === "th" ? "หยุดพักการจิบ" : "Pause Sip"}</span>
@@ -614,7 +614,7 @@ export function ZenBrewModal({
                 ) : (
                   <Button
                     onClick={handleReset}
-                    className="px-5 py-2 bg-gradient-to-r from-emerald-700 to-teal-800 hover:from-emerald-800 hover:to-teal-900 text-white rounded-full font-semibold flex items-center gap-1.5 shadow-md cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm"
+                    className="px-5 py-2 bg-gradient-to-r from-[#1E5C38] to-[#368D5B] hover:from-[#164429] hover:to-[#1E5C38] text-white rounded-full font-semibold flex items-center gap-1.5 shadow-md cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm"
                   >
                     <RotateCcw className="w-4 h-4" />
                     <span>{t.brewAgain}</span>
@@ -624,7 +624,7 @@ export function ZenBrewModal({
                 <Button
                   onClick={onClose}
                   variant="outline"
-                  className="px-3.5 py-2 border-[#8C5E45]/40 text-[#533423] bg-white/70 hover:bg-amber-50 rounded-full font-medium text-xs flex items-center gap-1 cursor-pointer transition-all active:scale-95"
+                  className="px-3.5 py-2 border-[#BA4A1E]/30 text-wood-dark bg-white/90 hover:bg-orange-50/50 rounded-full font-medium text-xs flex items-center gap-1 cursor-pointer transition-all active:scale-95"
                 >
                   <Check className="w-3.5 h-3.5" />
                   <span>{lang === "th" ? "ปิดหน้าต่าง" : "Done"}</span>

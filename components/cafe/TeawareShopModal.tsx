@@ -109,10 +109,10 @@ export default function TeawareShopModal({
                       <Button
                         onClick={() => handleBuyItem(item.id, item.priceCoins)}
                         disabled={!canAfford}
-                        className={`text-xs rounded-xl px-3 py-1 cursor-pointer font-semibold shadow-xs ${
+                        className={`text-xs rounded-xl px-3 py-1.5 font-bold shadow-xs cursor-pointer transition-all ${
                           canAfford
-                            ? "bg-amber-700 hover:bg-amber-800 text-white"
-                            : "bg-wood/20 text-wood/50 cursor-not-allowed"
+                            ? "bg-gradient-to-r from-[#BA4A1E] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white shadow-sm hover:scale-105 active:scale-95"
+                            : "bg-stone-200 text-stone-400 border border-stone-300 cursor-not-allowed"
                         }`}
                       >
                         <Lock className="w-3 h-3 mr-1" />

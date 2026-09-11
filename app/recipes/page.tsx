@@ -63,7 +63,7 @@ export default async function RecipesArchivePage() {
             </Button>
           </Link>
           <Link href="/lab">
-            <Button size="sm" className="rounded-xl text-xs bg-dark-wood text-cream font-semibold">
+            <Button size="sm" className="rounded-xl text-xs bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white font-bold shadow-xs">
               <Plus className="w-3.5 h-3.5 mr-1" />
               Craft New Blend
             </Button>
@@ -80,7 +80,7 @@ export default async function RecipesArchivePage() {
             Be the first tea master to craft and save an artisan blend into the archive!
           </p>
           <Link href="/lab">
-            <Button className="mt-2 bg-dark-wood hover:bg-wood text-cream rounded-xl font-semibold shadow-md">
+            <Button className="mt-2 bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl font-bold shadow-md shadow-orange-950/20">
               Go to Blending Lab ↗
             </Button>
           </Link>

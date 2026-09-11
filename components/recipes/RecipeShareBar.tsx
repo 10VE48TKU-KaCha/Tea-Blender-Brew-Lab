@@ -169,7 +169,7 @@ export function RecipeShareBar({
       <div className="flex items-center gap-3 flex-wrap justify-center">
         <Button
           onClick={handleShare}
-          className="bg-dark-wood hover:bg-wood text-cream rounded-full px-5 py-2 text-sm font-medium flex items-center gap-2 cursor-pointer shadow-sm transition-all hover:scale-105 active:scale-95"
+          className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-full px-5 py-2 text-sm font-bold flex items-center gap-2 cursor-pointer shadow-md shadow-orange-950/20 transition-all hover:scale-105 active:scale-95"
         >
           {copied ? (
             <>

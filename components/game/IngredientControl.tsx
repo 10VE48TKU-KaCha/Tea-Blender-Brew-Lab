@@ -47,8 +47,10 @@ export function IngredientControl({ ingredient, value, onChange }: IngredientCon
 
       <div className="flex items-center gap-4">
         <button
+          type="button"
           onClick={handleDecrement}
-          className="md:hidden flex h-8 w-8 items-center justify-center rounded-full bg-wood/10 text-wood-dark active:scale-95"
+          className="flex h-8 w-8 items-center justify-center rounded-xl bg-white text-wood-dark border border-wood/25 hover:bg-amber-50 active:scale-95 shadow-2xs cursor-pointer shrink-0 transition-all"
+          aria-label="Decrease percentage"
         >
           <Minus className="h-4 w-4" />
         </button>
@@ -60,18 +62,20 @@ export function IngredientControl({ ingredient, value, onChange }: IngredientCon
             max="100"
             value={value}
             onChange={(e) => onChange(Number(e.target.value))}
-            className="w-full accent-wood"
+            className="w-full accent-[#BA4A1E]"
           />
         </div>
 
         <button
+          type="button"
           onClick={handleIncrement}
-          className="md:hidden flex h-8 w-8 items-center justify-center rounded-full bg-wood/10 text-wood-dark active:scale-95"
+          className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#BA4A1E] to-[#D96830] text-white hover:from-[#A43E16] hover:to-[#BA4A1E] active:scale-95 shadow-xs cursor-pointer shrink-0 transition-all"
+          aria-label="Increase percentage"
         >
           <Plus className="h-4 w-4" />
         </button>
 
-        <div className="w-12 text-right font-medium text-wood-dark relative h-6 overflow-hidden">
+        <div className="w-12 text-right font-bold text-base text-wood-dark relative h-6 overflow-hidden">
           <AnimatePresence mode="popLayout">
             <motion.span
               key={value}

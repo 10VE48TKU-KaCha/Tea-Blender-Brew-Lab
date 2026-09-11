@@ -289,7 +289,7 @@ export default function InteractiveBrewStep({
             {!isHeating ? (
               <Button
                 onClick={() => setIsHeating(true)}
-                className="bg-amber-700 hover:bg-amber-800 text-white rounded-xl px-6 cursor-pointer font-semibold shadow-md"
+                className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl px-6 cursor-pointer font-bold shadow-md shadow-orange-950/20"
               >
                 🔥 {lang === "th" ? "เริ่มต้มน้ำ (Heat Water)" : "Start Heating"}
               </Button>
@@ -331,7 +331,7 @@ export default function InteractiveBrewStep({
             ) : (
               <Button
                 onClick={handleDiscardRinseWater}
-                className="bg-amber-800 hover:bg-amber-900 text-white rounded-xl px-6 cursor-pointer font-semibold shadow-md animate-pulse"
+                className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl px-6 cursor-pointer font-bold shadow-md shadow-orange-950/20 animate-pulse"
               >
                 🌊 {lang === "th" ? "เทน้ำทิ้งลงถาดรองชา (Discard into Tray)" : "Discard into Tray"}
               </Button>
@@ -406,7 +406,7 @@ export default function InteractiveBrewStep({
           <Button
             onClick={handleStartRinse}
             disabled={isRinsingActive}
-            className="bg-amber-700 hover:bg-amber-800 text-white rounded-xl px-6 cursor-pointer font-semibold shadow-md"
+            className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl px-6 cursor-pointer font-bold shadow-md shadow-orange-950/20"
           >
             {isRinsingActive
               ? (lang === "th" ? "กำลังล้างและเทน้ำแรก..." : "Rinsing Leaves...")
@@ -442,7 +442,7 @@ export default function InteractiveBrewStep({
             onMouseUp={() => setIsHoldingPour(false)}
             onTouchStart={() => setIsHoldingPour(true)}
             onTouchEnd={() => setIsHoldingPour(false)}
-            className="bg-amber-800 hover:bg-amber-900 active:scale-95 text-white rounded-xl px-8 py-3 cursor-pointer font-bold shadow-lg"
+            className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] active:scale-95 text-white rounded-xl px-8 py-3 cursor-pointer font-bold shadow-lg shadow-orange-950/25"
           >
             🌀 {lang === "th" ? "กดค้างเพื่อรินน้ำวน (Hold to Spiral Pour)" : "Hold to Spiral Pour"} ({spiralProgress}%)
           </Button>
@@ -487,7 +487,7 @@ export default function InteractiveBrewStep({
           <Button
             onClick={handleStopSteep}
             disabled={hasStoppedSteep}
-            className="bg-gradient-to-r from-amber-600 to-amber-800 text-white rounded-xl px-8 cursor-pointer font-bold shadow-md hover:scale-105 active:scale-95"
+            className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl px-8 cursor-pointer font-bold shadow-md shadow-orange-950/20 hover:scale-105 active:scale-95"
           >
             🛑 {lang === "th" ? "ยกที่กรอง / หยุดสกัด (Lift Strainer!)" : "Lift Strainer / Stop Steep!"}
           </Button>
@@ -514,7 +514,7 @@ export default function InteractiveBrewStep({
               playTeacupClink();
               onStepComplete(100);
             }}
-            className="bg-amber-700 hover:bg-amber-800 text-white rounded-xl px-6 cursor-pointer font-semibold shadow-md"
+            className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl px-6 cursor-pointer font-bold shadow-md shadow-orange-950/20"
           >
             🕸️ {lang === "th" ? "วางตะแกรงกรอง (Place Strainer)" : "Place Strainer"}
           </Button>
@@ -538,7 +538,7 @@ export default function InteractiveBrewStep({
 
           <Button
             onClick={handleDecantPitcher}
-            className="bg-amber-800 hover:bg-amber-900 text-white rounded-xl px-8 cursor-pointer font-bold shadow-md animate-pulse"
+            className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl px-8 cursor-pointer font-bold shadow-md shadow-orange-950/20 animate-pulse"
           >
             ⚖️ {lang === "th" ? "รินลงเหยือกพักชา (Decant Pitcher)" : "Decant to Pitcher"}
           </Button>
@@ -614,7 +614,7 @@ export default function InteractiveBrewStep({
           {milkFrothLevel === 0 ? (
             <Button
               onClick={handleSteamMilk}
-              className="bg-amber-700 hover:bg-amber-800 text-white rounded-xl px-6 cursor-pointer font-semibold shadow-md"
+              className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl px-6 cursor-pointer font-bold shadow-md shadow-orange-950/20"
             >
               🥛 {lang === "th" ? "สตรีมนมให้เกิดไมโครโฟม (Steam Milk 65°C)" : "Steam Microfoam"}
             </Button>
@@ -631,7 +631,7 @@ export default function InteractiveBrewStep({
                     onClick={() => setSelectedLatteArt(art)}
                     className={`px-3 py-1.5 rounded-xl border text-xs font-semibold capitalize cursor-pointer transition-all ${
                       selectedLatteArt === art
-                        ? "bg-dark-wood text-cream border-dark-wood shadow-xs scale-105"
+                        ? "bg-gradient-to-r from-[#BA4A1E] to-[#D96830] text-white border-transparent shadow-sm scale-105"
                         : "bg-white border-wood/20 text-wood hover:bg-cream"
                     }`}
                   >
@@ -668,7 +668,7 @@ export default function InteractiveBrewStep({
           <Button
             onClick={handleSprayMist}
             disabled={mistSprayed}
-            className="bg-gradient-to-r from-amber-600 to-amber-800 text-white rounded-xl px-8 cursor-pointer font-bold shadow-md animate-pulse"
+            className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl px-8 cursor-pointer font-bold shadow-md shadow-orange-950/20 animate-pulse"
           >
             ✨ {lang === "th" ? "พ่นสเปรย์อโรม่า & พร้อมเสิร์ฟ!" : "Spray Mist & Ready to Serve!"}
           </Button>

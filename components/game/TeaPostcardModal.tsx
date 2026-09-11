@@ -261,7 +261,7 @@ export function TeaPostcardModal({
           <div className="mt-5 space-y-2">
             <Button
               onClick={handleCopyShare}
-              className="w-full bg-dark-wood hover:bg-wood text-cream rounded-xl py-2.5 font-medium flex items-center justify-center gap-2 cursor-pointer shadow-md"
+              className="w-full bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white rounded-xl py-2.5 font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-orange-950/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
             >
               {copied ? (
                 <>

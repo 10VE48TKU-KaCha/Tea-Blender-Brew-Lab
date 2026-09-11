@@ -514,7 +514,7 @@ export default function CafePage() {
               </Button>
               <Button
                 onClick={handleConfirmEquipment}
-                className="bg-dark-wood hover:bg-wood text-cream font-semibold rounded-xl px-6 cursor-pointer shadow-md"
+                className="bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white font-bold rounded-xl px-6 py-2.5 shadow-md shadow-orange-950/20 cursor-pointer transition-all hover:scale-105 active:scale-95"
               >
                 <span>{lang === "th" ? "ยืนยันอุปกรณ์ & ไปเลือกใบชา" : "Confirm Teaware & Blend"}</span>
                 <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -585,7 +585,7 @@ export default function CafePage() {
                 <Button
                   onClick={handleConfirmBlend}
                   disabled={!extraction}
-                  className="w-full bg-dark-wood hover:bg-wood text-cream font-semibold rounded-xl py-2.5 shadow-md cursor-pointer transition-all hover:scale-102"
+                  className="w-full bg-gradient-to-r from-[#1E5C38] via-[#2A7549] to-[#368D5B] hover:from-[#17482C] hover:to-[#22613B] text-white font-bold rounded-xl py-3 shadow-md shadow-emerald-950/20 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
                   ✨ {lang === "th" ? "เริ่มพิธีการชง (Start Ritual!)" : "Begin Artisan Ritual!"}
                 </Button>
@@ -637,21 +637,23 @@ export default function CafePage() {
                         </div>
 
                         {/* Ratio controls */}
-                        <div className="flex items-center gap-1 shrink-0">
+                        <div className="flex items-center gap-1.5 shrink-0">
                           <button
                             type="button"
                             onClick={() => handleAddRatio(ing.id, -25)}
-                            className="w-6 h-6 rounded-lg bg-wood/10 text-wood text-xs flex items-center justify-center font-bold hover:bg-wood/20 cursor-pointer"
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white text-wood-dark border border-wood/25 text-xs flex items-center justify-center font-bold hover:bg-amber-50 active:scale-95 shadow-2xs cursor-pointer transition-all"
+                            aria-label="Decrease ratio"
                           >
                             -
                           </button>
-                          <span className="w-8 text-center font-mono text-xs font-bold text-dark-wood">
+                          <span className="w-9 text-center font-mono text-xs font-bold text-wood-dark">
                             {ratio}%
                           </span>
                           <button
                             type="button"
                             onClick={() => handleAddRatio(ing.id, 25)}
-                            className="w-6 h-6 rounded-lg bg-amber-600 text-white text-xs flex items-center justify-center font-bold hover:bg-amber-700 cursor-pointer shadow-2xs"
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-r from-[#BA4A1E] to-[#D96830] text-white text-xs flex items-center justify-center font-bold hover:from-[#A43E16] hover:to-[#BA4A1E] active:scale-95 cursor-pointer shadow-xs transition-all"
+                            aria-label="Increase ratio"
                           >
                             +
                           </button>
