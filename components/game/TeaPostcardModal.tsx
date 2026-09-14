@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, Copy, Check, Share2, Sparkles, Download } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { KissaMonCrest } from "@/components/ui/KissaLogo";
 
 interface TeaPostcardModalProps {
   isOpen: boolean;
@@ -162,16 +163,19 @@ export function TeaPostcardModal({
             </div>
 
             {/* Ticket Header */}
-            <div className="pr-14">
-              <span className="font-mono text-xs font-bold text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded-full border border-amber-300">
-                {blendCode}
-              </span>
-              <h3 className="font-display text-2xl font-bold text-dark-wood mt-2 leading-tight">
-                {title || extraction.cozyTitle}
-              </h3>
-              <p className="text-[11px] text-wood/60 mt-0.5">
-                {lang === "th" ? "รับรองโดยห้องทดลองคิสสะ" : "Certified by Kissa Laboratory"} • {dateStr}
-              </p>
+            <div className="flex items-start gap-3 pr-14">
+              <KissaMonCrest size="md" className="mt-1 shrink-0" />
+              <div>
+                <span className="font-mono text-xs font-bold text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded-full border border-amber-300 inline-block">
+                  {blendCode}
+                </span>
+                <h3 className="font-display text-2xl font-bold text-dark-wood mt-1 leading-tight">
+                  {title || extraction.cozyTitle}
+                </h3>
+                <p className="text-[11px] text-wood/60 mt-0.5">
+                  {lang === "th" ? "รับรองโดยห้องทดลองคิสสะ" : "Certified by Kissa Laboratory"} • {dateStr}
+                </p>
+              </div>
             </div>
 
             {/* Origins Badge */}

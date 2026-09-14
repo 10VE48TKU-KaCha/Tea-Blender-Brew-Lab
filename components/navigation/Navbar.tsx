@@ -8,6 +8,8 @@ import { Beaker, BookOpen, Coffee, Languages, Sparkles, Menu, X, CloudRain, Flam
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/LanguageContext";
 
+import { KissaLogo } from "@/components/ui/KissaLogo";
+
 export function Navbar() {
   const pathname = usePathname();
   const { lang, toggleLang, t } = useLanguage();
@@ -27,21 +29,15 @@ export function Navbar() {
           <Link
             href="/"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2.5 group transition-transform active:scale-95"
+            className="flex items-center group transition-transform active:scale-95"
+            aria-label="Kissa Lab Home"
           >
-            <div className="p-2 bg-gradient-to-br from-wood-dark to-wood text-cream rounded-2xl shadow-sm group-hover:shadow-md transition-shadow relative overflow-hidden">
-              <Coffee className="h-5 w-5" />
-              {/* Steaming light sparkle */}
-              <div className="absolute top-0 right-0 w-2 h-2 bg-amber-300 rounded-full animate-ping opacity-60" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-[family-name:var(--font-display)] text-xl font-bold text-wood-dark leading-none tracking-tight drop-shadow-[0_1px_1px_rgba(0,0,0,0.1)]">
-                Kissa Lab
-              </span>
-              <span className="text-[10px] uppercase tracking-wider text-wood/75 font-semibold hidden sm:block">
-                {t.navSubtitle}
-              </span>
-            </div>
+            <KissaLogo
+              variant="full"
+              size="md"
+              subtitle={t.navSubtitle}
+              showSubtitle={true}
+            />
           </Link>
 
           {/* Desktop Navigation Links */}

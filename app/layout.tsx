@@ -19,6 +19,13 @@ export const metadata: Metadata = {
   title: "Kissa Lab — Cozy Tea Brew & Extraction Profiler",
   description:
     "Blend specialty teas, tune extraction parameters, and discover your perfect cozy cup.",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/logo.svg", type: "image/svg+xml" },
+    ],
+    apple: "/logo.svg",
+  },
 };
 
 export default function RootLayout({
