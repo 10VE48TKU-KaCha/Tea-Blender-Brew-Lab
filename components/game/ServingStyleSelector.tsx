@@ -107,30 +107,30 @@ export function ServingStyleSelector({
   const isFoamArtApplicable = vesselType === "latte" || vesselType === "chawan" || vesselType === "mug";
 
   return (
-    <div className="w-full space-y-3.5 bg-white/75 backdrop-blur-md rounded-2xl p-4 border border-wood/15 shadow-sm">
+    <div className="w-full space-y-4 vibrant-glass-card rounded-3xl p-5 border border-stone-200/80 shadow-md">
       {/* Studio Header & Navigation Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-wood/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-black/[0.05]">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-amber/20 flex items-center justify-center text-xs">
+          <div className="w-7 h-7 rounded-xl bg-amber-100 flex items-center justify-center text-sm shadow-2xs">
             🍵
           </div>
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-dark-wood">
+            <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#1E1915]">
               {t.cupStudioTitle}
             </h3>
           </div>
         </div>
 
         {/* Studio Sub-Tabs */}
-        <div className="flex items-center gap-1 bg-amber-light/20 p-1 rounded-xl border border-wood/10 self-start sm:self-auto overflow-x-auto max-w-full">
+        <div className="flex items-center gap-1 bg-black/[0.03] p-1 rounded-xl border border-black/[0.04] self-start sm:self-auto overflow-x-auto max-w-full">
           <button
             type="button"
             onClick={() => setActiveTab("vessel")}
             className={cn(
-              "px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap",
+              "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap",
               activeTab === "vessel"
-                ? "bg-white text-dark-wood shadow-sm font-bold ring-1 ring-amber/40"
-                : "text-wood/70 hover:text-dark-wood"
+                ? "bg-white text-[#1E1915] shadow-xs font-bold ring-1 ring-amber-500/30"
+                : "text-stone-500 hover:text-stone-900"
             )}
           >
             <span>🏺</span>
@@ -141,13 +141,13 @@ export function ServingStyleSelector({
             type="button"
             onClick={() => setActiveTab("material")}
             className={cn(
-              "px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap",
+              "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap",
               activeTab === "material"
-                ? "bg-white text-dark-wood shadow-sm font-bold ring-1 ring-amber/40"
-                : "text-wood/70 hover:text-dark-wood"
+                ? "bg-white text-[#1E1915] shadow-xs font-bold ring-1 ring-amber-500/30"
+                : "text-stone-500 hover:text-stone-900"
             )}
           >
-            <Palette className="w-3 h-3 text-amber" />
+            <Palette className="w-3 h-3 text-amber-600" />
             <span>{t.tabGlaze}</span>
           </button>
 
@@ -156,10 +156,10 @@ export function ServingStyleSelector({
               type="button"
               onClick={() => setActiveTab("art")}
               className={cn(
-                "px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap animate-in fade-in duration-200",
+                "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap animate-in fade-in duration-200",
                 activeTab === "art"
-                  ? "bg-white text-dark-wood shadow-sm font-bold ring-1 ring-amber/40"
-                  : "text-wood/70 hover:text-dark-wood"
+                  ? "bg-white text-[#1E1915] shadow-xs font-bold ring-1 ring-amber-500/30"
+                  : "text-stone-500 hover:text-stone-900"
               )}
             >
               <span>🎨</span>
@@ -171,16 +171,16 @@ export function ServingStyleSelector({
             type="button"
             onClick={() => setActiveTab("botanicals")}
             className={cn(
-              "px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap",
+              "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap",
               activeTab === "botanicals"
-                ? "bg-white text-dark-wood shadow-sm font-bold ring-1 ring-amber/40"
-                : "text-wood/70 hover:text-dark-wood"
+                ? "bg-white text-[#1E1915] shadow-xs font-bold ring-1 ring-amber-500/30"
+                : "text-stone-500 hover:text-stone-900"
             )}
           >
-            <Sparkles className="w-3 h-3 text-amber" />
+            <Sparkles className="w-3 h-3 text-amber-600" />
             <span>{t.tabBotanicals}</span>
             {garnishes.length > 0 && (
-              <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-700 text-white font-bold">
+              <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-600 text-white font-bold">
                 {garnishes.length}
               </span>
             )}
@@ -204,15 +204,15 @@ export function ServingStyleSelector({
                   className={cn(
                     "flex flex-col items-center justify-center p-2.5 rounded-xl border transition-all duration-200 text-center cursor-pointer active:scale-95 group relative",
                     isSelected
-                      ? "bg-amber-light/35 border-wood text-dark-wood font-bold shadow-sm ring-2 ring-amber/60 scale-[1.02]"
-                      : "bg-white/50 border-wood/10 text-wood/80 hover:bg-cream hover:border-wood/30 hover:shadow-xs"
+                      ? "bg-amber-50/90 border-amber-500 text-stone-900 font-bold shadow-xs ring-2 ring-amber-500/30 scale-[1.02]"
+                      : "bg-white/60 border-stone-200/70 text-stone-700 hover:bg-white hover:border-stone-300"
                   )}
                 >
                   <span className="text-2xl mb-1 group-hover:scale-110 transition-transform">
                     {v.icon}
                   </span>
-                  <span className="text-xs font-semibold leading-tight">{v.label}</span>
-                  <span className="text-[10px] text-wood/60 line-clamp-1 mt-0.5 font-normal">
+                  <span className="text-xs font-bold leading-tight">{v.label}</span>
+                  <span className="text-[10px] text-stone-400 line-clamp-1 mt-0.5 font-normal">
                     {v.desc}
                   </span>
                 </button>

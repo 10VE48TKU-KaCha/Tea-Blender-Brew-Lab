@@ -221,30 +221,38 @@ export function PresetBar({ onSelectPreset, activePresetId }: PresetBarProps) {
               type="button"
               onClick={() => onSelectPreset(preset)}
               className={cn(
-                "flex-shrink-0 snap-start w-56 sm:w-64 p-3 rounded-2xl border text-left transition-all duration-200 cursor-pointer group",
+                "flex-shrink-0 snap-start w-56 sm:w-64 p-3.5 rounded-2xl text-left transition-all duration-300 cursor-pointer group relative overflow-hidden",
                 isActive
-                  ? "bg-amber-light/30 border-wood shadow-sm ring-1 ring-amber"
-                  : "bg-white/70 backdrop-blur-sm border-wood/15 hover:bg-white hover:border-wood/30 hover:shadow-sm"
+                  ? "vibrant-glass-card bg-gradient-to-br from-amber-50/90 to-orange-50/70 border-amber-400 ring-2 ring-amber-500/40 shadow-md shadow-amber-900/10 scale-[1.01]"
+                  : "vibrant-glass-card hover:bg-white hover:border-amber-300/60"
               )}
             >
+              {isActive && (
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500" />
+              )}
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-2xl group-hover:scale-110 transition-transform">
                   {preset.icon}
                 </span>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-wood/10 text-dark-wood">
+                <span className={cn(
+                  "text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full border",
+                  isActive
+                    ? "bg-amber-100 text-amber-900 border-amber-300"
+                    : "bg-black/[0.04] text-stone-600 border-stone-200/80"
+                )}>
                   {preset.badge}
                 </span>
               </div>
-              <h4 className="font-display font-bold text-dark-wood text-sm line-clamp-1">
+              <h4 className="font-bold text-[#1E1915] text-sm line-clamp-1 group-hover:text-amber-800 transition-colors">
                 {preset.name}
               </h4>
-              <p className="text-[11px] text-wood/70 line-clamp-2 mt-0.5 leading-snug">
+              <p className="text-[11px] text-stone-500 line-clamp-2 mt-0.5 leading-snug">
                 {preset.desc}
               </p>
-              <div className="flex items-center gap-2 mt-2 pt-2 border-t border-wood/10 text-[10px] text-wood/80 font-medium">
-                <span>🌡️ {preset.waterTempC}°C</span>
-                <span>⏳ {preset.steepingTimeSec}s</span>
-                <span>🫖 {styleLabel}</span>
+              <div className="flex items-center gap-2 mt-2.5 pt-2 border-t border-black/[0.05] text-[10px] text-stone-600 font-medium">
+                <span className="bg-white/80 px-1.5 py-0.5 rounded-md border border-stone-100">🌡️ {preset.waterTempC}°C</span>
+                <span className="bg-white/80 px-1.5 py-0.5 rounded-md border border-stone-100">⏳ {preset.steepingTimeSec}s</span>
+                <span className="bg-white/80 px-1.5 py-0.5 rounded-md border border-stone-100">🫖 {styleLabel}</span>
               </div>
             </button>
           );

@@ -49,18 +49,21 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
 
   return (
     <Link href={`/recipes/${recipe.id}`}>
-      <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-        <Card className="h-full flex flex-col cursor-pointer overflow-hidden">
-          <CardHeader className="flex-row items-center gap-3 pb-2">
+      <motion.div whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+        <div className="vibrant-glass-card rounded-3xl h-full flex flex-col cursor-pointer overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-lg transition-all duration-300">
+          <div className="flex items-center gap-3 p-5 pb-3">
             <div
-              className="h-9 w-9 rounded-full border border-black/10 shadow-xs shrink-0 flex items-center justify-center text-sm"
-              style={{ backgroundColor: recipe.renderedHex }}
+              className="h-10 w-10 rounded-2xl border border-white shadow-xs shrink-0 flex items-center justify-center text-base"
+              style={{
+                backgroundColor: recipe.renderedHex,
+                boxShadow: `0 4px 14px -2px ${recipe.renderedHex}60`,
+              }}
             >
               <span className="drop-shadow-xs">{vesselEmoji}</span>
             </div>
             <div className="flex flex-col min-w-0 flex-1">
-              <CardTitle className="text-base truncate">{recipe.title}</CardTitle>
-              <div className="flex items-center gap-1.5 text-xs text-wood/70 flex-wrap">
+              <h3 className="text-base font-bold text-[#1E1915] truncate">{recipe.title}</h3>
+              <div className="flex items-center gap-1.5 text-xs text-stone-500 flex-wrap mt-0.5">
                 <span>{formattedDate}</span>
                 {recipe.vesselType && (
                   <>
@@ -70,47 +73,50 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
                 )}
               </div>
             </div>
-          </CardHeader>
+          </div>
 
-          <CardContent className="flex-1 pb-2">
+          <div className="px-5 flex-1 pb-3">
             {recipe.description && (
-              <p className="text-sm text-wood/80 line-clamp-2 mb-4">{recipe.description}</p>
+              <p className="text-xs text-stone-600 line-clamp-2 mb-3 leading-relaxed">{recipe.description}</p>
             )}
-            <div className="flex justify-center -my-4">
+            <div className="flex justify-center -my-2">
               <FlavorRadarChart data={radarData} size="sm" />
             </div>
             
-            <div className="flex flex-wrap gap-1.5 mt-2">
+            <div className="flex flex-wrap gap-1.5 mt-3">
               {recipe.blendItems.map((blend) => (
-                <Badge key={blend.id} variant="outline" className="text-[10px] px-1.5 py-0">
-                  {translateIngredient(blend.ingredient.name)} {blend.ratioPercent}%
-                </Badge>
+                <span
+                  key={blend.id}
+                  className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/80 border border-stone-200 text-stone-700 shadow-2xs"
+                >
+                  {translateIngredient(blend.ingredient.name)} <strong>{blend.ratioPercent}%</strong>
+                </span>
               ))}
             </div>
-          </CardContent>
+          </div>
 
-          <CardFooter className="bg-amber-light/10 border-t border-amber/10 py-3 gap-1.5 flex-wrap">
-            <Badge variant="secondary" className="text-xs">
-              {recipe.waterTempC}°C
-            </Badge>
-            <Badge variant="secondary" className="text-xs">
-              {Math.floor(recipe.steepingTimeSec / 60)}m {recipe.steepingTimeSec % 60}s
-            </Badge>
-            <Badge variant="secondary" className="text-xs">
-              {recipe.waterAmountMl}ml
-            </Badge>
+          <div className="bg-black/[0.02] border-t border-black/[0.04] p-3.5 px-5 gap-1.5 flex items-center flex-wrap mt-auto">
+            <span className="text-xs font-mono font-bold bg-white px-2 py-0.5 rounded-lg border border-stone-200 text-stone-800 shadow-2xs">
+              🌡️ {recipe.waterTempC}°C
+            </span>
+            <span className="text-xs font-mono font-bold bg-white px-2 py-0.5 rounded-lg border border-stone-200 text-stone-800 shadow-2xs">
+              ⏳ {Math.floor(recipe.steepingTimeSec / 60)}m {recipe.steepingTimeSec % 60}s
+            </span>
+            <span className="text-xs font-mono font-bold bg-white px-2 py-0.5 rounded-lg border border-stone-200 text-stone-800 shadow-2xs">
+              💧 {recipe.waterAmountMl}ml
+            </span>
             {recipe.servingStyle && (
-              <Badge variant="outline" className="text-xs capitalize bg-white/60">
+              <span className="text-xs capitalize bg-amber-50 text-amber-800 border border-amber-200/80 px-2 py-0.5 rounded-lg font-semibold shadow-2xs">
                 {recipe.servingStyle}
-              </Badge>
+              </span>
             )}
             {garnishesCount > 0 && (
-              <Badge variant="outline" className="text-xs bg-amber-50 text-amber-900 border-amber-200">
+              <span className="text-xs bg-rose-50 text-rose-800 border border-rose-200/80 px-2 py-0.5 rounded-lg font-semibold shadow-2xs">
                 🌸 +{garnishesCount}
-              </Badge>
+              </span>
             )}
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
       </motion.div>
     </Link>
   );

@@ -15,13 +15,13 @@
   --color-terracotta-dark: #9C3A12;
 
   --font-display: "Playfair Display", serif;
-  --font-body: "Inter", sans-serif;
+  --font-body: var(--font-thai), var(--font-modern), "Inter", sans-serif;
 }
 
 body {
-  font-family: var(--font-body);
-  background-color: var(--color-cream);
-  color: var(--color-wood-dark);
+  font-family: var(--font-thai), var(--font-modern), var(--font-body), sans-serif;
+  background-color: #FBF8F3;
+  color: #1E1915;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -60,14 +60,33 @@ body {
   }
 }
 
-@keyframes gentle-sway {
+@keyframes gentle-pulse {
   0%, 100% {
-    transform: translateX(0);
+    transform: scale(1);
+    opacity: 0.85;
   }
   50% {
-    transform: translateX(3px);
+    transform: scale(1.05);
+    opacity: 1;
   }
 }
+
+@keyframes sound-wave-1 {
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+}
+@keyframes sound-wave-2 {
+  0%, 100% { height: 14px; }
+  50% { height: 6px; }
+}
+@keyframes sound-wave-3 {
+  0%, 100% { height: 8px; }
+  50% { height: 18px; }
+}
+
+.animate-wave-1 { animation: sound-wave-1 1.2s ease-in-out infinite; }
+.animate-wave-2 { animation: sound-wave-2 0.9s ease-in-out infinite; }
+.animate-wave-3 { animation: sound-wave-3 1.4s ease-in-out infinite; }
 
 .steam-path {
   animation: steam-rise 3s ease-in-out infinite;
@@ -85,115 +104,116 @@ body {
   animation: bubble-float 2.5s ease-in-out infinite;
 }
 
-.bubble-delay-1 {
-  animation: bubble-float 2s ease-in-out 0.5s infinite;
-}
-
-.bubble-delay-2 {
-  animation: bubble-float 3s ease-in-out 1.2s infinite;
-}
-
-.bubble-delay-3 {
-  animation: bubble-float 2.2s ease-in-out 0.8s infinite;
-}
-
-/* Custom range slider */
+/* Sleek Luminous Range Slider */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  height: 8px;
-  border-radius: 4px;
-  background: #F0E8DC;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(180, 140, 100, 0.2);
   outline: none;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: #8C5E45;
+  background: #FFFFFF;
   cursor: pointer;
-  border: 3px solid #FAF6F0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: transform 0.15s ease;
+  border: 3px solid #C8751E;
+  box-shadow: 0 2px 10px rgba(200, 117, 30, 0.35);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-  background: #734A34;
+  transform: scale(1.2);
+  box-shadow: 0 4px 16px rgba(200, 117, 30, 0.5);
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: #8C5E45;
+  background: #FFFFFF;
   cursor: pointer;
-  border: 3px solid #FAF6F0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 3px solid #C8751E;
+  box-shadow: 0 2px 10px rgba(200, 117, 30, 0.35);
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(250, 246, 240, 0.6);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D4A574;
+  background: rgba(180, 140, 100, 0.25);
   border-radius: 9999px;
-  border: 2px solid transparent;
-  background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8C5E45;
-  border: 2px solid transparent;
-  background-clip: content-box;
+  background: rgba(180, 140, 100, 0.45);
 }
 
-/* Glassmorphic & Artisan Surface Utilities */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(140, 94, 69, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(115, 74, 52, 0.08);
+/* ==========================================================================
+   Vibrant Modern Glassmorphism Utilities
+   ========================================================================== */
+
+.vibrant-glass-panel {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 16px 40px -8px rgba(60, 40, 20, 0.08), 0 0 0 1px rgba(240, 225, 205, 0.5);
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(140, 94, 69, 0.16);
-  box-shadow: 0 4px 20px -2px rgba(115, 74, 52, 0.06);
-}
-
-.glass-card-hover {
+.vibrant-glass-card {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 24px -4px rgba(60, 40, 20, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-card-hover:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px -4px rgba(115, 74, 52, 0.14);
-  border-color: rgba(212, 165, 116, 0.45);
+.vibrant-glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px -4px rgba(60, 40, 20, 0.12), 0 0 0 1px rgba(217, 136, 36, 0.25);
 }
 
-/* Shimmer Gold Rim Animation */
+.vibrant-glass-pill {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 12px -2px rgba(60, 40, 20, 0.05);
+}
+
+/* Dynamic Ambient Glow Behind Cup */
+.cup-ambient-halo {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  filter: blur(48px);
+  opacity: 0.55;
+  pointer-events: none;
+  transition: all 0.8s ease-in-out;
+  animation: gentle-pulse 4s ease-in-out infinite;
+}
+
+/* Shimmer Gold Rim */
 @keyframes gold-shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .shimmer-gold {
@@ -207,21 +227,7 @@ input[type="range"]::-moz-range-thumb {
   animation: gold-shimmer 3s infinite;
 }
 
-/* Soft Ambient Pulse for Live Brew */
-@keyframes ambient-glow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(212, 165, 116, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(212, 165, 116, 0.6);
-  }
-}
-
-.glow-amber {
-  animation: ambient-glow 2.5s infinite ease-in-out;
-}
-
-/* Touch action optimization for mobile */
+/* Mobile Touch targets */
 @media (max-width: 768px) {
   button, a {
     min-height: 44px;

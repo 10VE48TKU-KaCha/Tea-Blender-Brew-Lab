@@ -10,6 +10,7 @@ import { getSommelierAdvices, getFoodPairings } from "@/lib/sommelier-engine";
 import IngredientControl from "@/components/game/IngredientControl";
 import CozyCupScene, { ServingStyle } from "@/components/game/CozyCupScene";
 import FlavorRadarChart from "@/components/charts/FlavorRadarChart";
+import BrewPerfectionGauge from "@/components/game/BrewPerfectionGauge";
 import MobileActionDrawer from "@/components/game/MobileActionDrawer";
 import PresetBar, { TeaPreset } from "@/components/game/PresetBar";
 import ServingStyleSelector from "@/components/game/ServingStyleSelector";
@@ -333,10 +334,10 @@ export default function LabPage() {
                       setShowOnlyActive(false);
                     }}
                     className={cn(
-                      "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer shrink-0 border",
+                      "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer shrink-0 border",
                       isSelected
-                        ? "bg-amber text-white border-amber shadow-sm"
-                        : "bg-white/70 backdrop-blur-sm border-wood/15 text-wood/80 hover:bg-white hover:border-wood/30"
+                        ? "bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white border-transparent shadow-xs shadow-amber-900/10 font-bold"
+                        : "vibrant-glass-pill text-stone-600 hover:text-stone-900 hover:bg-white border-stone-200/80"
                     )}
                   >
                     <span>{tab.icon}</span>
@@ -348,19 +349,19 @@ export default function LabPage() {
 
             {/* Search Input */}
             <div className="relative">
-              <Search className="w-4 h-4 text-wood/50 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 text-xs bg-white/70 backdrop-blur-sm border border-wood/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber/50 placeholder:text-wood/50"
+                className="w-full pl-9 pr-4 py-2 text-xs vibrant-glass-pill rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/40 placeholder:text-stone-400 border-stone-200/80 text-stone-900"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-wood/60 hover:text-dark-wood"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-stone-400 hover:text-stone-700"
                 >
                   ✕
                 </button>
@@ -369,9 +370,9 @@ export default function LabPage() {
 
             {/* Ingredients Controls List */}
             {isLoading ? (
-              <p className="text-wood py-6 text-center">{lang === "th" ? "กำลังเปิดกล่องใบชา..." : "Opening tea canisters..."}</p>
+              <p className="text-stone-500 py-6 text-center text-xs">{lang === "th" ? "กำลังเปิดกล่องใบชา..." : "Opening tea canisters..."}</p>
             ) : filteredIngredients.length === 0 ? (
-              <div className="text-center py-8 bg-white/40 rounded-2xl border border-wood/15 text-xs text-wood/70">
+              <div className="text-center py-8 vibrant-glass-card rounded-2xl text-xs text-stone-500">
                 {t.noTeasFound}
               </div>
             ) : (
@@ -390,133 +391,144 @@ export default function LabPage() {
 
           {/* Brew Parameters Section */}
           <section>
-            <h2 className="text-2xl font-display text-dark-wood mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[#1E1915] mb-3 flex items-center gap-2">
               <span>🌡️</span> {t.brewParamsTitle}
             </h2>
-            <div className="space-y-4">
-              <Card className="bg-white/80 backdrop-blur-sm border-wood/20">
-                <CardContent className="pt-6">
-                  <div className="flex justify-between mb-2">
-                    <label className="font-medium text-dark-wood flex items-center gap-1.5">
-                      <span>🌡️</span> {t.waterTemp}
-                    </label>
-                    <span className="text-amber font-bold">{waterTempC}°C</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={60}
-                    max={100}
-                    value={waterTempC}
-                    onChange={(e) => {
-                      setActivePresetId(null);
-                      setWaterTempC(Number(e.target.value));
-                    }}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-[11px] text-wood/60 mt-1">
-                    <span>60°C ({lang === "th" ? "ชาขาว/ชาอ่อน" : "Cold/Delicate"})</span>
-                    <span>80°C ({lang === "th" ? "ชาเขียว/อู่หลง" : "Green/Oolong"})</span>
-                    <span>100°C ({lang === "th" ? "ชาดำเดือด" : "Boiling Black"})</span>
-                  </div>
-                </CardContent>
-              </Card>
+            <div className="space-y-3">
+              <div className="vibrant-glass-card rounded-2xl p-4 space-y-1.5">
+                <div className="flex justify-between items-center mb-1">
+                  <label className="font-bold text-xs sm:text-sm text-stone-800 flex items-center gap-1.5">
+                    <span>🌡️</span> {t.waterTemp}
+                  </label>
+                  <span className="text-amber-700 font-extrabold font-mono text-sm bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
+                    {waterTempC}°C
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={60}
+                  max={100}
+                  value={waterTempC}
+                  onChange={(e) => {
+                    setActivePresetId(null);
+                    setWaterTempC(Number(e.target.value));
+                  }}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-[10px] text-stone-400 font-medium pt-1">
+                  <span>60°C ({lang === "th" ? "ชาขาว/ชาอ่อน" : "Cold/Delicate"})</span>
+                  <span>80°C ({lang === "th" ? "ชาเขียว/อู่หลง" : "Green/Oolong"})</span>
+                  <span>100°C ({lang === "th" ? "ชาดำเดือด" : "Boiling Black"})</span>
+                </div>
+              </div>
 
-              <Card className="bg-white/80 backdrop-blur-sm border-wood/20">
-                <CardContent className="pt-6">
-                  <div className="flex justify-between mb-2">
-                    <label className="font-medium text-dark-wood flex items-center gap-1.5">
-                      <span>⏳</span> {t.steepingTime}
-                    </label>
-                    <span className="text-amber font-bold">{formatTime(steepingTimeSec)}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={30}
-                    max={300}
-                    step={5}
-                    value={steepingTimeSec}
-                    onChange={(e) => {
-                      setActivePresetId(null);
-                      setSteepingTimeSec(Number(e.target.value));
-                    }}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-[11px] text-wood/60 mt-1">
-                    <span>30s ({lang === "th" ? "ชงเร็วทันใจ" : "Flash Steep"})</span>
-                    <span>120s ({lang === "th" ? "สมดุลกลมกล่อม" : "Balanced"})</span>
-                    <span>300s ({lang === "th" ? "สกัดเข้มลึก" : "Deep Extraction"})</span>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="vibrant-glass-card rounded-2xl p-4 space-y-1.5">
+                <div className="flex justify-between items-center mb-1">
+                  <label className="font-bold text-xs sm:text-sm text-stone-800 flex items-center gap-1.5">
+                    <span>⏳</span> {t.steepingTime}
+                  </label>
+                  <span className="text-amber-700 font-extrabold font-mono text-sm bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
+                    {formatTime(steepingTimeSec)}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={30}
+                  max={300}
+                  step={5}
+                  value={steepingTimeSec}
+                  onChange={(e) => {
+                    setActivePresetId(null);
+                    setSteepingTimeSec(Number(e.target.value));
+                  }}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-[10px] text-stone-400 font-medium pt-1">
+                  <span>30s ({lang === "th" ? "ชงเร็วทันใจ" : "Flash Steep"})</span>
+                  <span>120s ({lang === "th" ? "สมดุลกลมกล่อม" : "Balanced"})</span>
+                  <span>300s ({lang === "th" ? "สกัดเข้มลึก" : "Deep Extraction"})</span>
+                </div>
+              </div>
 
-              <Card className="bg-white/80 backdrop-blur-sm border-wood/20">
-                <CardContent className="pt-6">
-                  <div className="flex justify-between mb-2">
-                    <label className="font-medium text-dark-wood flex items-center gap-1.5">
-                      <span>💧</span> {t.waterAmount}
-                    </label>
-                    <span className="text-amber font-bold">{waterAmountMl}ml</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={50}
-                    max={500}
-                    step={10}
-                    value={waterAmountMl}
-                    onChange={(e) => {
-                      setActivePresetId(null);
-                      setWaterAmountMl(Number(e.target.value));
-                    }}
-                    className="w-full"
-                  />
-                </CardContent>
-              </Card>
+              <div className="vibrant-glass-card rounded-2xl p-4 space-y-1.5">
+                <div className="flex justify-between items-center mb-1">
+                  <label className="font-bold text-xs sm:text-sm text-stone-800 flex items-center gap-1.5">
+                    <span>💧</span> {t.waterAmount}
+                  </label>
+                  <span className="text-amber-700 font-extrabold font-mono text-sm bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
+                    {waterAmountMl}ml
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={50}
+                  max={500}
+                  step={10}
+                  value={waterAmountMl}
+                  onChange={(e) => {
+                    setActivePresetId(null);
+                    setWaterAmountMl(Number(e.target.value));
+                  }}
+                  className="w-full"
+                />
+              </div>
             </div>
           </section>
         </div>
 
         {/* RIGHT COLUMN: Visual Scene & Profiler (6 cols on lg, sticky on desktop) */}
         <div className="lg:col-span-6 space-y-6 flex flex-col items-center order-1 lg:order-2 lg:sticky lg:top-20 lg:self-start">
-          {/* Animated Cup Scene with Dynamic Glaze, Turbidity & Garnishes */}
-          <div className="w-full bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-wood/15 shadow-sm flex flex-col items-center">
-            <CozyCupScene
-              liquidColor={extraction?.renderedHex || "#d1d5db"}
-              opacity={hasBlend ? 0.85 : 0.2}
-              steamIntensity={Math.max(0, (waterTempC - 60) / 40)}
-              servingStyle={servingStyle}
-              vesselType={vesselType}
-              cupGlaze={cupGlaze}
-              coasterStyle={coasterStyle}
-              turbidity={extraction?.turbidity || "velvet"}
-              garnishes={garnishes}
-              latteArt={latteArt}
+          {/* Animated Cup Scene with Dynamic Ambient Halo & Vibrant Glass Panel */}
+          <div className="w-full vibrant-glass-panel rounded-3xl p-6 shadow-md flex flex-col items-center relative overflow-hidden">
+            {/* Dynamic Ambient Halo behind cup using real-time renderedHex */}
+            <div
+              className="cup-ambient-halo"
+              style={{
+                backgroundColor: extraction?.renderedHex || "#d97706",
+                opacity: hasBlend ? 0.5 : 0.15,
+              }}
             />
 
-            {/* Quick Live Steeping Action & Postcard Buttons */}
-            {hasBlend && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mt-4 flex flex-wrap items-center justify-center gap-3"
-              >
-                <Button
-                  onClick={() => setIsBrewModalOpen(true)}
-                  className="px-6 py-2.5 bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white font-bold rounded-full shadow-lg shadow-orange-950/20 ring-1 ring-orange-300/40 flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
-                >
-                  <Play className="w-4 h-4 fill-white" />
-                  <span>{t.startLiveBrew} ({formatTime(steepingTimeSec)})</span>
-                </Button>
+            <div className="relative z-10 w-full flex flex-col items-center">
+              <CozyCupScene
+                liquidColor={extraction?.renderedHex || "#d1d5db"}
+                opacity={hasBlend ? 0.85 : 0.2}
+                steamIntensity={Math.max(0, (waterTempC - 60) / 40)}
+                servingStyle={servingStyle}
+                vesselType={vesselType}
+                cupGlaze={cupGlaze}
+                coasterStyle={coasterStyle}
+                turbidity={extraction?.turbidity || "velvet"}
+                garnishes={garnishes}
+                latteArt={latteArt}
+              />
 
-                <Button
-                  onClick={() => setIsPostcardOpen(true)}
-                  variant="outline"
-                  className="px-5 py-2.5 border-[#BA4A1E]/35 bg-white/95 hover:bg-orange-50 text-wood-dark font-semibold rounded-full shadow-xs flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105 active:scale-95"
+              {/* Quick Live Steeping Action & Postcard Buttons */}
+              {hasBlend && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="mt-4 flex flex-wrap items-center justify-center gap-3"
                 >
-                  <Share2 className="w-3.5 h-3.5 text-[#BA4A1E]" />
-                  <span>🎴 {t.createPostcard}</span>
-                </Button>
-              </motion.div>
-            )}
+                  <Button
+                    onClick={() => setIsBrewModalOpen(true)}
+                    className="px-6 py-2.5 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-700 hover:to-orange-700 text-white font-bold rounded-full shadow-lg shadow-amber-900/20 ring-1 ring-amber-300/40 flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
+                  >
+                    <Play className="w-4 h-4 fill-white" />
+                    <span>{t.startLiveBrew} ({formatTime(steepingTimeSec)})</span>
+                  </Button>
+
+                  <Button
+                    onClick={() => setIsPostcardOpen(true)}
+                    variant="outline"
+                    className="px-5 py-2.5 border-stone-200/80 bg-white/90 hover:bg-stone-50 text-stone-800 font-semibold rounded-full shadow-xs flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105 active:scale-95"
+                  >
+                    <Share2 className="w-3.5 h-3.5 text-amber-600" />
+                    <span>🎴 {t.createPostcard}</span>
+                  </Button>
+                </motion.div>
+              )}
+            </div>
           </div>
 
           {/* Artisan Cup & Vessel Studio */}
@@ -560,48 +572,57 @@ export default function LabPage() {
                 {/* Sommelier Title & Blend Discovery Code */}
                 <div className="text-center">
                   <div className="inline-flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-300">
+                    <span className="font-mono text-xs font-bold text-amber-800 bg-amber-100/90 px-2.5 py-0.5 rounded-full border border-amber-300">
                       {extraction.blendCode}
                     </span>
                     {extraction.originCountries && extraction.originCountries.length > 0 && (
-                      <span className="text-xs text-wood font-medium">
+                      <span className="text-xs text-stone-600 font-medium">
                         {extraction.originCountries.join(" • ")}
                       </span>
                     )}
                   </div>
-                  <h3 className="text-3xl font-display text-dark-wood flex items-center justify-center gap-2 mt-1.5">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-[#1E1915] flex items-center justify-center gap-2 mt-1.5">
                     ✨ {extraction.cozyTitle} ✨
                   </h3>
                 </div>
 
-                <Card className="bg-white/60 backdrop-blur-sm border-wood/20">
-                  <CardContent className="pt-5 pb-5 text-center italic text-wood text-sm sm:text-base">
-                    "{extraction.tastingNotes}"
-                  </CardContent>
-                </Card>
+                <div className="vibrant-glass-card rounded-2xl p-4 text-center italic text-stone-700 text-sm sm:text-base leading-relaxed">
+                  "{extraction.tastingNotes}"
+                </div>
 
-                {/* Radar Chart */}
-                <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-4 border border-wood/15 flex flex-col items-center">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-wood/70 mb-2">
-                    {t.profilerTitle}
-                  </h4>
-                  <FlavorRadarChart data={radarData} size="md" />
+                {/* 2-Column Telemetry: Flavor Radar & Brew Perfection Ring */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="vibrant-glass-card rounded-2xl p-4 flex flex-col items-center">
+                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1 w-full text-left">
+                      {t.profilerTitle}
+                    </h4>
+                    <FlavorRadarChart data={radarData} size="sm" />
+                  </div>
+
+                  <BrewPerfectionGauge
+                    extraction={extraction}
+                    steepingTimeSec={steepingTimeSec}
+                    waterTempC={waterTempC}
+                  />
                 </div>
 
                 {/* Color Hex & Glaze Badge */}
-                <div className="flex items-center justify-center gap-4 bg-white/50 backdrop-blur-sm py-3 px-6 rounded-2xl border border-wood/15 flex-wrap">
-                  <span className="text-dark-wood font-medium text-sm">
+                <div className="flex items-center justify-center gap-3 vibrant-glass-pill py-2.5 px-5 rounded-2xl border border-stone-200/80 flex-wrap">
+                  <span className="text-stone-700 font-semibold text-xs">
                     {lang === "th" ? "สีน้ำชา:" : "Extracted Liquor:"}
                   </span>
                   <div
-                    className="w-8 h-8 rounded-full shadow-inner border border-wood/20"
-                    style={{ backgroundColor: extraction.renderedHex }}
+                    className="w-6 h-6 rounded-full shadow-xs border border-white"
+                    style={{
+                      backgroundColor: extraction.renderedHex,
+                      boxShadow: `0 0 12px ${extraction.renderedHex}80`,
+                    }}
                   />
-                  <Badge variant="outline" className="text-wood border-wood font-mono text-xs">
+                  <Badge variant="outline" className="text-stone-700 border-stone-300 font-mono text-xs bg-white/80">
                     {extraction.renderedHex}
                   </Badge>
-                  <span className="text-xs text-wood capitalize">
-                    {lang === "th" ? "เนื้อถ้วย" : "Ceramic"}: {extraction.cupGlaze}
+                  <span className="text-xs text-stone-600 capitalize">
+                    {lang === "th" ? "เนื้อถ้วย" : "Ceramic"}: <strong>{extraction.cupGlaze}</strong>
                   </span>
                 </div>
 
@@ -612,38 +633,35 @@ export default function LabPage() {
                 />
 
                 {/* Save Blend Card */}
-                <Card className="border-wood/30 shadow-md bg-white/80 backdrop-blur-sm">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-dark-wood text-lg flex items-center justify-between flex-wrap gap-2">
-                      <span className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-amber" />
-                        {lang === "th" ? "บันทึกสูตรชาของคุณลงคลังชุมชน" : "Save Your Blend to Community Archive"}
-                      </span>
-                      <Button
-                        onClick={() => setIsPostcardOpen(true)}
-                        variant="ghost"
-                        className="text-xs text-wood hover:text-dark-wood p-0 h-auto cursor-pointer"
-                      >
-                        🎴 {lang === "th" ? "ดูตัวอย่างโปสการ์ด" : "Preview Ticket"}
-                      </Button>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <input
-                      type="text"
-                      placeholder={t.recipeNamePlaceholder}
-                      className="w-full px-3 py-2 border border-wood/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber/50 text-sm bg-white"
-                      value={recipeName}
-                      onChange={(e) => setRecipeName(e.target.value)}
-                    />
-                    <div className="relative">
-                      <Button
-                        className="w-full bg-gradient-to-r from-[#BA4A1E] via-[#C85826] to-[#D96830] hover:from-[#A43E16] hover:to-[#BA4A1E] text-white shadow-md shadow-orange-950/20 cursor-pointer rounded-xl font-bold py-2.5 transition-all hover:scale-[1.01] active:scale-[0.98]"
-                        disabled={isSaving || !recipeName.trim()}
-                        onClick={handleSave}
-                      >
-                        {isSaving ? t.saving : t.saveRecipe}
-                      </Button>
+                <div className="vibrant-glass-card rounded-3xl p-5 shadow-md border border-stone-200/80 space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2 pb-1">
+                    <span className="flex items-center gap-2 font-bold text-sm text-[#1E1915]">
+                      <Sparkles className="w-4 h-4 text-amber-600" />
+                      {lang === "th" ? "บันทึกสูตรชาของคุณลงคลังชุมชน" : "Save Your Blend to Community Archive"}
+                    </span>
+                    <Button
+                      onClick={() => setIsPostcardOpen(true)}
+                      variant="ghost"
+                      className="text-xs text-stone-500 hover:text-stone-800 p-0 h-auto cursor-pointer"
+                    >
+                      🎴 {lang === "th" ? "ดูตัวอย่างโปสการ์ด" : "Preview Ticket"}
+                    </Button>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder={t.recipeNamePlaceholder}
+                    className="w-full px-3.5 py-2.5 border border-stone-200/90 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/40 text-xs bg-white/90 text-stone-900"
+                    value={recipeName}
+                    onChange={(e) => setRecipeName(e.target.value)}
+                  />
+                  <div className="relative">
+                    <Button
+                      className="w-full bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-700 hover:to-orange-700 text-white shadow-md shadow-amber-950/20 cursor-pointer rounded-xl font-bold py-2.5 transition-all hover:scale-[1.01] active:scale-[0.98]"
+                      disabled={isSaving || !recipeName.trim()}
+                      onClick={handleSave}
+                    >
+                      {isSaving ? t.saving : t.saveRecipe}
+                    </Button>
                       <AnimatePresence>
                         {showSaveSuccess && (
                           <motion.div
@@ -677,8 +695,7 @@ export default function LabPage() {
                         )}
                       </AnimatePresence>
                     </div>
-                  </CardContent>
-                </Card>
+                </div>
               </motion.div>
             ) : (
               <motion.div

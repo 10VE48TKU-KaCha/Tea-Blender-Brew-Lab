@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, Prompt, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navigation/Navbar";
 import TeaBarBackground from "@/components/decorations/TeaBarBackground";
@@ -13,6 +13,19 @@ const inter = Inter({
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-display",
+});
+
+const prompt = Prompt({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin", "thai"],
+  variable: "--font-thai",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-modern",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -35,7 +48,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable} antialiased bg-cream min-h-screen`}>
+      <body
+        className={`${inter.variable} ${playfair.variable} ${prompt.variable} ${outfit.variable} antialiased bg-[#FBF8F3] min-h-screen text-[#1E1915] selection:bg-amber-200 selection:text-amber-900`}
+      >
         <LanguageProvider>
           <TeaBarBackground />
           <Navbar />
