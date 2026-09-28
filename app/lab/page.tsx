@@ -23,6 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Play, Sparkles, Share2, Search, Filter, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/LanguageContext";
+import { DEFAULT_TEA_INGREDIENTS } from "@/lib/default-tea-data";
 
 export default function LabPage() {
   const { t, lang } = useLanguage();
@@ -64,23 +65,31 @@ export default function LabPage() {
   ], [t]);
 
   useEffect(() => {
+    const initIngredients = (data: TeaIngredient[]) => {
+      setIngredients(data);
+      const initialRatios: Record<string, number> = {};
+      data.forEach((ing: TeaIngredient) => {
+        initialRatios[ing.id] = 0;
+      });
+      setBlendRatios(initialRatios);
+    };
+
     async function fetchIngredients() {
       try {
         const res = await fetch("/api/ingredients");
         if (res.ok) {
           const data = await res.json();
-          setIngredients(data);
-          const initialRatios: Record<string, number> = {};
-          data.forEach((ing: TeaIngredient) => {
-            initialRatios[ing.id] = 0;
-          });
-          setBlendRatios(initialRatios);
+          if (Array.isArray(data) && data.length > 0) {
+            initIngredients(data);
+            return;
+          }
         }
       } catch (err) {
-        console.error("Failed to fetch ingredients", err);
+        console.warn("Using offline fallback ingredients for lab:", err);
       } finally {
         setIsLoading(false);
       }
+      initIngredients(DEFAULT_TEA_INGREDIENTS);
     }
     fetchIngredients();
   }, []);

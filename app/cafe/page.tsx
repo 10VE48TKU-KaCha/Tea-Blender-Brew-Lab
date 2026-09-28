@@ -55,6 +55,7 @@ import {
   playSipSound,
 } from "@/lib/audio";
 import { useLanguage } from "@/context/LanguageContext";
+import { DEFAULT_TEA_INGREDIENTS } from "@/lib/default-tea-data";
 
 type GamePhase =
   | "GREETING"
@@ -112,21 +113,30 @@ export default function CafePage() {
     setUnlockedItemIds(getUnlockedItemIds());
     setCustomerStates(getSavedCustomerStates());
 
+    const initIngredients = (data: TeaIngredient[]) => {
+      setIngredients(data);
+      const initialRatios: Record<string, number> = {};
+      data.forEach((ing: TeaIngredient) => {
+        initialRatios[ing.id] = 0;
+      });
+      setBlendRatios(initialRatios);
+    };
+
     async function loadIngredients() {
       try {
         const res = await fetch("/api/ingredients");
         if (res.ok) {
           const data = await res.json();
-          setIngredients(data);
-          const initialRatios: Record<string, number> = {};
-          data.forEach((ing: TeaIngredient) => {
-            initialRatios[ing.id] = 0;
-          });
-          setBlendRatios(initialRatios);
+          if (Array.isArray(data) && data.length > 0) {
+            initIngredients(data);
+            return;
+          }
         }
       } catch (err) {
-        console.error("Failed to load ingredients for cafe", err);
+        console.warn("Using offline fallback ingredients for cafe:", err);
       }
+      // Guaranteed fallback to default specialty teas
+      initIngredients(DEFAULT_TEA_INGREDIENTS);
     }
     loadIngredients();
   }, []);
@@ -221,6 +231,15 @@ export default function CafePage() {
       resetR[ing.id] = 0;
     });
     setBlendRatios(resetR);
+    setRitualScores({
+      tempScore: 0,
+      rinseScore: 0,
+      spiralScore: 0,
+      steepScore: 0,
+      decantScore: 0,
+      branchScore: 0,
+      garnishScore: 0,
+    });
     setGamePhase("GREETING");
     setCurrentStepIndex(0);
   };
@@ -247,24 +266,26 @@ export default function CafePage() {
   const handleStepComplete = (score: number, extraData?: any) => {
     const currentStep = activeRitualSteps[currentStepIndex];
 
-    // Record individual score
+    // Compute updated scores synchronously
+    const updatedScores = { ...ritualScores };
     if (currentStep === "KETTLE_TEMP") {
-      setRitualScores((prev) => ({ ...prev, tempScore: score }));
+      updatedScores.tempScore = score;
       if (extraData?.boiledTemp) setBoiledWaterTemp(extraData.boiledTemp);
     } else if (currentStep === "AWAKENING_RINSE") {
-      setRitualScores((prev) => ({ ...prev, rinseScore: score }));
+      updatedScores.rinseScore = score;
     } else if (currentStep === "SPIRAL_POUR") {
-      setRitualScores((prev) => ({ ...prev, spiralScore: score }));
+      updatedScores.spiralScore = score;
     } else if (currentStep === "STEEPING_WINDOW") {
-      setRitualScores((prev) => ({ ...prev, steepScore: score }));
+      updatedScores.steepScore = score;
     } else if (currentStep === "DECANT_PITCHER") {
-      setRitualScores((prev) => ({ ...prev, decantScore: score }));
+      updatedScores.decantScore = score;
     } else if (["MATCHA_WHISK", "ICE_DROP", "MILK_STEAM"].includes(currentStep)) {
-      setRitualScores((prev) => ({ ...prev, branchScore: score }));
+      updatedScores.branchScore = score;
       if (extraData?.latteArt) setLatteArt(extraData.latteArt);
     } else if (currentStep === "FINISHING_MIST") {
-      setRitualScores((prev) => ({ ...prev, garnishScore: score }));
+      updatedScores.garnishScore = score;
     }
+    setRitualScores(updatedScores);
 
     // Advance to next step or final evaluation
     if (currentStepIndex + 1 < activeRitualSteps.length) {
@@ -272,7 +293,7 @@ export default function CafePage() {
     } else {
       // Completed all ritual steps! Move to evaluation!
       playSipSound();
-      const evalRes = evaluateCafeBrew(currentCustomer, extraction, ritualScores);
+      const evalRes = evaluateCafeBrew(currentCustomer, extraction, updatedScores);
       setEvaluationResult(evalRes);
 
       // Award coins
@@ -668,6 +689,17 @@ export default function CafePage() {
                   );
                 })}
               </div>
+
+              {/* Mobile / Tablet start button below tea list */}
+              <div className="pt-3 block lg:hidden">
+                <Button
+                  onClick={handleConfirmBlend}
+                  disabled={!extraction}
+                  className="w-full bg-gradient-to-r from-[#1E5C38] via-[#2A7549] to-[#368D5B] hover:from-[#17482C] hover:to-[#22613B] text-white font-bold rounded-xl py-3 shadow-md shadow-emerald-950/20 cursor-pointer transition-all disabled:opacity-50"
+                >
+                  ✨ {lang === "th" ? "เริ่มพิธีการชง (Start Ritual!)" : "Begin Artisan Ritual!"}
+                </Button>
+              </div>
             </div>
           </motion.div>
         )}
@@ -744,6 +776,15 @@ export default function CafePage() {
             steepingTimeSec={currentCustomer.targetSteepSec}
             onNextCustomer={handleNextCustomer}
             onBrewAgain={() => {
+              setRitualScores({
+                tempScore: 0,
+                rinseScore: 0,
+                spiralScore: 0,
+                steepScore: 0,
+                decantScore: 0,
+                branchScore: 0,
+                garnishScore: 0,
+              });
               setGamePhase("SELECT_EQUIPMENT");
               setCurrentStepIndex(0);
             }}

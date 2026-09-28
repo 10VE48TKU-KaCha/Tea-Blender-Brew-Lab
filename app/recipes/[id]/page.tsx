@@ -9,23 +9,35 @@ import RecipeShareBar from "@/components/recipes/RecipeShareBar";
 
 export const dynamic = "force-dynamic";
 
+import { findInMemoryRecipeById } from "@/lib/default-tea-data";
+
 export default async function RecipeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
-  const recipe = await prisma.recipe.findUnique({
-    where: { id },
-    include: {
-      blendItems: {
-        include: {
-          ingredient: true
+  let recipe: any = null;
+  try {
+    recipe = await prisma.recipe.findUnique({
+      where: { id },
+      include: {
+        blendItems: {
+          include: {
+            ingredient: true
+          }
         }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.warn(`Database lookup failed for recipe ${id}, checking in-memory store:`, error);
+  }
+
+  if (!recipe) {
+    recipe = findInMemoryRecipeById(id);
+  }
 
   if (!recipe) {
     notFound();
   }
+
 
   let parsedGarnishes: string[] = [];
   try {
@@ -100,7 +112,7 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ i
           turbidity={(recipe.turbidity as any) || "velvet"}
           latteArt={(recipe.latteArt as any) || undefined}
           garnishes={parsedGarnishes}
-          blendItems={recipe.blendItems.map((b) => ({
+          blendItems={recipe.blendItems.map((b: any) => ({
             ingredient: b.ingredient,
             ratioPercent: b.ratioPercent,
           }))}

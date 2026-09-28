@@ -7,19 +7,31 @@ import { Sparkles, Beaker, Plus } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
+import { DEFAULT_RECIPES, getInMemoryRecipes } from "@/lib/default-tea-data";
+
 export default async function RecipesArchivePage() {
-  const recipes = await prisma.recipe.findMany({
-    include: {
-      blendItems: {
-        include: {
-          ingredient: true,
+  let recipes: any[] = [];
+  try {
+    recipes = await prisma.recipe.findMany({
+      include: {
+        blendItems: {
+          include: {
+            ingredient: true,
+          },
         },
       },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  } catch (error) {
+    console.warn("Database unavailable on recipes page, falling back to default archive:", error);
+  }
+
+  if (!recipes || recipes.length === 0) {
+    recipes = getInMemoryRecipes();
+  }
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-8">
