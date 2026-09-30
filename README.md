@@ -39,6 +39,16 @@
    - 1–3 Star evaluations, Customer Guestbook with polaroids, Teaware progression store, and Lab sync.
    - Procedural Web Audio ASMR (rain 🌧️, fireplace 🪵, pouring, and sips).
 
+7. **🏆 Tea Master Academy & Daily Mystery Order (`components/certification`)**
+   - **Daily Mystery Quest:** Rotating visiting connoisseurs with narrative requests, real-time live blend evaluation, and coin rewards.
+   - **3-Tier Tea Master Certification Exam:** Novice Steeper, Artisan Sommelier, and Grand Tea Master with theory quizzes and practical laboratory blend tests.
+   - **Vintage Japanese-Western Parchment Certificate:** Authentic calligraphy, Mon Crest watermark, candidate name, serial ID, and vermilion Hanko seal.
+
+8. **🌿 Functional Wellness Matrix & Tasting Journal (`components/wellness`, `components/journal`, `components/lab`)**
+   - **Wellness Matrix:** Evaluates 5 health dimensions: Antioxidant Power (EGCG), Sustained Energy (L-Theanine to caffeine curve), Serenity & Stress Relief, Digestive Balance, and Cellular Hydration.
+   - **My Tasting Journal:** Local storage notebook with 1-5 star ratings, personal tasting impressions, tags, and "Brew Again in Lab" one-click restoration.
+   - **Custom Botanical Creator:** Formulate custom leaves or backyard herbs with custom colors, category, and sensory scores.
+
 ---
 
 ## 🛠️ Tech Stack

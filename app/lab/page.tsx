@@ -20,10 +20,17 @@ import TeaPostcardModal from "@/components/game/TeaPostcardModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Play, Sparkles, Share2, Search, Filter, Globe } from "lucide-react";
+import { Play, Sparkles, Share2, Search, Filter, Globe, BookHeart, Award, Target, Leaf, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/LanguageContext";
 import { DEFAULT_TEA_INGREDIENTS } from "@/lib/default-tea-data";
+import { calculateWellnessMatrix, WellnessAnalysis } from "@/lib/wellness-engine";
+import WellnessMatrixCard from "@/components/wellness/WellnessMatrixCard";
+import { getCustomIngredients, JournalEntry } from "@/lib/journal-engine";
+import TastingJournalModal from "@/components/journal/TastingJournalModal";
+import CustomLeafModal from "@/components/lab/CustomLeafModal";
+import DailyQuestModal from "@/components/certification/DailyQuestModal";
+import TeaMasterExamModal from "@/components/certification/TeaMasterExamModal";
 
 export default function LabPage() {
   const { t, lang } = useLanguage();
@@ -55,6 +62,12 @@ export default function LabPage() {
   const [isBrewModalOpen, setIsBrewModalOpen] = useState<boolean>(false);
   const [isPostcardOpen, setIsPostcardOpen] = useState<boolean>(false);
 
+  // New Feature Modals
+  const [isDailyQuestOpen, setIsDailyQuestOpen] = useState<boolean>(false);
+  const [isExamModalOpen, setIsExamModalOpen] = useState<boolean>(false);
+  const [isJournalOpen, setIsJournalOpen] = useState<boolean>(false);
+  const [isCustomLeafOpen, setIsCustomLeafOpen] = useState<boolean>(false);
+
   const categoryTabs = useMemo(() => [
     { id: "ALL", label: t.catAll, icon: "🌍" },
     { id: "BLACK", label: t.catBlack, icon: "🫖" },
@@ -66,9 +79,11 @@ export default function LabPage() {
 
   useEffect(() => {
     const initIngredients = (data: TeaIngredient[]) => {
-      setIngredients(data);
+      const customLeaves = getCustomIngredients();
+      const combined = [...customLeaves, ...data];
+      setIngredients(combined);
       const initialRatios: Record<string, number> = {};
-      data.forEach((ing: TeaIngredient) => {
+      combined.forEach((ing: TeaIngredient) => {
         initialRatios[ing.id] = 0;
       });
       setBlendRatios(initialRatios);
@@ -93,6 +108,38 @@ export default function LabPage() {
     }
     fetchIngredients();
   }, []);
+
+  const handleLeafCreated = (newLeaf: TeaIngredient) => {
+    setIngredients((prev) => [newLeaf, ...prev]);
+    setBlendRatios((prev) => ({ ...prev, [newLeaf.id]: 0 }));
+  };
+
+  const handleLoadRecipeFromJournal = (entry: JournalEntry) => {
+    setRecipeName(entry.title);
+    setWaterTempC(entry.waterTempC);
+    setWaterAmountMl(entry.waterAmountMl);
+    setSteepingTimeSec(entry.steepingTimeSec);
+    setServingStyle(entry.servingStyle);
+    if (entry.vesselType) setVesselType(entry.vesselType);
+    if (entry.cupGlaze) setCupGlaze(entry.cupGlaze);
+    if (entry.garnishes) setGarnishes(entry.garnishes);
+    if (entry.latteArt) setLatteArt(entry.latteArt);
+    setHasUserCustomizedVessel(true);
+
+    const nextRatios: Record<string, number> = {};
+    ingredients.forEach((ing) => {
+      nextRatios[ing.id] = 0;
+    });
+    entry.blendItems.forEach((b) => {
+      const found = ingredients.find(
+        (i) => i.id === b.ingredientId || i.name === b.ingredientName
+      );
+      if (found) {
+        nextRatios[found.id] = b.ratioPercent;
+      }
+    });
+    setBlendRatios(nextRatios);
+  };
 
   const extraction = useMemo(() => {
     if (!ingredients.length) return null;
@@ -128,6 +175,15 @@ export default function LabPage() {
     const pairings = getFoodPairings(extraction);
     return { advices, pairings };
   }, [extraction, ingredients, blendRatios, waterTempC, waterAmountMl, steepingTimeSec]);
+
+  const wellnessAnalysis = useMemo(() => {
+    if (!extraction) return null;
+    const blendInputs: BlendInput[] = ingredients.map((ing) => ({
+      ingredient: ing,
+      ratioPercent: blendRatios[ing.id] || 0,
+    }));
+    return calculateWellnessMatrix(blendInputs, extraction, waterTempC, steepingTimeSec);
+  }, [ingredients, blendRatios, extraction, waterTempC, steepingTimeSec]);
 
   // Filtered ingredients list based on category, search, and active toggle
   const filteredIngredients = useMemo(() => {
@@ -294,6 +350,81 @@ export default function LabPage() {
         </div>
       </div>
 
+      {/* Tea Master Hub: Daily Quest, Certification Academy & Tasting Journal */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+        {/* Daily Mystery Quest */}
+        <button
+          type="button"
+          onClick={() => setIsDailyQuestOpen(true)}
+          className="p-3.5 rounded-2xl vibrant-glass-card hover:bg-white/95 border border-amber-300/60 shadow-xs hover:shadow-md transition-all flex items-center justify-between text-left group cursor-pointer"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 text-amber-800 flex items-center justify-center border border-amber-400/30 text-lg group-hover:scale-110 transition-transform">
+              🎯
+            </div>
+            <div>
+              <span className="font-bold text-xs sm:text-sm text-stone-900 block group-hover:text-amber-800 transition-colors">
+                {t.btnDailyQuest}
+              </span>
+              <span className="text-[11px] text-stone-500">
+                {t.btnDailyQuestDesc}
+              </span>
+            </div>
+          </div>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold border border-amber-300 shrink-0">
+            +120 🪙
+          </span>
+        </button>
+
+        {/* Tea Master Academy */}
+        <button
+          type="button"
+          onClick={() => setIsExamModalOpen(true)}
+          className="p-3.5 rounded-2xl vibrant-glass-card hover:bg-white/95 border border-emerald-300/60 shadow-xs hover:shadow-md transition-all flex items-center justify-between text-left group cursor-pointer"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 text-emerald-800 flex items-center justify-center border border-emerald-400/30 text-lg group-hover:scale-110 transition-transform">
+              🏆
+            </div>
+            <div>
+              <span className="font-bold text-xs sm:text-sm text-stone-900 block group-hover:text-emerald-800 transition-colors">
+                {t.btnAcademy}
+              </span>
+              <span className="text-[11px] text-stone-500">
+                {t.btnAcademyDesc}
+              </span>
+            </div>
+          </div>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-bold border border-emerald-300 shrink-0">
+            3 Tiers
+          </span>
+        </button>
+
+        {/* Personal Tasting Journal */}
+        <button
+          type="button"
+          onClick={() => setIsJournalOpen(true)}
+          className="p-3.5 rounded-2xl vibrant-glass-card hover:bg-white/95 border border-indigo-300/60 shadow-xs hover:shadow-md transition-all flex items-center justify-between text-left group cursor-pointer"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 text-indigo-800 flex items-center justify-center border border-indigo-400/30 text-lg group-hover:scale-110 transition-transform">
+              📖
+            </div>
+            <div>
+              <span className="font-bold text-xs sm:text-sm text-stone-900 block group-hover:text-indigo-800 transition-colors">
+                {t.btnTastingJournal}
+              </span>
+              <span className="text-[11px] text-stone-500">
+                {lang === "th" ? "บันทึกความประทับใจ & ชิมซ้ำ" : "My notes & star ratings"}
+              </span>
+            </div>
+          </div>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-900 font-bold border border-indigo-300 shrink-0">
+            Log
+          </span>
+        </button>
+      </div>
+
       {/* Signature Preset Book */}
       <PresetBar
         onSelectPreset={handleSelectPreset}
@@ -310,24 +441,36 @@ export default function LabPage() {
                 <span>🍃</span> {t.pantryTitle} ({ingredients.length})
               </h2>
 
-              {/* Active blend counter badge */}
-              {activeCount > 0 && (
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Add Custom Leaf Button */}
                 <button
                   type="button"
-                  onClick={() => setShowOnlyActive(!showOnlyActive)}
-                  className={cn(
-                    "text-xs px-2.5 py-1 rounded-full border transition-all cursor-pointer font-medium flex items-center gap-1.5 w-fit",
-                    showOnlyActive
-                      ? "bg-gradient-to-r from-[#BA4A1E] to-[#D96830] text-white border-transparent shadow-xs"
-                      : "bg-white/90 border-wood/25 text-wood-dark font-semibold hover:bg-amber-50"
-                  )}
+                  onClick={() => setIsCustomLeafOpen(true)}
+                  className="text-xs px-3 py-1 rounded-full border border-emerald-600/35 bg-emerald-50/80 hover:bg-emerald-100/90 text-emerald-900 font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
                 >
-                  <Filter className="w-3 h-3" />
-                  <span>
-                    {activeCount} {lang === "th" ? "ชนิดที่เลือก" : "Selected Teas"} {showOnlyActive ? (lang === "th" ? "(แสดงที่เลือก)" : "(Showing Selected)") : (lang === "th" ? "(ดูที่เลือก)" : "(View Selected)")}
-                  </span>
+                  <Leaf className="w-3 h-3 text-emerald-600" />
+                  <span>{t.btnAddCustomLeaf}</span>
                 </button>
-              )}
+
+                {/* Active blend counter badge */}
+                {activeCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowOnlyActive(!showOnlyActive)}
+                    className={cn(
+                      "text-xs px-2.5 py-1 rounded-full border transition-all cursor-pointer font-medium flex items-center gap-1.5 w-fit",
+                      showOnlyActive
+                        ? "bg-gradient-to-r from-[#BA4A1E] to-[#D96830] text-white border-transparent shadow-xs"
+                        : "bg-white/90 border-wood/25 text-wood-dark font-semibold hover:bg-amber-50"
+                    )}
+                  >
+                    <Filter className="w-3 h-3" />
+                    <span>
+                      {activeCount} {lang === "th" ? "ชนิดที่เลือก" : "Selected Teas"} {showOnlyActive ? (lang === "th" ? "(แสดงที่เลือก)" : "(Showing Selected)") : (lang === "th" ? "(ดูที่เลือก)" : "(View Selected)")}
+                    </span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Category Filter Tabs */}
@@ -535,6 +678,15 @@ export default function LabPage() {
                     <Share2 className="w-3.5 h-3.5 text-amber-600" />
                     <span>🎴 {t.createPostcard}</span>
                   </Button>
+
+                  <Button
+                    onClick={() => setIsJournalOpen(true)}
+                    variant="outline"
+                    className="px-5 py-2.5 border-stone-200/80 bg-white/90 hover:bg-stone-50 text-stone-800 font-semibold rounded-full shadow-xs flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105 active:scale-95"
+                  >
+                    <BookHeart className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>📖 {t.btnTastingJournal}</span>
+                  </Button>
                 </motion.div>
               )}
             </div>
@@ -640,6 +792,11 @@ export default function LabPage() {
                   advices={sommelierData.advices}
                   pairings={sommelierData.pairings}
                 />
+
+                {/* Functional Wellness Matrix */}
+                {wellnessAnalysis && (
+                  <WellnessMatrixCard wellness={wellnessAnalysis} />
+                )}
 
                 {/* Save Blend Card */}
                 <div className="vibrant-glass-card rounded-3xl p-5 shadow-md border border-stone-200/80 space-y-3">
@@ -771,6 +928,61 @@ export default function LabPage() {
           recipeId={savedRecipeInfo?.id}
         />
       )}
+
+      {/* Daily Mystery Quest Modal */}
+      <DailyQuestModal
+        isOpen={isDailyQuestOpen}
+        onClose={() => setIsDailyQuestOpen(false)}
+        currentExtraction={extraction}
+        currentBlendInputs={ingredients.map((ing) => ({
+          ingredient: ing,
+          ratioPercent: blendRatios[ing.id] || 0,
+        }))}
+        waterTempC={waterTempC}
+        steepingTimeSec={steepingTimeSec}
+      />
+
+      {/* Tea Master Certification Exam Modal */}
+      <TeaMasterExamModal
+        isOpen={isExamModalOpen}
+        onClose={() => setIsExamModalOpen(false)}
+        currentExtraction={extraction}
+        currentBlendInputs={ingredients.map((ing) => ({
+          ingredient: ing,
+          ratioPercent: blendRatios[ing.id] || 0,
+        }))}
+        waterTempC={waterTempC}
+        steepingTimeSec={steepingTimeSec}
+      />
+
+      {/* Personal Tasting Journal Modal */}
+      <TastingJournalModal
+        isOpen={isJournalOpen}
+        onClose={() => setIsJournalOpen(false)}
+        currentExtraction={extraction}
+        currentBlendInputs={ingredients.map((ing) => ({
+          ingredient: ing,
+          ratioPercent: blendRatios[ing.id] || 0,
+        }))}
+        waterTempC={waterTempC}
+        waterAmountMl={waterAmountMl}
+        steepingTimeSec={steepingTimeSec}
+        servingStyle={servingStyle}
+        vesselType={vesselType}
+        cupGlaze={cupGlaze}
+        garnishes={garnishes}
+        latteArt={latteArt}
+        recipeName={recipeName}
+        wellnessAnalysis={wellnessAnalysis}
+        onLoadRecipeToLab={handleLoadRecipeFromJournal}
+      />
+
+      {/* Custom Botanical Leaf Modal */}
+      <CustomLeafModal
+        isOpen={isCustomLeafOpen}
+        onClose={() => setIsCustomLeafOpen(false)}
+        onLeafCreated={handleLeafCreated}
+      />
     </div>
   );
 }

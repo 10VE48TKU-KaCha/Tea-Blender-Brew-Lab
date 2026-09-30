@@ -6,6 +6,15 @@ export interface TranslationDictionary {
   navRecipes: string;
   navCafe: string;
   navSubtitle: string;
+  navJournal: string;
+  navAcademy: string;
+  navDailyQuest: string;
+  btnDailyQuest: string;
+  btnDailyQuestDesc: string;
+  btnAcademy: string;
+  btnAcademyDesc: string;
+  btnTastingJournal: string;
+  btnAddCustomLeaf: string;
   langToggle: string;
 
   // Lab Hero
@@ -206,6 +215,15 @@ export const translations: Record<Language, TranslationDictionary> = {
     navRecipes: "Recipes",
     navCafe: "Tea Bar",
     navSubtitle: "Specialty Tea Profiler",
+    navJournal: "Journal",
+    navAcademy: "Academy",
+    navDailyQuest: "Daily Quest",
+    btnDailyQuest: "Daily Quest",
+    btnDailyQuestDesc: "Solve today's mystery blend",
+    btnAcademy: "Tea Academy",
+    btnAcademyDesc: "Master certification exam",
+    btnTastingJournal: "My Journal",
+    btnAddCustomLeaf: "+ Add Custom Leaf",
     langToggle: "ภาษาไทย",
 
     heroBadge: "World Specialty Tea Laboratory • 1,000+ Unique Possibilities",
@@ -434,6 +452,15 @@ export const translations: Record<Language, TranslationDictionary> = {
     navRecipes: "คลังสูตรชา",
     navCafe: "คาเฟ่ชงชา",
     navSubtitle: "เครื่องมือวิเคราะห์และจำลองการชงชา",
+    navJournal: "สมุดบันทึก",
+    navAcademy: "สถาบันชา",
+    navDailyQuest: "เควสต์ประจำวัน",
+    btnDailyQuest: "เควสต์ประจำวัน",
+    btnDailyQuestDesc: "ปรุงชาตามโจทย์ปริศนาประจำวัน",
+    btnAcademy: "สอบวัดระดับช่างชา",
+    btnAcademyDesc: "รับใบประกาศนียบัตรเกียรติยศ",
+    btnTastingJournal: "สมุดบันทึกชิมชา",
+    btnAddCustomLeaf: "+ เพิ่มใบชาของฉัน",
     langToggle: "English",
 
     heroBadge: "ห้องทดลองการผสมชาสากล • ความเป็นไปได้มากกว่า 1,000 รูปแบบ",

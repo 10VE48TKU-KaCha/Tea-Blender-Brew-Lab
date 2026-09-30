@@ -1,3 +1,4 @@
+export type { BlendInput, BrewParams, ExtractionResult, TeaCategory } from "@/types/tea";
 import type { BlendInput, BrewParams, ExtractionResult, TeaCategory } from "@/types/tea";
 
 // === Helpers ===
